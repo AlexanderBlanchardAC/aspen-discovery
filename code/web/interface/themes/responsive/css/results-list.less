@@ -25,7 +25,9 @@
 }
 #availabilityControlContainer {
   border-bottom: 3px solid #d5d6da;
-  padding-bottom: @padding-base-vertical;
+  margin-top: 0;
+  min-height: 75px;
+  margin-bottom: 2px;
 }
 #wikipedia_placeholder {
   #availabilityControlContainer();
@@ -138,9 +140,11 @@
 .result-title{
   font-weight: bold;
   font-size: 18px;
+  margin-top: 12px;
 }
 .result-index{
   font-size: 18px;
+  margin-top: 12px;
 }
 .result-tools-horizontal{
   margin-top: 6px;
@@ -157,14 +161,13 @@
   border-bottom: 1px solid #d5d6da;
 }
 .related-manifestations{
-  margin-top: 3px;
+  margin-top: 1px;
 }
 .related-manifestation.grouped {
   padding-top: 10px;
   padding-bottom: 10px;
   border: 1px solid #c3c3c3;
   border-radius: 8px;
-  margin-top: 1em;
 
   .col-sm-12 .row.displayed {
     padding-bottom: 1em;
@@ -289,7 +292,20 @@
     padding-right: 0;
   }
   #availabilityControl button {
-    .btn-sm();
+      padding: 5px 10px;
+      font-size: 12px;
+      line-height: 1.5;
+      border-radius: 3px;
+  }
+  @media (max-width:390px) {
+    #global,
+    #local,
+    #available {
+      padding: 1px 5px;
+      font-size: 10px;
+      line-height: 1.5;
+      border-radius: 3px;
+    }
   }
   //.title-rating {
   //  display: none;
