@@ -32,6 +32,7 @@ aspen/cloud-library.js
 aspen/course-reserves.js
 aspen/dpla.js
 aspen/ebsco.js
+aspen/summon.js
 aspen/econtent-record.js
 aspen/grouped-work.js
 aspen/lists.js

@@ -72,6 +72,7 @@ class Admin_UsageDashboard extends Admin_Dashboard {
 			'totalEventsSearches' => $usage->totalEventsSearches,
 			'totalEbscoEdsSearches' => $usage->totalEbscoEdsSearches,
 			'totalEbscohostSearches' => $usage->totalEbscohostSearches,
+			'totalSummonSearches' => $usage->totalSummonSearches,
 			'totalBlockedRequests' => $usage->totalBlockedRequests,
 			'totalBlockedApiRequests' => $usage->totalBlockedApiRequests,
 			'totalTimedOutSearches' => $usage->totalTimedOutSearches,

@@ -337,6 +337,8 @@ class Library extends DataObject {
 	//EBSCO Settings
 	public $edsSettingsId;
 	public $ebscohostSearchSettingId;
+	//Summon Settings
+	public $summonSearchSettingId;
 
 	//SSO
 	public /** @noinspection PhpUnused */

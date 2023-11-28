@@ -33,6 +33,9 @@ class SearchSources {
 			case 'websites':
 				$searchObject = SearchObjectFactory::initSearchObject('Websites');
 				break;
+			case 'summon':
+				$searchObject = SearchObjectFactory::initSearchObject('Summon');
+				break;
 			case 'catalog':
 			default:
 				/** @var SearchObject_AbstractGroupedWorkSearcher $searchObject */ $searchObject = SearchObjectFactory::initSearchObject();
@@ -83,6 +86,7 @@ class SearchSources {
 		$repeatCourseReserves = $library->enableCourseReserves == 1;
 		$searchEbscoEDS = array_key_exists('EBSCO EDS', $enabledModules) && $library->edsSettingsId != -1;
 		$searchEbscohost = array_key_exists('EBSCOhost', $enabledModules) && $library->ebscohostSearchSettingId != -1;
+		$searchSummon = array_key_exists('Summon', $enabledModules) && $library->summonSearchSettingId != -1;
 		$searchOpenArchives = array_key_exists('Open Archives', $enabledModules) && $library->enableOpenArchives == 1;
 		$searchCourseReserves = $library->enableCourseReserves == 2;
 
@@ -192,6 +196,13 @@ class SearchSources {
 				'name' => 'Articles & Databases',
 				'description' => 'EBSCOhost - Articles and Database',
 				'catalogType' => 'ebscohost',
+				'hasAdvancedSearch' => false,
+			];
+		} elseif ($searchSummon) {
+			$searchOptions['summon'] = [
+				'name' => 'Articles & Databases',
+				'description' => 'Summon - Articles and Database',
+				'catalogType' => 'summon',
 				'hasAdvancedSearch' => false,
 			];
 		}

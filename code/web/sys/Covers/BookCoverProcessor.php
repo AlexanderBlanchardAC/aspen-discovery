@@ -90,6 +90,10 @@ class BookCoverProcessor {
 			if ($this->getEbscohostCover($this->id)) {
 				return true;
 			}
+		} elseif ($this->type == 'summon') {
+			if ($this->getSummonCover($this->id)) {
+				return true;
+			}
 		} else {
 			global $sideLoadSettings;
 			if ($this->type == 'overdrive') {
@@ -1739,6 +1743,38 @@ class BookCoverProcessor {
 			}
 
 			return $this->processImageURL('default_ebscohost', $this->cacheFile, false);
+		} else {
+			return false;
+		}
+	}
+
+	private function getSummonCover($id) {
+		//Build a cover based on the title of the page
+		require_once ROOT_DIR . '/sys/Covers/DefaultCoverImageBuilder.php';
+		$coverBuilder = new DefaultCoverImageBuilder();
+		require_once ROOT_DIR . '/RecordDrivers/SummonRecordDriver.php';
+
+		$summonRecordDriver = new SummonRecordDriver($id);
+		if ($summonRecordDriver->isValid()) {
+			$title = $summonRecordDriver->getTitle();
+			$author = $summontRecordDriver->getAuthor();
+			$idParts = explode(':', $id);
+			$db = $idParts[0];
+
+			$summondb = new SummonDatabase();
+			$summondb->shortName = $db;
+			$summondb->find();
+			while ($summondb->fetch()) {
+				$image = $ebscohostdb->logo;
+			}
+			if (empty($image)) {
+				$coverBuilder->getCover($title, $author, $this->cacheFile);
+			} else {
+				$image = ROOT_DIR . '/files/original/' . $image;
+				$coverBuilder->getCover($title, $author, $this->cacheFile, $image);
+			}
+
+			return $this->processImageURL('default_summon', $this->cacheFile, false);
 		} else {
 			return false;
 		}

@@ -50,6 +50,8 @@ function loadSearchInformation() {
 				$searchSource = 'lists';
 			} elseif ($module == 'EBSCO') {
 				$searchSource = 'ebsco_eds';
+			} elseif ($module == 'Summon') {
+				$searchSource == 'summon';
 			} else {
 				require_once(ROOT_DIR . '/Drivers/marmot_inc/SearchSources.php');
 				$searchSources = new SearchSources();

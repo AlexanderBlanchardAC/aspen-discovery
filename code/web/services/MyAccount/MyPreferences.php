@@ -107,11 +107,17 @@ class MyAccount_MyPreferences extends MyAccount {
 			global $enabledModules;
 			global $library;
 			$showEdsPreferences = false;
+			$showSummonPreferences = false;
 			if (array_key_exists('EBSCO EDS', $enabledModules) && !empty($library->edsSettingsId)) {
 				$showEdsPreferences = true;
 			}
+			if (array_key_exists('Summon', $enabledModules) && !empty($library->summonSettingsId)) {
+				$showSummonPreferences = true;
+			}
 			$interface->assign('showEdsPreferences', $showEdsPreferences);
+			$interface->assgin('showSummonPreferences', $showSummonPreferences);
 			$interface->assign('cookieConsentEnabled', $library->cookieStorageConsent);
+
 
 			if ($showAlternateLibraryOptionsInProfile) {
 				//Get the list of locations for display in the user interface.

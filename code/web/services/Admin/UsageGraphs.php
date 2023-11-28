@@ -62,6 +62,9 @@ class Admin_UsageGraphs extends Admin_Admin {
 			case 'edsSearches':
 				$title .= ' - EBSCO EDS Searches';
 				break;
+			case 'summonSearches':
+				$title .= ' - Summon Searches';
+				break;
 			case 'eventSearches':
 				$title .= ' - Event Searches';
 				break;
@@ -167,6 +170,14 @@ class Admin_UsageGraphs extends Admin_Admin {
 				'data' => [],
 			];
 			$userUsage->selectAdd('SUM(ebscohostSearches) as sumEbscohostSearches');
+		}
+		if (array_key_exists('Summon', $enabledModules) && ($stat == 'summonSearches' || $stat == 'searches')) {
+			$dataSeries['Summon Searches'] = [
+				'borderColor' => 'rgba(255, 206, 86, 1)',
+				'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
+				'data' => [],
+			];
+			$userUsage->selectAdd('SUM(summonSearches) as sumSummonSearches');
 		}
 		if (array_key_exists('Events', $enabledModules) && ($stat == 'eventSearches' || $stat == 'searches')) {
 			$dataSeries['Events Searches'] = [
@@ -297,6 +308,10 @@ class Admin_UsageGraphs extends Admin_Admin {
 			if (array_key_exists('EBSCOhost', $enabledModules) && ($stat == 'ebscohostSearches' || $stat == 'searches')) {
 				/** @noinspection PhpUndefinedFieldInspection */
 				$dataSeries['EBSCOhost Searches']['data'][$curPeriod] = $userUsage->sumEbscohostSearches;
+			}
+			if (array_key_exists('Summonhost', $enabledModules) && ($stat == 'summonSearches' || $stat == 'searches')) {
+				/** @noinspection PhpUndefinedFieldInspection */
+				$dataSeries['Summon Searches']['data'][$curPeriod] = $userUsage->sumSummonSearches;
 			}
 			if (array_key_exists('Events', $enabledModules) && ($stat == 'eventSearches' || $stat == 'searches')) {
 				/** @noinspection PhpUndefinedFieldInspection */
