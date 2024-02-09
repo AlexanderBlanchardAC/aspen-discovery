@@ -3668,7 +3668,7 @@ class Library extends DataObject {
 				'label' => 'Summon',
 				'hideInLists' => true,
 				'renderAsHeading' => true,
-				// 'permissions' => ['A'],
+				'permissions' => ['Library Summon Options'],
 				'properties' => [
 					'summonSettingsId' => [
 						'property' => 'summonSettingsId',
