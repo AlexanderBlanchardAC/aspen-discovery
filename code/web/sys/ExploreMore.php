@@ -61,7 +61,7 @@ class ExploreMore {
 			$interface->assign('relatedArticles', $ebscoMatches);
 		}
 
-		$aummonMatches = $this->loadSummonOptions('', [], $searchTerm);
+		$summonMatches = $this->loadSummonOptions('', [], $searchTerm);
 		if (count($summonMatches) > 0) {
 			$interface->assign('relatedArticles', $summonMatches);
 		}
