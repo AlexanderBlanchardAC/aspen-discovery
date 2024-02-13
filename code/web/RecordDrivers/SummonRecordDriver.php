@@ -389,7 +389,7 @@ class SummonRecordDriver extends RecordInterface {
 			$authors[] = $primary;
 		}
 		//TODO: - Make get places of publication function
-		//$pubPlaces = $this->getPlacesOfPublication();
+		// $pubPlaces = $this->getPlacesOfPublication();
 		$details = [
 			'authors' => $authors,
 			'title' => $this->getTitle(),
