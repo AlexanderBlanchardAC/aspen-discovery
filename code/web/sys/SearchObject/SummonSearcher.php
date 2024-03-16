@@ -49,6 +49,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 	protected $maxTopics = 1;
 	protected $groupFilters = array();
 	protected $rangeFilters = array();
+	protected $rangeFacetFields = array();
 	protected $openAccessFilter = false;
 	protected $expand = false;
 	protected $sortOptions = array();
@@ -90,6 +91,10 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 		'Language,or,1,30',
 		'DatabaseName,or,1,30',
 		'SourceType,or,1,30',	
+	];
+
+	protected $rangeFacets = [
+		'PublicationDate,1900:1909,1910:1919,1920:1929,1930:1939,1940:1949,1950:1959,1960:1969,1970:1979,1980:1989,1990:1999,2000:2009,2010:2019,2020:2029',
 	];
 
 	protected $facetFields;
@@ -241,7 +246,8 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 			//Filters
 			's.fvgf' => $this->groupFilters,
 			//Filters
-			's.rf' => $this->rangeFilters,
+			's.rf' => $this->getRangeFilters(),
+			's.rff' => $this->rangeFacets,
 			//Order results
 			's.sort' => $this->getSort(),
 			//False by default
@@ -276,6 +282,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 				$this->resultsTotal = $recordData['recordCount'];
 				$this->filters = $recordData['query']['facetValueFilters'];
 				$this->facetFields= $recordData['facetFields'];	
+				$this->rangeFacetFields = $recordData['rangeFacetFields'];
 			}
 		return $recordData;
 	}
@@ -467,6 +474,44 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 		return $availableFacets;
 	}
 
+	public function getRangeFacetSet() {
+		$availableRangeFacets = [];
+		$label = '';
+		$this->filters = [];
+		if (isset($this->rangeFacetFields)) {
+			foreach ($this->rangeFacetFields as $rangeFacetField) {
+				$facetId = $rangeFacetField['displayName'];
+				$parts = preg_split('/(?=[A-Z])/', $facetId, -1, PREG_SPLIT_NO_EMPTY);
+				$displayName = implode(' ', $parts);
+				$availableRangeFacets[$facetId] = [
+					'collapseByDefault' => true,
+					'multiSelect' => true,
+					'label' => $displayName,
+					'valuesToShow' => 5,
+				];
+				$list = [];
+				foreach ($rangeFacetField['counts'] as $value) {
+					$rangeFacetValue = $value['range']['minValue'] . '-' . $value['range']['maxValue'];
+					$isApplied = array_key_exists($facetId, $this->filterList) && in_array($value, $this->filterList[$facetId]);
+					$rangeFacetSettings = [
+						'value' => $rangeFacetValue,
+						'display' => $rangeFacetValue,
+						'count' => $value['count'],
+						'isApplied' => $value['isApplied'],
+					];
+					if ($isApplied) {
+						$rangeFacetSettings['removalUrl'] = $this->renderLinkWithoutFilter($facetId . ':' . $value);
+					} else {
+						$rangeFacetSettings['url'] = $this->renderSearchUrl() . '&filter[]=' . $facetId . ':' . urlencode($rangeFacetValue);
+					}
+					$list[] = $rangeFacetSettings;
+				}
+				$availableRangeFacets[$facetId]['list'] = $list;
+			}
+		}
+		return $availableRangeFacets;
+	}
+
 	//Retreive a specific record - used to retreive bookcovers
 	public function retrieveRecord ($id) {
 		$baseUrl = $this->summonBaseApi . '/' .$this->version . '/' .$this->service;
@@ -497,6 +542,24 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
         }
       return $this->filters;
     }	
+
+	public function getRangeFilters() {
+		$this->rangeFilters = array();
+		foreach($this->filterList as $key => $value) {
+			if(is_array($value)) {
+				foreach($value as $val){
+					$parts = explode(' ', $val);
+                    $result = implode('+', $parts);
+                    $this->filters[] = urlencode($key . ',') . $result . urlencode(',');
+				}
+			} else {
+				$parts = explode(' ', $value);
+                $result = implode('+', $parts);
+                $this->filters = urlencode($key . ',') . $result . urlencode(',');
+			}
+		}
+		return $this->filters;
+	}
 	
 	/**
 	 * Generate an HMAC hash for authentication
