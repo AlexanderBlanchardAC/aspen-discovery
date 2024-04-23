@@ -45,6 +45,62 @@ class Summon_Results extends ResultsAction {
 			$this->display('searchError.tpl', 'Error in Search');
 			return;
 		}
+		$dateFilters = [
+			'publishDate',
+			'publicationDate',
+		];
+		foreach ($dateFilters as $dateFilter) {
+			if ((isset($_REQUEST[$dateFilter . 'yearfrom']) && !empty($_REQUEST[$dateFilter . 'yearfrom'])) || (isset($_REQUEST[$dateFilter . 'yearto']) && !empty($_REQUEST[$dateFilter . 'yearto']))) {
+				$queryParams = $_GET;
+				$yearFrom = preg_match('/^\d{2,4}$/', $_REQUEST[$dateFilter . 'yearfrom']) ? $_REQUEST[$dateFilter . 'yearfrom'] : '*';
+				$yearTo = preg_match('/^\d{2,4}$/', $_REQUEST[$dateFilter . 'yearto']) ? $_REQUEST[$dateFilter . 'yearto'] : '*';
+				if (strlen($yearFrom) == 2) {
+					$yearFrom = '19' . $yearFrom;
+				} elseif (strlen($yearFrom) == 3) {
+					$yearFrom = '0' . $yearFrom;
+				}
+				if (strlen($yearTo) == 2) {
+					$yearTo = '19' . $yearTo;
+				} elseif (strlen($yearFrom) == 3) {
+					$yearTo = '0' . $yearTo;
+				}
+				if ($yearTo != '*' && $yearFrom != '*' && $yearTo < $yearFrom) {
+					$tmpYear = $yearTo;
+					$yearTo = $yearFrom;
+					$yearFrom = $tmpYear;
+				}
+				// unset($queryParams['module']);
+				// unset($queryParams['action']);
+				// unset($queryParams[$dateFilter . 'yearfrom']);
+				// unset($queryParams[$dateFilter . 'yearto']);
+				if (!isset($queryParams['sort'])) {
+					$queryParams['sort'] = 'year';
+				}
+				$queryParamStrings = [];
+				foreach ($queryParams as $paramName => $queryValue) {
+					if (is_array($queryValue)) {
+						foreach ($queryValue as $arrayValue) {
+							if (strlen($arrayValue) > 0) {
+								$queryParamStrings[] = $paramName . '[]=' . urlencode($arrayValue);
+							}
+						}
+					} else {
+						if (strlen($queryValue)) {
+							$queryParamStrings[] = $paramName . '=' . urlencode($queryValue);
+						}
+					}
+				}
+				if ($yearFrom != '*' || $yearTo != '*') {
+					$queryParamStrings[] = "&filter[]=$dateFilter:[$yearFrom+TO+$yearTo]";
+				}
+				$queryParamString = join('&', $queryParamStrings);
+				// header("Location: /Search/Results?$queryParamString");
+				// exit;
+				$interface->assign('dateFilter', $queryParamString);
+				$interface->assign('testvariable-from', $yearFrom);
+				$interface->assign('testvariable-to', $yearTo);
+			}
+		}
 
 		$displayQuery = $searchObject->displayQuery();
 		$pageTitle = $displayQuery;

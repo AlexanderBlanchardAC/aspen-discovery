@@ -58,6 +58,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 	protected $query;
 	protected $filters = array();
 	protected $rangeFilters = array();
+	protected $rangeFilterList = array();
 
 	/**
 	 * @var int
@@ -143,6 +144,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 		$this->initSort();
 		$this->initFilters();
 		$this->initLimiters();
+		$this->initRangeFilters();
 
 		//********************
 		// Basic Search logic
@@ -292,7 +294,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 				$this->filters = $recordData['query']['facetValueFilters'];
 				$splitFacets = $this->splitFacets($recordData['facetFields']);
 				$recordData['rangeFacetFields'] = isset($recordData['rangeFacetFields']) && is_array($recordData['rangeFacetFields']) ? $recordData['rangeFacetFields'] : [];
-				$this->facetFields = $splitFacets['facetFields'];
+				$this->facetFields = array_merge($splitFacets['facetFields'], $recordData['rangeFacetFields']);
 				$this->limitFields = $splitFacets['limitFields'];
 			}
 			return $recordData;
@@ -829,5 +831,62 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 			curl_close($this->curl_connection);
 		}
 	}
+	protected function initRangeFilters() {
+		foreach ($this->rangeFacets as $rangeFacet){
+			$rangeFacet = strstr($rangeFacet, ',', true);
+		
+			if ($rangeFacet == 'PublicationDate') {
+				$rangeFacet = 'publishDate';
+			}
+			if (isset($_REQUEST[$rangeFacet.'yearfrom']) && isset($_REQUEST[$rangeFacet.'yearto'])) {
+					$newFilter['yearfrom'] = strip_tags($_REQUEST[$rangeFacet.'yearfrom']);
+					$newFilter['yearto'] = strip_tags($_REQUEST[$rangeFacet.'yearto']);
+					$this->addRangeFilter($newFilter);
+				} else {
+			}
+		}
+	}
 
+	/**
+	 * Take a filter string and add it into the protected
+	 *   array checking for duplicates.
+	 *
+	 * @access  public
+	 * @param string|array $newFilter A filter string from url : "field:value"
+	 */
+	public function addRangeFilter($newRangeFilter) {
+		$field = key($newRangeFilter);
+		$yearFrom = $newRangeFilter['yearFrom'];
+		$yearTo = $newRangeFilter['yearTo'];
+		
+		if ($field == '') {
+			$field = count($this->rangeFilterList) + 1;
+		}
+
+		// Check for duplicates -- if it's not in the array, we can add it
+		if (!$this->hasRangeFilter($field, $yearFrom, $yearTo)) {
+			
+			$this->rangeFilterList[$field]= [
+				'yearFrom' => $yearFrom,
+				'yearTo' => $yearTo,
+			];
+		}
+	}
+
+
+	public function hasRangeFilter($field, $yearFrom, $yearTo) {
+		foreach ($this->rangeFilterList as $filter) {
+			if ($filter == $field && $filter['yearfrom'] == $yearFrom && $filter['yearto'] == $yearTo) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function hasFilter($filterName, $value) {
+		if (isset($this->filterList[$filterName]) && in_array($value, $this->filterList[$filterName])) {
+			return true;
+		}
+		return false;
+	}
 }
