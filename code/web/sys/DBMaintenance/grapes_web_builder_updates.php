@@ -35,5 +35,12 @@ function getGrapesWebBuilderUpdates() {
 				"ALTER TABLE modules DROP COLUMN `Grapes Web Builder`;"
 			],
 		],
+		'add_template_options' => [
+			'title' => 'Add Template Options',
+			'description' => 'Add Template Options for Grapes Pages',
+			'sql' => [
+				"ALTER TABLE grapes_web_builder ADD COLUMN pageType VARCHAR(50)",
+			],
+		],
 	];
 }

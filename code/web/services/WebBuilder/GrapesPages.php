@@ -88,7 +88,7 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 	}
 
     public function canAddNew(){
-        return false;
+        return true;
     }
 
 	public function canCopy() {
@@ -105,17 +105,17 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 
 
 
-    //Add with template or blank page
-    function customListActions() {
-		return [
-			[
-				'label' => 'Create With Template',
-				'action' => 'createWithTemplate',
-			],
-            [
-                'label' => 'Create from Blank Page',
-                'action' => 'createFromBlankPage'
-            ]
-		];
-	}
+    // //Add with template or blank page
+    // function customListActions() {
+	// 	return [
+	// 		[
+	// 			'label' => 'Create With Template',
+	// 			'action' => 'createWithTemplate',
+	// 		],
+    //         [
+    //             'label' => 'Create from Blank Page',
+    //             'action' => 'createFromBlankPage'
+    //         ]
+	// 	];
+	// }
 }

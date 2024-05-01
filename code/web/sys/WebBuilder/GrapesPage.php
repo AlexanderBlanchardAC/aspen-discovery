@@ -8,6 +8,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public $title;
 	public $urlAlias;
 	public $teaser;
+    public $pageType;
 	
 
 	private $_libraries;
@@ -53,6 +54,13 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'maxLength' => 512,
 				'hideInLists' => true,
 			],
+            'pageType' => [
+                'property' => 'pageType',
+				'type' => 'dropdown',
+				'label' => 'Select Template',
+				'description' => 'Select a template to create a page from',
+				'hideInLists' => true,
+            ],
 			'libraries' => [
 				'property' => 'libraries',
 				'type' => 'multiSelect',
