@@ -3356,15 +3356,14 @@ class User extends DataObject {
 			}
 		}
 
-		if (array_key_exists('Grapes Web Builder', $enabledModules)) {
-			$sections['grapes_web_builder'] = new AdminSection('Grapes Web Builder');
-			$sections['grapes_web_builder']->addAction(new AdminAction('Pages', 'Create pages with Grapes JS.', '/GrapesWebBuilder/Pages'),true);
-		}
-
 		if (array_key_exists('Web Builder', $enabledModules)) {
 			$sections['web_builder'] = new AdminSection('Web Builder');
 			//$sections['web_builder']->addAction(new AdminAction('Menu', 'Define additional options that appear in the menu.', '/WebBuilder/Menus'), ['Administer All Menus', 'Administer Library Menus']);
 			$sections['web_builder']->addAction(new AdminAction('Basic Pages', 'Create basic pages with a simple layout.', '/WebBuilder/BasicPages'), [
+				'Administer All Basic Pages',
+				'Administer Library Basic Pages',
+			]);
+			$sections['web_builder']->addAction(new AdminAction('Grapes Pages', 'Create pages with Grapes JS simple layout.', '/WebBuilder/GrapesPages'), [
 				'Administer All Basic Pages',
 				'Administer Library Basic Pages',
 			]);

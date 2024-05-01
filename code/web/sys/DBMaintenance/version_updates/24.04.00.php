@@ -172,8 +172,6 @@ function getUpdates24_04_00(): array {
 		//jacob - PTFS Europe
 
 		// James Staub
-
-
 	];
 }
 
