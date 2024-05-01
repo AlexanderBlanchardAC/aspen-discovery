@@ -54,16 +54,6 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 		return 'id';
 	}
 
-	function getAdditionalObjectActions($existingObject): array {
-		$objectActions = [];
-		if (!empty($existingObject) && $existingObject instanceof BasicPage && !empty($existingObject->id)) {
-			$objectActions[] = [
-				'text' => 'View',
-				'url' => empty($existingObject->urlAlias) ? '/WebBuilder/BasicPage?id=' . $existingObject->id : $existingObject->urlAlias,
-			];
-		}
-		return $objectActions;
-	}
 
 	function getInstructions(): string {
 		return 'https://help.aspendiscovery.org/help/webbuilder/pages';
@@ -89,16 +79,43 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 	}
 
 	function canBatchEdit(): bool {
-		return UserAccount::userHasPermission([
-			'Administer All Basic Pages',
-		]);
+		return false;
 	}
 
+ 
 	function getActiveAdminSection(): string {
 		return 'web_builder';
 	}
 
+    public function canAddNew(){
+        return false;
+    }
+
 	public function canCopy() {
-		return $this->canAddNew();
+		return true;
+	}
+
+    public function canDelete() {
+        return true;
+	}
+
+    public function canExportToCSV() {
+        return false;
+    }
+
+
+
+    //Add with template or blank page
+    function customListActions() {
+		return [
+			[
+				'label' => 'Create With Template',
+				'action' => 'createWithTemplate',
+			],
+            [
+                'label' => 'Create from Blank Page',
+                'action' => 'createFromBlankPage'
+            ]
+		];
 	}
 }

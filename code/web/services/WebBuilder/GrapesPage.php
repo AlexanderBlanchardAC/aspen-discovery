@@ -48,7 +48,7 @@ class WebBuilder_GrapesPage extends Action {
 	}
 
 	function canView(): bool {
-		return $this->grapesPage->canView();
+		return true;
 	}
 
 	function getBreadcrumbs(): array {

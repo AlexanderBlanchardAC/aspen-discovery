@@ -7,10 +7,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public $id;
 	public $title;
 	public $urlAlias;
-
 	public $teaser;
 	
-	public $lastUpdate;
 
 	private $_libraries;
 
@@ -73,6 +71,22 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$parsedown->setBreaksEnabled(true);
 		return $parsedown->parse();
 	}
+
+    function getAdditionalListActions(): array {
+        $objectActions = [];
+    
+        // Add delete option
+        $objectActions[] = [
+            'text' => 'Delete',
+            'url' => '/your/delete/endpoint?id=' . $this->id,
+            'confirm' => 'Are you sure you want to delete this item?', // Optional confirmation message
+        ];
+
+        //Add option to 
+    
+        return $objectActions;
+    }
+    
 
 	public function insert($context = '') {
 		$this->lastUpdate = time();
@@ -165,6 +179,13 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		
 	}
 
+    public function canDelete(): bool {
+        return true;
+    }
+
+    public function canEdit(): bool {
+        return false;
+    }
 	
 
 	
