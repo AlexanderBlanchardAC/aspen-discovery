@@ -16,6 +16,15 @@ function getGrapesWebBuilderUpdates() {
 				"UPDATE modules set backgroundProcess='web_indexer', logClassPath='/sys/WebsiteIndexing/WebsiteIndexLogEntry.php', logClassName='WebsiteIndexLogEntry' WHERE name = 'Grapes Web Builder'",
 			],
 		],
-
+        'add_grapes_web_builder_pages' => [
+            'title' => 'Grapes Web Builder Pages',
+            'description' => 'Add Grapes Web Builder Pages',
+            'sql' => [
+                "CREATE TABLE new_page (
+                    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                    title VARCHAR(100) NOT NULL
+                ) ENGINE=INNODB",
+            ],
+        ],
 	];
 }

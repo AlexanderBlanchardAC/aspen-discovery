@@ -522,6 +522,28 @@ if ($isLoggedIn) {
 			}
 			header("Location: " . $followupUrl);
 			exit();
+		} elseif ($_REQUEST['followupModule'] == 'GrapesWebBuilder') {
+			echo("Redirecting to followup location");
+			$followupUrl = "/" . strip_tags($_REQUEST['followupModule']);
+			$followupUrl .= "/" . strip_tags($_REQUEST['followupAction']);
+			if (!empty($_REQUEST['pageId'])) {
+				if ($_REQUEST['followupAction'] == "Page") {
+					require_once ROOT_DIR . '/sys/GrapesWebBuilder/Page.php';
+					$page = new page();
+					$page->id = $_REQUEST['pageId'];
+					if ($page->find(true)) {
+						if ($page->urlAlias) {
+							$followupUrl = $page->urlAlias;
+						} else {
+							$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
+						}
+					} else {
+						$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
+					}
+				}
+			}
+			header("Location: " . $followupUrl);
+			exit();
 		} elseif ($_REQUEST['followupModule'] == 'WebBuilder') {
 			echo("Redirecting to followup location");
 			$followupUrl = "/" . strip_tags($_REQUEST['followupModule']);

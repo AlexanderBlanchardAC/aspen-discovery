@@ -3358,6 +3358,7 @@ class User extends DataObject {
 
 		if (array_key_exists('Grapes Web Builder', $enabledModules)) {
 			$sections['grapes_web_builder'] = new AdminSection('Grapes Web Builder');
+			$sections['grapes_web_builder']->addAction(new AdminAction('Pages', 'Create pages with Grapes JS.', '/GrapesWebBuilder/Pages'),true);
 		}
 
 		if (array_key_exists('Web Builder', $enabledModules)) {
