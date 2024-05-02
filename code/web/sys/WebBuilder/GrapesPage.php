@@ -1,7 +1,6 @@
 <?php
 require_once ROOT_DIR . '/sys/WebBuilder/LibraryBasicPage.php';
 require_once ROOT_DIR . '/sys/DB/LibraryLinkedObject.php';
-
 class GrapesPage extends DB_LibraryLinkedObject {
 	public $__table = 'grapes_web_builder';
 	public $id;
@@ -21,9 +20,20 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
 	static function getObjectStructure($context = ''): array {
+        require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
+
 		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
-		
-		return [
+		$templateOptions = [];
+        $templatesInstance = new Templates();
+        $templates = $templatesInstance->getTemplates();
+       
+        foreach ($templates as $template) {
+            $content = isset($template['templateContent']) ? htmlentities($template['templateContent']) : '';
+            $name = isset($template['templateName']) ? $template['templateName'] : '';
+            $templateOptions[] = $name;
+        }
+        
+        return [
 			'id' => [
 				'property' => 'id',
 				'type' => 'label',
@@ -56,10 +66,11 @@ class GrapesPage extends DB_LibraryLinkedObject {
 			],
             'pageType' => [
                 'property' => 'pageType',
-				'type' => 'dropdown',
 				'label' => 'Select Template',
+                'type' => 'enum',
 				'description' => 'Select a template to create a page from',
-				'hideInLists' => true,
+                'values' => $templateOptions,
+                'hideInLists' => true,
             ],
 			'libraries' => [
 				'property' => 'libraries',
