@@ -94,14 +94,19 @@ class GrapesPage extends DB_LibraryLinkedObject {
     function getAdditionalListActions(): array {
         $objectActions = [];
     
-        // Add delete option
-        $objectActions[] = [
+        $objectActions[] =
+         [
             'text' => 'Delete',
             'url' => '/your/delete/endpoint?id=' . $this->id,
-            'confirm' => 'Are you sure you want to delete this item?', // Optional confirmation message
+            'confirm' => 'Are you sure you want to delete this item?', 
         ];
 
-        //Add option to 
+        $objectActions[] =
+        [
+           'text' => 'Open Editor',
+           'url' => '',
+       ];
+
     
         return $objectActions;
     }

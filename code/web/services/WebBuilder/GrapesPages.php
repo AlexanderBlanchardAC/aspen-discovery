@@ -102,20 +102,4 @@ class WebBuilder_GrapesPages extends ObjectEditor {
     public function canExportToCSV() {
         return false;
     }
-
-
-
-    // //Add with template or blank page
-    // function customListActions() {
-	// 	return [
-	// 		[
-	// 			'label' => 'Create With Template',
-	// 			'action' => 'createWithTemplate',
-	// 		],
-    //         [
-    //             'label' => 'Create from Blank Page',
-    //             'action' => 'createFromBlankPage'
-    //         ]
-	// 	];
-	// }
 }

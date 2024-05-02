@@ -44,7 +44,7 @@ class WebBuilder_GrapesPage extends Action {
 		$interface->assign('contents', $this->grapesPage->getFormattedContents());
 		$interface->assign('title', $title);
 
-		$this->display('basicPage.tpl', $title, '', false);
+		$this->display('grapesPage.tpl', $title, '', false);
 	}
 
 	function canView(): bool {
