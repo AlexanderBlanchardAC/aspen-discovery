@@ -98,68 +98,18 @@ function getGrapesWebBuilderUpdates() {
 			'description' => 'Add default value to template file path in templates table',
 			'sql' => [
 				"ALTER TABLE templates MODIFY COLUMN templateFilePath VARCHAR(255) DEFAULT NULL",
-			]
-		]
+			],
+		],
+		'add_template_content_column_to_the_grapes_page_table' => [
+			'title' => 'Add Template Content Column to Grapes Table',
+			'description' => 'Add a column to the Grapes table to store the content of the chosen template',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder ADD COLUMN templateContent TEXT',
+			],
+		],
 	];
 }
 
-// function addTemplatesToDatabase(){
-// 	global $aspen_db;
-// 	$templates = [];
-
-// 	$templateFilePaths = [
-// 		ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/template1.html',
-// 		ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/template2.html',
-// 		ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/template3.html',
-// 	];
-
-// 	foreach ($templateFilePaths as $templateFilePath) {
-// 		if (!file_exists($templateFilePath)) {
-// 			continue;
-// 		}
-
-// 		$templateContent = file_get_contents($templateFilePath);
-// 		$templateName = basename($templateFilePath, '.html');
-		
-// 		$existingTemplate = $aspen_db->query("SELECT id FROM templates WHERE templateName = ?", [$templateName])->fetch();
-
-
-// 		if (!$existingTemplate) {
-//             $templates[] = [
-//                 'templateName' => $templateName,
-//                 'templateContent' => $templateContent,
-//             ];
-//         }
-    
-// 		$templates[] = [
-// 			'templateName' => $templateName,
-// 			'templateContent' => $templateContent,
-// 		];
-	
-// 	}
-
-// 	if (empty($templates) || !is_array($templates)) {
-// 		return false;
-// 	}
-
-
-// 	$query = "INSERT INTO templates (templateName, templateContent) VALUES ";
-// 	$values = [];
-// 	foreach ($templates as $template) {
-// 		$name = $aspen_db->quote($template['templateName']);
-// 		$content = $aspen_db->quote($template['templateContent']);
-// 		$values[] = "($name, $content)";
-// 	}
-
-// 	$query .= implode(', ', $values);
-
-// 	try {
-// 		$aspen_db->query($query);
-// 		return true;
-// 	} catch (PDOException $e) {
-// 		return false;
-// 	}
-// }
 function addTemplatesToDatabase(){
     global $aspen_db;
     $templates = [];
@@ -181,7 +131,7 @@ function addTemplatesToDatabase(){
 		$stmt = $aspen_db->prepare("SELECT id FROM templates WHERE templateName = ?");
 		$stmt->execute([$templateName]);
 		$existingTemplate = $stmt->fetch(PDO::FETCH_ASSOC);
-		
+
         if (!$existingTemplate) {
             $templates[] = [
                 'templateName' => $templateName,
