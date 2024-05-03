@@ -27,12 +27,22 @@ class GrapesPage extends DB_LibraryLinkedObject {
         $templatesInstance = new Templates();
         $templates = $templatesInstance->getTemplates();
        
+        $templateOptions = [];
         foreach ($templates as $template) {
             $content = isset($template['templateContent']) ? htmlentities($template['templateContent']) : '';
-            $name = isset($template['templateName']) ? $template['templateName'] : '';
-            $templateOptions[] = $name;
+            $name = isset($template['templateName']) ? htmlentities($template['templateName']) : '';
+            $templateOptions[$content] = $name; 
         }
+        $pageTypeSelect = '';
+        $pageTypeSelect = '<select class="enum-select" name="pageType">';
+        foreach ($templateOptions as $name => $content) {
+            $name = htmlentities($name);
+            $pageTypeSelect .= "<option value='{$content}'>{$name}</option>";
+        }
+        $pageTypeSelect .= '</select>';
+
         
+
         return [
 			'id' => [
 				'property' => 'id',
@@ -70,7 +80,17 @@ class GrapesPage extends DB_LibraryLinkedObject {
                 'type' => 'enum',
 				'description' => 'Select a template to create a page from',
                 'values' => $templateOptions,
+                'html' => $pageTypeSelect,
                 'hideInLists' => true,
+            ],
+            'templateContent' => [
+                'property' => 'templateContent',
+                'type' => 'hidden',
+                'label' => 'Template Content',
+                'description' => 'Content of the selected template',
+                'hideInLists' => true,
+                'html' => '<input type="hidden" name="templateContent" id="templateContent" value="">',
+
             ],
 			'libraries' => [
 				'property' => 'libraries',
@@ -83,6 +103,16 @@ class GrapesPage extends DB_LibraryLinkedObject {
 			],
 		];
 	}
+
+    //TODO:: Work out why none of the delete options are working - all causing an AJAX error
+    //TODO:: Untangle what from info for tempaltes needs to be / is going to each table. PageType in Grapes 
+    //is getting name and sort of contents of template. 
+    //TemplateContent column is remaining null. 
+
+    // - templates - get the contents from this table for the template name that matches the one chosen
+    // - add this content to the grapes table, also add the tempalte name
+    // - add a column to both tables of templateID
+    // - create a unique id for each template when insterted to db and use this to get the correct content for the grapes table
 
 	public function getFormattedContents() {
 		require_once ROOT_DIR . '/sys/Parsedown/AspenParsedown.php';
@@ -167,13 +197,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		return $this->_libraries;
 	}
 
-	
-
-	
-
-	
-
-
 	public function saveLibraries() {
 		if (isset($this->_libraries) && is_array($this->_libraries)) {
 			$this->clearLibraries();
@@ -210,7 +233,39 @@ class GrapesPage extends DB_LibraryLinkedObject {
     public function canEdit(): bool {
         return false;
     }
-	
-
-	
 }
+?>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectElements = document.querySelectorAll('.enum-select');
+
+        selectElements.forEach(function(selectElement) {
+            selectElement.addEventListener("change", function(event) {
+                const selectedOption = event.target.value;
+                const templateContentInput = document.getElementById('templateContent');
+
+                console.log('Selected option:', selectedOption);
+                fetchTemplateContent(selectedOption);
+            });
+        });
+
+        function fetchTemplateContent(selectedOption) {
+            
+            const url = '/services/WebBuilder/Templates.php?template=' + encodeURIComponent(selectedOption);
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        console.error('Failed to fetch template content');
+                    }
+                })
+                .then(templateContent => {
+                    console.log('Template content:', templateContent);
+                    templateContentInput.value = templateContent;
+                })
+                .catch(error => console.error('Error fetching tempalte content:', error));
+        }
+    });
+</script>
