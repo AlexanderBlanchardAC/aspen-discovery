@@ -15232,6 +15232,14 @@ AspenDiscovery.WebBuilder = function () {
 				}
 			});
 			return false;
+		},
+
+		getOpenTemplateModal: function (){
+			return;
+		},
+
+		templateModal: function () {
+			return;
 		}
 	};
 }(AspenDiscovery.WebBuilder || {});

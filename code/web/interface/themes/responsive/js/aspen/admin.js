@@ -2116,7 +2116,24 @@ AspenDiscovery.Admin = (function () {
 				alert("Select at least one menu link to copy");
 			}
 			return false;
-		}
+		},
+
+		showSelectTemplateForm: function(libraryId) {
+			var url = Globals.path + '/Admin/AJAX';
+			var params = {
+				method: 'getCopyMenuLinksForm',
+				libraryId: libraryId
+			};
+
+			$.getJSON(url, params, function (data) {
+				if (data.success){
+					AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons);
+				} else {
+					AspenDiscovery.showMessage('An error occurred', data.message);
+				}
+			});
+			return false;
+		},
 
 	};
 }(AspenDiscovery.Admin || {}));

@@ -8,8 +8,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public $urlAlias;
 	public $teaser;
     public $pageType;
-	
-
+	public $templateNames;
+	public $templateId;
 	private $_libraries;
 
 
@@ -20,28 +20,39 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
 	static function getObjectStructure($context = ''): array {
-        require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
-
+        // require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
 		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
-		$templateOptions = [];
-        $templatesInstance = new Templates();
-        $templates = $templatesInstance->getTemplates();
-       
-        $templateOptions = [];
-        foreach ($templates as $template) {
-            $content = isset($template['templateContent']) ? htmlentities($template['templateContent']) : '';
-            $name = isset($template['templateName']) ? htmlentities($template['templateName']) : '';
-            $templateOptions[$content] = $name; 
-        }
-        $pageTypeSelect = '';
-        $pageTypeSelect = '<select class="enum-select" name="pageType">';
-        foreach ($templateOptions as $name => $content) {
-            $name = htmlentities($name);
-            $pageTypeSelect .= "<option value='{$content}'>{$name}</option>";
-        }
-        $pageTypeSelect .= '</select>';
 
-        
+		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
+        $templateNames = [];
+        $templateIds = [];
+        $templateOptions = [];
+
+        $templateObject = new Templates();
+        $templates = $templateObject->getTemplates();
+        foreach ($templates as $template){
+            $templateName = $template['templateName'];
+            $templateId = $template['templateId'];
+            $templateNames[$templateId] = [
+                'id' => $templateId,
+                'name' => $templateName,
+            ];
+        }
+
+        array_unshift($templateNames, [
+            'id' => null, 
+            'name' => "No Template"
+        ]);
+
+        usort($templateNames, function($a, $b) {
+            return strcasecmp($a['name'], $b['name']);
+        });
+
+	
+       
+
+
+
 
         return [
 			'id' => [
@@ -66,6 +77,12 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'size' => '40',
 				'maxLength' => 100,
 			],
+			'templateId' => [
+				'property' => 'templateId',
+				'type' => 'hidden',
+				'description' => 'The unique Id of the template.',
+				'hideInLists'=> true,
+			],
 			'teaser' => [
 				'property' => 'teaser',
 				'type' => 'textarea',
@@ -74,24 +91,20 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'maxLength' => 512,
 				'hideInLists' => true,
 			],
-            'pageType' => [
-                'property' => 'pageType',
-				'label' => 'Select Template',
-                'type' => 'enum',
-				'description' => 'Select a template to create a page from',
-                'values' => $templateOptions,
-                'html' => $pageTypeSelect,
-                'hideInLists' => true,
-            ],
-            'templateContent' => [
-                'property' => 'templateContent',
-                'type' => 'hidden',
-                'label' => 'Template Content',
-                'description' => 'Content of the selected template',
-                'hideInLists' => true,
-                'html' => '<input type="hidden" name="templateContent" id="templateContent" value="">',
-
-            ],
+			'templatesSection' => [
+				'property' => 'templatesSection',
+				'type' => 'section',
+				'label' => 'Select a Template',
+				'hideInLists' => true,
+				'properties' => [
+					'availableTemplates' => [
+						'property' => 'availableTemplates',
+						'type' => 'templates',
+						'label' => 'Templates',
+						'required' => true,
+						'values' => $templateNames,					],
+				],
+			],
 			'libraries' => [
 				'property' => 'libraries',
 				'type' => 'multiSelect',
@@ -121,6 +134,10 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		return $parsedown->parse();
 	}
 
+	public function applyAvailableTempltes() {
+
+	}
+
     function getAdditionalListActions(): array {
         $objectActions = [];
     
@@ -137,9 +154,23 @@ class GrapesPage extends DB_LibraryLinkedObject {
            'url' => '',
        ];
 
-    
         return $objectActions;
     }
+
+	function getAdditionalListJavascriptActions(): array
+	{
+		$objectActions = [];
+		$objectActions [] = 
+		[
+			'text' => 'Select Template',
+			// 'onClick' => 'return openTemplateModal()'
+			'onClick' => 'return AspenDiscovery.WebBuilder.getGrapesTemplate()',
+		];
+
+		return $objectActions;
+	}
+
+	
     
 
 	public function insert($context = '') {
@@ -235,37 +266,16 @@ class GrapesPage extends DB_LibraryLinkedObject {
     }
 }
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const selectElements = document.querySelectorAll('.enum-select');
+	function openTemplateModal() {
+		console.log('modwl');
+	}
 
-        selectElements.forEach(function(selectElement) {
-            selectElement.addEventListener("change", function(event) {
-                const selectedOption = event.target.value;
-                const templateContentInput = document.getElementById('templateContent');
 
-                console.log('Selected option:', selectedOption);
-                fetchTemplateContent(selectedOption);
-            });
-        });
 
-        function fetchTemplateContent(selectedOption) {
-            
-            const url = '/services/WebBuilder/Templates.php?template=' + encodeURIComponent(selectedOption);
 
-            fetch(url)
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        console.error('Failed to fetch template content');
-                    }
-                })
-                .then(templateContent => {
-                    console.log('Template content:', templateContent);
-                    templateContentInput.value = templateContent;
-                })
-                .catch(error => console.error('Error fetching tempalte content:', error));
-        }
-    });
+
+
 </script>
+
