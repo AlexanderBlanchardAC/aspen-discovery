@@ -107,6 +107,15 @@ function getGrapesWebBuilderUpdates() {
 				'ALTER TABLE grapes_web_builder ADD COLUMN templateContent TEXT',
 			],
 		],
+		'alter_contents_of_grapes_page_table' => [
+			'title' => 'Alter the contents of the Grapes page table',
+			'description' => 'Remove columns pageType and templateContent from the Grapes table',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder DROP COLUMN pageType',
+				'ALTER TABLE grapes_web_builder DROP COLUMN templateContent',
+				'ALTER TABLE grapes_web_builder ADD COLUMN templateId INT(11) DEFAULT -1',
+			],
+		],
 	];
 }
 

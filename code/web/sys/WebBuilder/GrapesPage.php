@@ -20,29 +20,18 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
 	static function getObjectStructure($context = ''): array {
-        require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
-
+        // require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
 		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
-		$templateOptions = [];
-        $templatesInstance = new Templates();
-        $templates = $templatesInstance->getTemplates();
-       
-        $templateOptions = [];
-        foreach ($templates as $template) {
-            $content = isset($template['templateContent']) ? htmlentities($template['templateContent']) : '';
-            $name = isset($template['templateName']) ? htmlentities($template['templateName']) : '';
-            $templateOptions[$content] = $name; 
-        }
-        $pageTypeSelect = '';
-        $pageTypeSelect = '<select class="enum-select" name="pageType">';
-        foreach ($templateOptions as $name => $content) {
-            $name = htmlentities($name);
-            $pageTypeSelect .= "<option value='{$content}'>{$name}</option>";
-        }
-        $pageTypeSelect .= '</select>';
 
-        
-
+		//Get Templates
+		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
+		$templateNames = [];
+		$templateObject = new Templates();
+		$templates = $templateObject->getTemplates();
+		foreach ($templates as $template){
+			$templateName = $template['templateName'];
+			$templateNames[] = $templateName;
+		}
         return [
 			'id' => [
 				'property' => 'id',
@@ -74,24 +63,15 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'maxLength' => 512,
 				'hideInLists' => true,
 			],
-            'pageType' => [
-                'property' => 'pageType',
-				'label' => 'Select Template',
-                'type' => 'enum',
-				'description' => 'Select a template to create a page from',
-                'values' => $templateOptions,
-                'html' => $pageTypeSelect,
-                'hideInLists' => true,
-            ],
-            'templateContent' => [
-                'property' => 'templateContent',
-                'type' => 'hidden',
-                'label' => 'Template Content',
-                'description' => 'Content of the selected template',
-                'hideInLists' => true,
-                'html' => '<input type="hidden" name="templateContent" id="templateContent" value="">',
-
-            ],
+			'templatesId' => [
+						'property' => 'templatesId',
+						'type' => 'enum',
+						'values' => $templateNames,
+						'label' => 'Templates',
+						'description' => 'The Template to base your new page on.',
+						'hideInLists'=> true,
+						'deafult' => -1,
+			],
 			'libraries' => [
 				'property' => 'libraries',
 				'type' => 'multiSelect',
@@ -238,13 +218,11 @@ class GrapesPage extends DB_LibraryLinkedObject {
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const selectElements = document.querySelectorAll('.enum-select');
+		const templateContentInput = document.getElementById('templateContent');
 
         selectElements.forEach(function(selectElement) {
             selectElement.addEventListener("change", function(event) {
                 const selectedOption = event.target.value;
-                const templateContentInput = document.getElementById('templateContent');
-
-                console.log('Selected option:', selectedOption);
                 fetchTemplateContent(selectedOption);
             });
         });
