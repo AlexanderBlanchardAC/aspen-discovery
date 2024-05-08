@@ -8,8 +8,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public $urlAlias;
 	public $teaser;
     public $pageType;
-	
-
+	public $templateNames;
+	public $templateId;
 	private $_libraries;
 
 
@@ -23,15 +23,37 @@ class GrapesPage extends DB_LibraryLinkedObject {
         // require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
 		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
 
-		//Get Templates
 		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
-		$templateNames = [];
-		$templateObject = new Templates();
-		$templates = $templateObject->getTemplates();
-		foreach ($templates as $template){
-			$templateName = $template['templateName'];
-			$templateNames[] = $templateName;
-		}
+        $templateNames = [];
+        $templateIds = [];
+        $templateOptions = [];
+
+        $templateObject = new Templates();
+        $templates = $templateObject->getTemplates();
+        foreach ($templates as $template){
+            $templateName = $template['templateName'];
+            $templateId = $template['templateId'];
+            $templateNames[$templateId] = [
+                'id' => $templateId,
+                'name' => $templateName,
+            ];
+        }
+
+        array_unshift($templateNames, [
+            'id' => null, 
+            'name' => "No Template"
+        ]);
+
+        usort($templateNames, function($a, $b) {
+            return strcasecmp($a['name'], $b['name']);
+        });
+
+	
+       
+
+
+
+
         return [
 			'id' => [
 				'property' => 'id',
@@ -55,6 +77,12 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'size' => '40',
 				'maxLength' => 100,
 			],
+			'templateId' => [
+				'property' => 'templateId',
+				'type' => 'hidden',
+				'description' => 'The unique Id of the template.',
+				'hideInLists'=> true,
+			],
 			'teaser' => [
 				'property' => 'teaser',
 				'type' => 'textarea',
@@ -63,14 +91,19 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'maxLength' => 512,
 				'hideInLists' => true,
 			],
-			'templatesId' => [
-						'property' => 'templatesId',
-						'type' => 'enum',
-						'values' => $templateNames,
+			'templatesSection' => [
+				'property' => 'templatesSection',
+				'type' => 'section',
+				'label' => 'Select a Template',
+				'hideInLists' => true,
+				'properties' => [
+					'availableTemplates' => [
+						'property' => 'availableTemplates',
+						'type' => 'templates',
 						'label' => 'Templates',
-						'description' => 'The Template to base your new page on.',
-						'hideInLists'=> true,
-						'deafult' => -1,
+						'required' => true,
+						'values' => $templateNames,					],
+				],
 			],
 			'libraries' => [
 				'property' => 'libraries',
@@ -99,6 +132,10 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$parsedown = AspenParsedown::instance();
 		$parsedown->setBreaksEnabled(true);
 		return $parsedown->parse();
+	}
+
+	public function applyAvailableTempltes() {
+
 	}
 
     function getAdditionalListActions(): array {
@@ -215,35 +252,34 @@ class GrapesPage extends DB_LibraryLinkedObject {
     }
 }
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const selectElements = document.querySelectorAll('.enum-select');
-		const templateContentInput = document.getElementById('templateContent');
+$(document).ready(function() {
+    // Add an event listener to the dropdown
+    $('select[name="templateNames"]').change(function() {
+        // Get the selected option
+        var selectedOption = $(this).find('option:selected');
 
-        selectElements.forEach(function(selectElement) {
-            selectElement.addEventListener("change", function(event) {
-                const selectedOption = event.target.value;
-                fetchTemplateContent(selectedOption);
-            });
-        });
+        // Debugging: Log the selected option and its data attributes
+        console.log('Selected Option:', selectedOption);
+        console.log('Data Attributes:', selectedOption.data());
 
-        function fetchTemplateContent(selectedOption) {
-            
-            const url = '/services/WebBuilder/Templates.php?template=' + encodeURIComponent(selectedOption);
+        // Retrieve the template name and ID from the selected option
+        var selectedTemplateName = selectedOption.text();
+        var templateId = selectedOption.data('template-id');
 
-            fetch(url)
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        console.error('Failed to fetch template content');
-                    }
-                })
-                .then(templateContent => {
-                    console.log('Template content:', templateContent);
-                    templateContentInput.value = templateContent;
-                })
-                .catch(error => console.error('Error fetching tempalte content:', error));
-        }
+        console.log('Selected Template Name:', selectedTemplateName);
+        console.log('Selected Template ID:', templateId);
+
+        // Update the value of the hidden input field (templateId) with the selected template ID
+        $('input[name="templateId"]').val(templateId);
     });
+});
+
+
+
+
+
+
 </script>
+

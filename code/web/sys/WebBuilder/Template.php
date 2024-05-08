@@ -5,6 +5,7 @@ class Template extends DataObject {
     public $id;
     public $templateName;
     public $templateContent;
+    public $tempalteId;
 
 
     static function getObjectStructure($context = ''): array {
@@ -15,6 +16,12 @@ class Template extends DataObject {
 				'type' => 'label',
 				'label' => 'Id',
 				'description' => 'The unique id',
+            ],
+            'templateId' => [
+                'property' => 'templateId',
+				'type' => 'text',
+				'label' => 'Template ID',
+				'description' => 'The unique ID assigned to the template',
             ],
             'templateName' => [
 				'property' => 'templateName',
