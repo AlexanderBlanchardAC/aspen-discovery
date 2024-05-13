@@ -154,9 +154,23 @@ class GrapesPage extends DB_LibraryLinkedObject {
            'url' => '',
        ];
 
-    
         return $objectActions;
     }
+
+	function getAdditionalListJavascriptActions(): array
+	{
+		$objectActions = [];
+		$objectActions [] = 
+		[
+			'text' => 'Select Template',
+			// 'onClick' => 'return openTemplateModal()'
+			'onClick' => 'return AspenDiscovery.WebBuilder.getGrapesTemplate()',
+		];
+
+		return $objectActions;
+	}
+
+	
     
 
 	public function insert($context = '') {
@@ -254,27 +268,9 @@ class GrapesPage extends DB_LibraryLinkedObject {
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-$(document).ready(function() {
-    // Add an event listener to the dropdown
-    $('select[name="templateNames"]').change(function() {
-        // Get the selected option
-        var selectedOption = $(this).find('option:selected');
-
-        // Debugging: Log the selected option and its data attributes
-        console.log('Selected Option:', selectedOption);
-        console.log('Data Attributes:', selectedOption.data());
-
-        // Retrieve the template name and ID from the selected option
-        var selectedTemplateName = selectedOption.text();
-        var templateId = selectedOption.data('template-id');
-
-        console.log('Selected Template Name:', selectedTemplateName);
-        console.log('Selected Template ID:', templateId);
-
-        // Update the value of the hidden input field (templateId) with the selected template ID
-        $('input[name="templateId"]').val(templateId);
-    });
-});
+	function openTemplateModal() {
+		console.log('modwl');
+	}
 
 
 

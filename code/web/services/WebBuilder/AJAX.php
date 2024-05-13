@@ -915,4 +915,19 @@ class WebBuilder_AJAX extends JSON_Action {
 			}
 		}
 	}
+	
+	/** @noinspection PhpUnused */
+	function getGrapesTemplates() {
+		global $interface;
+		$result = [
+			'success' => true,
+			'title' => 'Templates',
+			'modalBody' => $interface->fetch('WebBuilder/uploadImage.tpl'),
+			'modalButtons' => "<button></button>"
+		];
+
+		return $result;
+	}
+
+		
 }

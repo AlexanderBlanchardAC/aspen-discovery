@@ -1,9 +1,10 @@
 <?php
+// require_once ROOT_DIR . '/sys/DBMaintenance/grapes_web_builder_updates.php';
 
 class Templates {
 
 	function getTemplates() {
-        addTemplatesToDatabase();
+        // addTemplatesToDatabase();
 
 		global $aspen_db;
 		$stmt = $aspen_db->prepare("SELECT templateId, templateName, templateContent FROM templates");

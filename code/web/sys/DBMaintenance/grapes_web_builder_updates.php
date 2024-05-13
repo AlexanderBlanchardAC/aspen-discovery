@@ -59,7 +59,7 @@ function getGrapesWebBuilderUpdates() {
 			'sql' => [
 				"CREATE TABLE templates (
 					id INT(11) AUTO_INCREMENT PRIMARY KEY,
-					templateName VARCHAR(255) NOT NULL,
+					templateName VARCHAR(255) NOT NULL UNIQUE,
 					templateDescription TEXT,
 					templateFilePath VARCHAR(255) NOT NULL
 				)ENGINE=INNODB",
@@ -121,14 +121,21 @@ function getGrapesWebBuilderUpdates() {
 			'description' => 'Add a new column for template names and modify the templateID column to alter its purpose.',
 			'sql' => [
 				'ALTER TABLE grapes_web_builder ADD COLUMN templateNames INT(11) DEFAULT -1',
-				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateId VARCHAR(250)',
+				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateId VARCHAR(250) UNIQUE',
 			],
 		],
 		'add_templateId_column_to_templates_table' => [
 			'title' => 'Add templateId column to templates table',
 			'description' => 'Add a new column to store the templateId in the templates table',
 			'sql' => [
-				'ALTER TABLE templates ADD COLUMN templateId VARCHAR(250)',
+				'ALTER TABLE templates ADD COLUMN templateId VARCHAR(250) UNIQUE',
+			],
+		],
+		'change_template_name_data_type' => [
+			'title' => 'Change Template Name Data Type',
+			'description' => 'Chnage template name data type to varchar',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateNames VARCHAR(250) UNIQUE',
 			],
 		],
 	];
@@ -139,7 +146,7 @@ function addTemplatesToDatabase(){
     $templates = [];
 
     $templateFilePaths = [
-		// ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/noTemplate.html',
+		ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/noTemplate.html',
         ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/template1.html',
         ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/template2.html',
         ROOT_DIR . '/interface/themes/responsive/WebBuilder/Templates/template3.html',
