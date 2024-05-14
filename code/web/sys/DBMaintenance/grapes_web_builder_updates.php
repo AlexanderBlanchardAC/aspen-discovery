@@ -133,9 +133,37 @@ function getGrapesWebBuilderUpdates() {
 		],
 		'change_template_name_data_type' => [
 			'title' => 'Change Template Name Data Type',
-			'description' => 'Chnage template name data type to varchar',
+			'description' => 'Change template name data type to varchar',
 			'sql' => [
-				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateNames VARCHAR(250) UNIQUE',
+				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateNames INT(11)',
+			],
+		],
+		'modify_template_name_column' => [
+			'title' => 'Change Template Column',
+			'description' => 'Change template name column to not allow NULL',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateNames INT(11) NOT NULL',
+			],
+		],
+		'modify_template_name_column_add_default' => [
+			'title' => 'Change Template Column',
+			'description' => 'Change template name column to add default',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder MODIFY COLUMN templateNames INT(11) DEFAULT -1',
+			],
+		],
+		'add_new_template_column' => [
+			'title' => 'Add New Template Column',
+			'description' => 'Add  template column to grapes table',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder ADD COLUMN templatesSelect INT(11) DEFAULT -1',
+			],
+		],
+		'add_template_content_to_grapes_web_builder' => [
+			'title' => 'add_column_for_template_content',
+			'description' => 'add_colum_in_grapes_web_builder_table_for_template_content',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder ADD COLUMN templateContent TEXT',
 			],
 		],
 	];
@@ -165,9 +193,9 @@ function addTemplatesToDatabase(){
 		$existingTemplate = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$existingTemplate) {
-			$templateId = generateUniqueId();
+			// $templateId = generateUniqueId();
             $templates[] = [
-				'templateId' => $templateId,
+				// 'templateId' => $templateId,
                 'templateName' => $templateName,
                 'templateContent' => $templateContent,
             ];
@@ -197,6 +225,6 @@ function addTemplatesToDatabase(){
     }
 }
 
-function generateUniqueId() {
-	return uniqid('template_', true);
-}
+// function generateUniqueId() {
+// 	return uniqid('template_', true);
+// }
