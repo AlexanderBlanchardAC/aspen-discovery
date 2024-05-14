@@ -8,8 +8,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public $urlAlias;
 	public $teaser;
     public $pageType;
+	public $templatesSelect;
 	public $templateNames;
-	public $templateId;
 	private $_libraries;
 
 
@@ -20,40 +20,34 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
 	static function getObjectStructure($context = ''): array {
-        // require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
 		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
 
 		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
         $templateNames = [];
         $templateIds = [];
-        $templateOptions = [];
 
         $templateObject = new Templates();
         $templates = $templateObject->getTemplates();
+		$templateOptions = [];
+
         foreach ($templates as $template){
-            $templateName = $template['templateName'];
-            $templateId = $template['templateId'];
-            $templateNames[$templateId] = [
+            $templateName = $template->templateName;
+            $templateId = $template->id;
+			$templateContent = $template->templateContent;
+            $templateOptions[] = [
                 'id' => $templateId,
                 'name' => $templateName,
+				'content' =>$templateContent,
             ];
+			$templateNames[$templateId] = $templateName;
+			$templateContents[$templateId] = $templateContent;
+			// $templateIds[$templateId] = $tempalteId;
         }
 
-        array_unshift($templateNames, [
+        array_unshift($templateOptions, [
             'id' => null, 
             'name' => "No Template"
         ]);
-
-        usort($templateNames, function($a, $b) {
-            return strcasecmp($a['name'], $b['name']);
-        });
-
-	
-       
-
-
-
-
         return [
 			'id' => [
 				'property' => 'id',
@@ -77,12 +71,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'size' => '40',
 				'maxLength' => 100,
 			],
-			'templateId' => [
-				'property' => 'templateId',
-				'type' => 'hidden',
-				'description' => 'The unique Id of the template.',
-				'hideInLists'=> true,
-			],
 			'teaser' => [
 				'property' => 'teaser',
 				'type' => 'textarea',
@@ -91,19 +79,12 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'maxLength' => 512,
 				'hideInLists' => true,
 			],
-			'templatesSection' => [
-				'property' => 'templatesSection',
-				'type' => 'section',
-				'label' => 'Select a Template',
-				'hideInLists' => true,
-				'properties' => [
-					'availableTemplates' => [
-						'property' => 'availableTemplates',
-						'type' => 'templates',
-						'label' => 'Templates',
-						'required' => true,
-						'values' => $templateNames,					],
-				],
+			'templatesSelect' => [
+				'property' => 'templatesSelect',
+				'type' => 'enum',
+				'label' => 'Templates',
+				'required' => true,
+				'values' => $templateNames,	
 			],
 			'libraries' => [
 				'property' => 'libraries',
@@ -115,6 +96,13 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'hideInLists' => true,
 			],
 		];
+		if($context == 'addNew') {
+			unset($structure['templateSelect']);
+		}
+
+		if($context != 'addNew') {
+			unset($structure['templateContent']);
+		}
 	}
 
     //TODO:: Work out why none of the delete options are working - all causing an AJAX error
@@ -139,6 +127,10 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
     function getAdditionalListActions(): array {
+		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
+		$templateObject = new Templates();
+
+
         $objectActions = [];
     
         $objectActions[] =
@@ -151,7 +143,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
         $objectActions[] =
         [
            'text' => 'Open Editor',
-           'url' => '',
+           'url' => '/WebBuilder/GrapesJSEditor?templateId=' . $templateId,
        ];
 
         return $objectActions;
@@ -162,9 +154,9 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$objectActions = [];
 		$objectActions [] = 
 		[
-			'text' => 'Select Template',
-			// 'onClick' => 'return openTemplateModal()'
-			'onClick' => 'return AspenDiscovery.WebBuilder.getGrapesTemplate()',
+			// 'text' => 'Select Template',
+			// // 'onClick' => 'return openTemplateModal()'
+			// 'onClick' => 'return AspenDiscovery.WebBuilder.getGrapesTemplate()',
 		];
 
 		return $objectActions;
@@ -266,16 +258,5 @@ class GrapesPage extends DB_LibraryLinkedObject {
     }
 }
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-	function openTemplateModal() {
-		console.log('modwl');
-	}
 
-
-
-
-
-
-</script>
 

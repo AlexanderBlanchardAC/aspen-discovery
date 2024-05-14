@@ -1,28 +1,36 @@
 <?php
 // require_once ROOT_DIR . '/sys/DBMaintenance/grapes_web_builder_updates.php';
+require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
 
 class Templates {
 
 	function getTemplates() {
-        // addTemplatesToDatabase();
+        addTemplatesToDatabase();
 
-		global $aspen_db;
-		$stmt = $aspen_db->prepare("SELECT templateId, templateName, templateContent FROM templates");
-		$stmt->execute();
-		$templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $template = new Template();
+        $template->find();
+        $templates = $template->fetchAll();
+
 		return $templates;
 	}
 
-    // function getTemplateContents($templateName) {
-    //     global $aspen_db;
+    function getTemplateById($id) {
+        $template = new Template();
+        $template->find();
+       while ($template->fetch()){
+        if ($template->id == $id) {
+            return clone $template;
+        }
+       }
+    }
 
-    //     $query = "SELECT  templateContent FROM templates WHERE templateName = ?";
-    //     $statement = $aspen_db->prepare($query);
-    //     $statement->execute([$templateName]);
-
-    //     $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-    //     return $result['tempalteContent'] ?? '';
-    // }
-
+    function getTemplateByName($templateName) {
+        $template = new Template();
+        $template->find();
+        while ($template->fetch()){
+            if ($template->temaplteName == $templateName) {
+                return clone $template;
+            }
+        }
+    }
 }
