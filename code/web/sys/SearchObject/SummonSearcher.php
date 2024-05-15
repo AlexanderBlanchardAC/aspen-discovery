@@ -79,7 +79,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 	  /**
 	 * @var string mixed
 	 */
-	private $searchIndex = 'Title';
+	private $searchIndex = 'All Text';
 	/**Facets, filters and limiters */
 	//Values for the main facets - each has an array of available values
 	protected $facets = [
@@ -731,21 +731,16 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 	  */
      public function getSearchIndexes() {
 		return [
+			'All Text' => translate([
+                'text' => "Keyword",
+				'isPublicFacing' => true,
+				'inAttribute' => true,
+            ]),
 			"Title" => translate([
 				'text' => "Title",
 				'isPublicFacing' => true,
 				'inAttribute' => true,
 			]),
-            'All Text' => translate([
-                'text' => "All Text",
-				'isPublicFacing' => true,
-				'inAttribute' => true,
-            ]),
-            'Keyword' => translate([
-                'text' => "Keyword",
-                'isPublicFacing' => true,
-                'inAttribute' => true,
-            ])
 		];
      }
 
