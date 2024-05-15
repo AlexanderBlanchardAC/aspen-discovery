@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html>
+{* <!DOCTYPE html> *}
     
 <head>
   <title>Grapes JS Page Editor</title>
@@ -18,6 +18,10 @@
     <script>
         const editor = grapesjs.init({
             container: "#gjs",
+            fromElement: true,
+            showOffsets: 1,
+            noticeOnUnload: 0,
+            storageManager: { autoload: 0 },
             storageManager: {
                 type: 'remote',
                 stepsbeforeSave: 1,
@@ -30,8 +34,8 @@
                     'Content-Type': 'application/json',
                 },
                 id: '',
-                urlStore: ``,
-                urlLoad: ``,
+                // urlStore: ``,
+                // urlLoad: ``,
             },
             plugins: [
                 'gjs-blocks-basic',
@@ -73,21 +77,31 @@
      
 
         editor.Commands.add('save-as-page', {
-            run: function(editor, sender) {
+            run: async  function(editor, sender) {
                 console.log('function running');
                 sender && sender.set('active', 0);
                  //built in grapes.js function
-                editor.store();
+                // editor.store();
                  //store values - use built in grapes.js functions
-                let projectData = JSON.stringify(editor.getProjectData());
+                // let projectData = JSON.stringify(editor.getProjectData());
+                let projectData = editor.getProjectData();
+                let html = editor.getHtml();
+                let css = editor.getCss();
                 console.log(projectData);
+                console.log('html: ', html, 'css: ', css);
                 $.ajax({
-                    url: '../../../../sys/DBMaintenance/grapes_web_builder_updates.php?method=saveGrapesAsPage',
+                    // url: '/services/WebBuilder/CreatedGrapesPages.php?method=saveAsGrapesPage',
+                     url: '/services/WebBuilder/Save.php',
+                    // url: '../sys/DBMaintenance/grapes_web_builder_updates.php?method=saveGrapesPageAsPage',
                     type: "post",
-                    data: projectData,
+                    data: JSON.stringify({
+                        "projectData": projectData, 
+                        "html": html, 
+                        "css": css
+                    }),
                     success: function (response) {
                         console.log('Saved');
-                    }
+                    },
                 })
             }
         });

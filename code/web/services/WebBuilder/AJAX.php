@@ -914,23 +914,5 @@ class WebBuilder_AJAX extends JSON_Action {
 				$webResourceUsage->insert();
 			}
 		}
-	}
-	
-	/** @noinspection PhpUnused */
-	function saveGrapesPageAsPage() {
-		global $aspen_db;
-		$grapesPageHtml = $_POST['htmlData'];
-		$grapesPageCss = $_POST['cssData'];
-		$query = "INSERT INTO created_grapes_page (htmlData, cssData) VALUES ($grapesPageHtml, $grapesPageCss)";
-		try {
-			$aspen_db->query($query);
-			return true;
-		} catch (PDOException $e){
-			return false;
-		}
-
-
-	}
-
-		
+	}	
 }

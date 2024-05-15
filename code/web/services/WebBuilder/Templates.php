@@ -33,4 +33,13 @@ class Templates {
             }
         }
     }
+
+    function saveAsTemplate(){
+        $newGrapesTemplate = json_decode(file_get_contents("php://input"), true);
+        $html = $newGrapesTemplate['html'];
+        $template = new Template();
+        $template->html = $html;
+        $template->insert();
+
+    }
 }
