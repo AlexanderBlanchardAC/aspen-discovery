@@ -253,4 +253,19 @@ function addTemplatesToDatabase(){
     }
 }
 
+function saveGrapesPageAsPage() {
+	global $aspen_db;
+
+	$newGrapesPageContent = json_decode(file_get_contents("php://input"));
+	$html = $newGrapesPageContent['projectData']['html'];
+	$query = "INSERT INTO create_grapes_page (htmlData) VALUES ($html)";
+
+	try {
+		$aspen_db->query($query);
+		return true;
+	} catch (PDOException $e) {
+		return false;
+	}
+}
+
 
