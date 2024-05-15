@@ -41,6 +41,49 @@
 
             }
         })
+
+        //add a save button - save as page
+        editor.Panels.addButton('options', 
+        [{
+            id: 'save-as-page',
+            className: 'fas fa-save',
+            command: 'save-as-page',
+            attributes: {
+                title: 'Save as Page'
+            }
+        }]);
+
+        //add a save button - save as template
+        editor.Panels.addButton('options', 
+        [{
+            id: 'save-as-template',
+            className: 'fas fa-columns',
+            command: 'save-as-template',
+            attributes: {
+                title: 'Save as Template'
+            }
+        }]);
+
+        editor.Commands.add('save-as-page', {
+            run: function(editor, sender) {
+                sender && sender.set('active', 0);
+                //built in grapes.js function
+                editor.store();
+                //store values - use built in grapes.js functions
+                let htmlData = editor.getHtml();
+                let cssData = editor.getCss();
+                $.post("/services/WebBuilder/Ajax.php?method=saveGrapesPageAsPage", {
+                    "htmlData": htmlData,
+                    "cssData": cssData,
+                    success: function(data) {
+                        alert(data);
+                        console.log("Success");
+                    },
+                });
+            }
+        });
+
+
     </script>
 
 </body>

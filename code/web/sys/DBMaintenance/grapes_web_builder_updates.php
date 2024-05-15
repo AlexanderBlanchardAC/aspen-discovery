@@ -161,9 +161,39 @@ function getGrapesWebBuilderUpdates() {
 		],
 		'add_template_content_to_grapes_web_builder' => [
 			'title' => 'add_column_for_template_content',
-			'description' => 'add_colum_in_grapes_web_builder_table_for_template_content',
+			'description' => 'add_column_in_grapes_web_builder_table_for_template_content',
 			'sql' => [
 				'ALTER TABLE grapes_web_builder ADD COLUMN templateContent TEXT',
+			],
+		],
+		'create_table_for_grapes_page_saved_as_page' => [
+			'title' => 'add_table_for_created_grapes_page',
+			'description' => 'add_table_for_created_grapes_page_saved_as_page',
+			'sql' => [
+				"CREATE TABLE created_grapes_page (
+					id INT(11) AUTO_INCREMENT PRIMARY KEY,
+					title VARCHAR(100) NOT NULL,
+					urlAlias VARCHAR(100) NOT NULL,
+					htmlData TEXT NOT NULL DEFAULT ' ',
+					cssData TEXT NOT NULL DEFAULT ' ',
+					assets TEXT NOT NULL DEFAULT '[]',
+					components TEXT NOT NULL DEFAULT '[]',
+					styles TEXT NOT NULL DEFAULT '[]'
+				) ENGINE=INNODB",
+			],
+		],
+		'remove_temaplteID_column' => [
+			'title' => 'Remove templateId column from templates table',
+			'description' => 'Remove tempalteId column from templates table',
+			'sql' => [
+				'ALTER TABLE templates DROP COLUMN templateId',
+			],
+		],
+		'delete_column_from_grapes_web_builder' => [
+			'title' => 'Delete column from grapes_web_builder table',
+			'description' => 'Delte templateId from grapes_web_builder table',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder DROP COLUMN templateId',
 			],
 		],
 	];
@@ -193,9 +223,7 @@ function addTemplatesToDatabase(){
 		$existingTemplate = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$existingTemplate) {
-			// $templateId = generateUniqueId();
             $templates[] = [
-				// 'templateId' => $templateId,
                 'templateName' => $templateName,
                 'templateContent' => $templateContent,
             ];
@@ -206,13 +234,13 @@ function addTemplatesToDatabase(){
         return false; // No new templates to insert
     }
 
-    $query = "INSERT INTO templates (templateId, templateName, templateContent) VALUES ";
+    $query = "INSERT INTO templates (templateName, templateContent) VALUES ";
     $values = [];
     foreach ($templates as $template) {
-		$id = $aspen_db->quote($template['templateId']);
+		// $id = $aspen_db->quote($template['templateId']);
         $name = $aspen_db->quote($template['templateName']);
         $content = $aspen_db->quote($template['templateContent']);
-        $values[] = "($id, $name, $content)";
+        $values[] = "($name, $content)";
     }
 
     $query .= implode(', ', $values);
@@ -225,6 +253,4 @@ function addTemplatesToDatabase(){
     }
 }
 
-// function generateUniqueId() {
-// 	return uniqid('template_', true);
-// }
+

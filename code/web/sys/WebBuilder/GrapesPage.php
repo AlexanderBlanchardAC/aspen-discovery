@@ -10,7 +10,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
     public $pageType;
 	public $templatesSelect;
 	public $templateNames;
-	public $templateId;
 	private $_libraries;
 
 
@@ -42,6 +41,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
             ];
 			$templateNames[$templateId] = $templateName;
 			$templateContents[$templateId] = $templateContent;
+			// $templateIds[$templateId] = $tempalteId;
         }
 
         array_unshift($templateOptions, [
@@ -71,12 +71,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'size' => '40',
 				'maxLength' => 100,
 			],
-			'templateId' => [
-				'property' => 'templateId',
-				'type' => 'hidden',
-				'description' => 'The unique Id of the template.',
-				'hideInLists'=> true,
-			],
 			'teaser' => [
 				'property' => 'teaser',
 				'type' => 'textarea',
@@ -92,19 +86,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'required' => true,
 				'values' => $templateNames,	
 			],
-			'templateContent' => [
-				'property' => 'templateContent',
-				'type' => 'hidden',
-				'label' => 'Template Content',
-				'values' => $templateContent,
-			],
-			// 'templateNames' => [
-			// 		'property' => 'templateNames',
-			// 		'type' => 'enum',
-			// 		'label' => 'Templates',
-			// 		'required' => true,
-			// 		'values' => $templateNames,	
-			// ],
 			'libraries' => [
 				'property' => 'libraries',
 				'type' => 'multiSelect',
@@ -146,6 +127,10 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
     function getAdditionalListActions(): array {
+		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
+		$templateObject = new Templates();
+
+
         $objectActions = [];
     
         $objectActions[] =
@@ -158,7 +143,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
         $objectActions[] =
         [
            'text' => 'Open Editor',
-           'url' => '/WebBuilder/GrapesJSEditor',
+           'url' => '/WebBuilder/GrapesJSEditor?templateId=' . $templateId,
        ];
 
         return $objectActions;

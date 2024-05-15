@@ -14,10 +14,23 @@ class Templates {
 		return $templates;
 	}
 
-    function getTemplateContent() {
+    function getTemplateById($id) {
         $template = new Template();
-        $template->find($template->id);
-        $template = $template->fetch($template->id);
+        $template->find();
+       while ($template->fetch()){
+        if ($template->id == $id) {
+            return clone $template;
+        }
+       }
     }
 
+    function getTemplateByName($templateName) {
+        $template = new Template();
+        $template->find();
+        while ($template->fetch()){
+            if ($template->temaplteName == $templateName) {
+                return clone $template;
+            }
+        }
+    }
 }
