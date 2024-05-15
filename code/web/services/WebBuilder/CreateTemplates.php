@@ -1,14 +1,14 @@
 <?php
 require_once ROOT_DIR . '/services/Admin/ObjectEditor.php';
-require_once ROOT_DIR . '/sys/WebBuilder/GrapesPage.php';
+require_once ROOT_DIR . '/sys/WebBuilder/CreateTemplate.php';
 
-class WebBuilder_GrapesPages extends ObjectEditor {
+class WebBuilder_CreateTemplates extends ObjectEditor {
 	function getObjectType(): string {
-		return 'GrapesPage';
+		return 'CreateTemplate';
 	}
 
 	function getToolName(): string {
-		return 'GrapesPages';
+		return 'CreateTemplates';
 	}
 
 	function getModule(): string {
@@ -16,11 +16,11 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 	}
 
 	function getPageTitle(): string {
-		return 'Grapes Web Builder Pages';
+		return 'Create Templates';
 	}
 
 	function getAllObjects($page, $recordsPerPage): array {
-		$object = new GrapesPage();
+		$object = new CreateTemplate();
 		$object->orderBy($this->getSort());
 		$this->applyFilters($object);
 		$object->limit(($page - 1) * $recordsPerPage, $recordsPerPage);
@@ -43,7 +43,7 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 	}
 
 	function getObjectStructure($context = ''): array {
-		return GrapesPage::getObjectStructure($context);
+		return CreateTemplate::getObjectStructure($context);
 	}
 
 	function getPrimaryKeyColumn(): string {
@@ -54,16 +54,6 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 		return 'id';
 	}
 
-	function getAdditionalObjectActions($existingObject): array {
-		$objectActions = [];
-		if (!empty($existingObject) && $existingObject instanceof GrapesPage){
-			$objectActions[] = [
-				'text' => 'Open Editor',
-				'url' => '/WebBuilder/GrapesJSEditor?objectAction=edit&id=' . $existingObject->id,
-			];
-		return $objectActions;
-		}
-	}
 
 	function getInstructions(): string {
 		return 'https://help.aspendiscovery.org/help/webbuilder/pages';
@@ -77,7 +67,7 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 		$breadcrumbs = [];
 		$breadcrumbs[] = new Breadcrumb('/Admin/Home', 'Administration Home');
 		$breadcrumbs[] = new Breadcrumb('/Admin/Home#web_builder', 'Web Builder');
-		$breadcrumbs[] = new Breadcrumb('/WebBuilder/GrapesPages', 'Grapes Pages');
+		$breadcrumbs[] = new Breadcrumb('/WebBuilder/CreateTemplates', 'Create Templates');
 		return $breadcrumbs;
 	}
 

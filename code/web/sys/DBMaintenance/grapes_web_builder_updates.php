@@ -204,6 +204,58 @@ function getGrapesWebBuilderUpdates() {
 				'ALTER TABLE created_grapes_page MODIFY COLUMN title VARCHAR(100) NOT NULL DEFAULT " "',
 			],
 		],
+		'add_grapes_page_id_column' => [
+			'title' => 'Add Grapes Page Id Column',
+			'description' => 'Add grapes_page_id column to created_grapes_page table',
+			'sql' => [
+				'ALTER TABLE created_grapes_page ADD COLUMN grapes_page_id VARCHAR(100) NOT NULL DEFAULT " "',
+			],
+		],
+		'alterations_to_templates_table' => [
+			'title' => 'Alterations to Templates Table',
+			'description' => 'Make changes to templates table to handle addition of templates built in grapes editor',
+			'sql' => [
+				'ALTER TABLE templates ADD COLUMN htmlData TEXT NOT NULL DEFAULT " "',
+				'ALTER TABLE templates ADD COLUMN cssData TEXT NOT NULL DEFAULT " "',
+				'ALTER TABLE templates ADD COLUMN assets TEXT NOT NULL DEFAULT "[]"',
+				'ALTER TABLE templates ADD COLUMN components TEXT NOT NULL DEFAULT "[]"',
+				'ALTER TABLE templates ADD COLUMN styles TEXT NOT NULL DEFAULT "[]"',
+			],
+		],
+		'add_id_grapes_page_id_column_to_template_table' => [
+			'title' => 'Add grapes_page_id Column to Template Table',
+			'description' => 'Add a column to the tempaltes table to store the id given by grapes',
+			'sql' => [
+				'ALTER TABLE templates ADD COLUMN grapes_page_id VARCHAR(100) NOT NULL DEFAULT " "',
+			],
+		],
+		'modify_templateName_column_in_templates' => [
+			'title' => 'Modify Tempalte Name Column in Templates',
+			'description' => 'Modify templateName column in templates to have a default',
+			'sql' => [
+				"ALTER TABLE templates MODIFY COLUMN templateName VARCHAR(100) NOT NULL DEFAULT ' '",
+				"ALTER TABLE templates MODIFY COLUMN templateContent TEXT NOT NULL DEFAULT ' '",
+
+			],
+		],
+		'create_a_table_for_creating_grapes_templates' => [
+			'title' => 'Add a Table to Allow Creating Grapes Templates',
+			'description' => 'Add a table to allow crearing grapes templates.',
+			'sql' => [
+				"CREATE TABLE create_grapes_template (
+					id INT(11) AUTO_INCREMENT PRIMARY KEY,
+					title VARCHAR(100) NOT NULL DEFAULT ' ',
+					teaser VARCHAR(250) NOT NULL DEFAULT ' '
+				) ENGINE=INNODB",
+			],
+		],
+		'add_grapesPageId_to_grapes_web_builder' => [
+			'title' => 'Add a Column to Store Page ID',
+			'description' => 'Add a column to the grapes_web_builder table',
+			'sql' => [
+				'ALTER TABLE grapes_web_builder ADD COLUMN grapesPageId VARCHAR(100) Not NULL DEFAULT ""',
+			],
+		],
 	];
 }
 

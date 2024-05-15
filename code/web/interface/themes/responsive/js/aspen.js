@@ -15234,12 +15234,11 @@ AspenDiscovery.WebBuilder = function () {
 			return false;
 		},
 
-		getOpenTemplateModal: function (){
-			return;
-		},
-
-		templateModal: function () {
-			return;
+		openGrapesJsEditor:
+		function(id, title, template) {
+			var url = '/GrapesJSEditor?id=' + id + '&title=' + encodeURIComponent(title) + '&template=' + encodeURIComponent(template);
+			window.location.href = url;
+			return false;
 		}
 	};
 }(AspenDiscovery.WebBuilder || {});
