@@ -196,6 +196,14 @@ function getGrapesWebBuilderUpdates() {
 				'ALTER TABLE grapes_web_builder DROP COLUMN templateId',
 			],
 		],
+		'add_defaults_for_created_grapes_page_table' => [
+			'title' => 'Add Defaults to Table',
+			'description' => 'Add defaults to created_grapes_page table to handle empty fields',
+			'sql' => [
+				'ALTER TABLE created_grapes_page MODIFY COLUMN urlAlias VARCHAR(100) NOT NULL DEFAULT " "',
+				'ALTER TABLE created_grapes_page MODIFY COLUMN title VARCHAR(100) NOT NULL DEFAULT " "',
+			],
+		],
 	];
 }
 
@@ -256,9 +264,10 @@ function addTemplatesToDatabase(){
 function saveGrapesPageAsPage() {
 	global $aspen_db;
 
-	$newGrapesPageContent = json_decode(file_get_contents("php://input"));
-	$html = $newGrapesPageContent['projectData']['html'];
+	$newGrapesPageContent = json_decode(file_get_contents("php://input"), true);
+	$html = $newGrapesPageContent['html'];
 	$query = "INSERT INTO create_grapes_page (htmlData) VALUES ($html)";
+	
 
 	try {
 		$aspen_db->query($query);
@@ -266,6 +275,9 @@ function saveGrapesPageAsPage() {
 	} catch (PDOException $e) {
 		return false;
 	}
+	
 }
+
+
 
 

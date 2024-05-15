@@ -33,7 +33,6 @@ class UserAPI extends AbstractAPI {
 		if (isset($_SERVER['PHP_AUTH_USER'])) {
 			if ($this->grantTokenAccess()) {
 				if (in_array($method, [
-					'saveAsGrapesPage',
 					'isLoggedIn',
 					'logout',
 					'login',
@@ -242,9 +241,6 @@ class UserAPI extends AbstractAPI {
 		return true;
 	}
 
-	function saveAsGrapesPage() {
-		
-	}
 
 	/**
 	 * Validates an account based on the username and PIN provided, while returning errors such as expired PINs.
