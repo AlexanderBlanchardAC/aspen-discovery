@@ -22,12 +22,11 @@
         mysqli_close($con);
         echo json_encode($response);
 
-        // function response($html){
-        //     $response['html'] = $html;
-        //     $json_response = json_encode($response);
-        //     echo $json_response;
-        // }
-        
-
+      //TODO:: Check ID handle update else insert
+      //TODO:: Handle opening editor with page data already contained
+      //TODO:: if saved as template, handle saving to both page table (to open
+      //in editor and the tempaltes table to be slectable from the dropdown)
+        //TODO:: Retrieve info from grapes_web_builder table when saving to the grapes page
+        //table, e.g. title, urlalias etc
        
 //}
