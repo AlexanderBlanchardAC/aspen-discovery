@@ -1,6 +1,7 @@
 <?php
 require_once ROOT_DIR . '/sys/WebBuilder/LibraryBasicPage.php';
 require_once ROOT_DIR . '/sys/DB/LibraryLinkedObject.php';
+require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
 class GrapesPage extends DB_LibraryLinkedObject {
 	public $__table = 'grapes_web_builder';
 	public $id;
@@ -21,33 +22,33 @@ class GrapesPage extends DB_LibraryLinkedObject {
 
 	static function getObjectStructure($context = ''): array {
 		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
-
+		$templateList = Template::getTemplateList();
 		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
         $templateNames = [];
         $templateIds = [];
 
-        $templateObject = new Templates();
-        $templates = $templateObject->getTemplates();
-		$templateOptions = [];
+        // $templateObject = new Template();
+        // $templates = $templateObject->getTemplates();
+		// $templateOptions = [];
 
-        foreach ($templates as $template){
-            $templateName = $template->templateName;
-            $templateId = $template->id;
-			$templateContent = $template->templateContent;
-            $templateOptions[] = [
-                'id' => $templateId,
-                'name' => $templateName,
-				'content' =>$templateContent,
-            ];
-			$templateNames[$templateId] = $templateName;
-			$templateContents[$templateId] = $templateContent;
-			// $templateIds[$templateId] = $tempalteId;
-        }
+        // foreach ($templates as $template){
+        //     $templateName = $template->templateName;
+        //     $templateId = $template->id;
+		// 	$templateContent = $template->templateContent;
+        //     $templateOptions[] = [
+        //         'id' => $templateId,
+        //         'name' => $templateName,
+		// 		'content' =>$templateContent,
+        //     ];
+		// 	$templateNames[$templateId] = $templateName;
+		// 	$templateContents[$templateId] = $templateContent;
+		// 	// $templateIds[$templateId] = $tempalteId;
+        // }
 
-        array_unshift($templateOptions, [
-            'id' => null, 
-            'name' => "No Template"
-        ]);
+        // array_unshift($templateOptions, [
+        //     'id' => null, 
+        //     'name' => "No Template"
+        // ]);
         return [
 			'id' => [
 				'property' => 'id',
@@ -84,7 +85,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'type' => 'enum',
 				'label' => 'Templates',
 				'required' => true,
-				'values' => $templateNames,	
+				// 'values' => $templateNames,	
+				'values' => $templateList,
 			],
 			'libraries' => [
 				'property' => 'libraries',
@@ -121,49 +123,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$parsedown->setBreaksEnabled(true);
 		return $parsedown->parse();
 	}
-
-	public function applyAvailableTempltes() {
-
-	}
-
-    function getAdditionalListActions(): array {
-		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
-		$templateObject = new Templates();
-
-
-        $objectActions = [];
-    
-        $objectActions[] =
-         [
-            'text' => 'Delete',
-            'url' => '/your/delete/endpoint?id=' . $this->id,
-            'confirm' => 'Are you sure you want to delete this item?', 
-        ];
-
-        $objectActions[] =
-        [
-           'text' => 'Open Editor',
-           'url' => '/WebBuilder/GrapesJSEditor?templateId=' . $templateId,
-       ];
-
-        return $objectActions;
-    }
-
-	function getAdditionalListJavascriptActions(): array
-	{
-		$objectActions = [];
-		$objectActions [] = 
-		[
-			// 'text' => 'Select Template',
-			// // 'onClick' => 'return openTemplateModal()'
-			// 'onClick' => 'return AspenDiscovery.WebBuilder.getGrapesTemplate()',
-		];
-
-		return $objectActions;
-	}
-
-	
-    
 
 	public function insert($context = '') {
 		$this->lastUpdate = time();
@@ -257,6 +216,5 @@ class GrapesPage extends DB_LibraryLinkedObject {
         return false;
     }
 }
-?>
 
 
