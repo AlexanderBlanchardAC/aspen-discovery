@@ -8,8 +8,6 @@ import org.apache.solr.common.SolrInputDocument;
 import org.ini4j.Ini;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,8 +21,6 @@ class WebBuilderIndexer {
 	private final WebsiteIndexLogEntry logEntry;
 	private final Connection aspenConn;
 	private final Ini configIni;
-
-	private GrapesPageService grapesPageService;
 
 	private final ConcurrentUpdateHttp2SolrClient solrUpdateServer;
 	private final HashMap<Long, String> audiences = new HashMap<>();
@@ -367,7 +363,7 @@ class WebBuilderIndexer {
 
 	private void indexGrapesPages() {
 		try {
-			PreparedStatement getLibrariesForGrapesPageStmt = asepnConn.prepareStatement("SELECT libraryId from library_web_builder_grapes_page WHERE grapesPageId = ?", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			PreparedStatement getLibrariesForGrapesPageStmt = aspenConn.prepareStatement("SELECT libraryId from library_web_builder_grapes_page WHERE grapesPageId = ?", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			PreparedStatement getGrapesPagesStmt = aspenConn.prepareStatement("SELECT * FROM grapes_web_builder", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
 			ResultSet getGrapesPagesRS = getGrapesPagesStmt.executeQuery();
