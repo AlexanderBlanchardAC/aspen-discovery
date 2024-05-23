@@ -59,7 +59,7 @@ class WebBuilder_GrapesPages extends ObjectEditor {
 		if (!empty($existingObject) && $existingObject instanceof GrapesPage){
 			$objectActions[] = [
 				'text' => 'Open Editor',
-				'url' => '/WebBuilder/GrapesJSEditor?objectAction=edit&id=' . $existingObject->id,
+				'url' => '/WebBuilder/GrapesJSEditor?objectAction=edit&id=' . $existingObject->id . '&templateId=' . $existingObject->templatesSelect,
 			];
 		return $objectActions;
 		}

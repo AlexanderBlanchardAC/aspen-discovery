@@ -58,7 +58,7 @@ class WebBuilder_Template extends Action {
 			$objectActions[] = [
 				'text' => 'Open Editor',
 				//'url' => '/WebBuilder/GrapesJSEditor?objectAction=edit&id=' . $existingObject->templateId,
-				'url' => '/WebBuilder/GrapesJSTemplate?id=' . $id,
+				'url' => '/WebBuilder/GrapesJSTemplates?id=' . $id,
 			];
 		}
 		return $objectActions;
