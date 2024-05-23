@@ -43,6 +43,7 @@ class WebBuilderIndexer {
 			solrUpdateServer.deleteByQuery("recordtype:\"WebResource\"");
 			solrUpdateServer.deleteByQuery("recordtype:\"BasicPage\"");
 			solrUpdateServer.deleteByQuery("recordtype:\"PortalPage\"");
+			solrUpdateServer.deleteByQuery("recordtype:\"GrapesPage\"");
 			//3-19-2019 Don't commit so the index does not get cleared during run (but will clear at the end).
 		} catch (BaseHttpSolrClient.RemoteSolrException rse) {
 			logEntry.addNote("Solr is not running properly, try restarting " + rse);
@@ -54,6 +55,7 @@ class WebBuilderIndexer {
 		indexBasicPages();
 		indexCustomPages();
 		indexResources();
+		indexGrapesPages();
 
 		try {
 			solrUpdateServer.commit(true, true, false);
@@ -355,6 +357,55 @@ class WebBuilderIndexer {
 			getPortalPagesStmt.close();
 		}catch (SQLException e){
 			logEntry.incErrors("Error indexing portal pages", e);
+		}
+	}
+
+	private void indexGrapesPages() {
+		try {
+			PreparedStatement getLibrariesForGrapesPageStmt = aspenConn.prepareStatement("SELECT libraryId FROM library_web_builder_grapes_page where grapesPageId = ?", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			PreparedStatement getGrapesPagesStmt = aspenConn.prepareStatement("SELECT * from grapes_web_builder", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			ResultSet getGrapesPagesRS = getGrapesPagesStmt.executeQuery();
+			while (getGrapesPagesRS.next()) {
+				SolrInputDocument solrDocument = new SolrInputDocument();
+				//Load information
+				String id = getGrapesPagesRS.getString("id");
+				solrDocument.addField("id", "GrapesPage:" + id);
+				solrDocument.addField("recordtype", "GrapesPage");
+				solrDocument.addField("settingId", -1);
+				solrDocument.addField("website_name", "Library Website");
+				solrDocument.addField("search_category", "Website");
+				String url = getGrapesPagesRS.getString("urlAlias");
+				if (url.isEmpty()) {
+					url = "/WebBuilder/GrapesPage?id=" + id;
+				}
+				solrDocument.addField("source_url", url);
+				String title = getGrapesPagesRS.getString("title");
+				solrDocument.addField("title", title);
+				solrDocument.addField("title_display", title);
+				solrDocument.addField("title_sort", AspenStringUtils.makeValueSortable(title));
+				String teaser = getGrapesPagesRS.getString("teaser");
+				String templatesSelect = getGrapesPagesRS.getString("templatesSelect");
+				solrDocument.addField("description", teaser);
+				solrDocument.addField("keywords", templatesSelect);
+				//Load libraries to scope
+				getLibrariesForGrapesPageStmt.setString(1, id);
+				ResultSet getLibrariesForGrapesPageRS = getLibrariesForGrapesPageStmt.executeQuery();
+				while (getLibrariesForGrapesPageRS.next()) {
+					solrDocument.addField("scope_has_related_records", librarySubdomains.get(getLibrariesForGrapesPageRS.getLong("libraryId")));
+				}
+
+				logEntry.incNumPages();
+				try {
+					solrUpdateServer.add(solrDocument);
+					logEntry.incUpdated();
+				} catch (SolrServerException | IOException e) {
+					logEntry.incErrors("Error adding page to index", e);
+				}
+			}
+			getGrapesPagesRS.close();
+			getGrapesPagesStmt.close();
+		} catch (SQLException e) {
+			logEntry.incErrors("Error indexing grapes pages", e);
 		}
 	}
 }
