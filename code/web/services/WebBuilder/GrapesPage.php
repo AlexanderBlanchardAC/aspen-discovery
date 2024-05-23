@@ -42,6 +42,7 @@ class WebBuilder_GrapesPage extends Action {
 		$title = $this->grapesPage->title;
 		$interface->assign('id', $this->grapesPage->id);
 		$interface->assign('contents', $this->grapesPage->getFormattedContents());
+		$interface->assign('templateContent', $this->grapesPage->templateContent);
 		$interface->assign('title', $title);
 
 		$this->display('grapesPage.tpl', $title, '', false);

@@ -1,5 +1,5 @@
 <?php
-
+require_once ROOT_DIR . '/code/web/Action.php';
 
 class WebBuilder_Template extends Action {
 	/** @var Template */
@@ -48,6 +48,18 @@ class WebBuilder_Template extends Action {
 		$this->display('template.tpl', $title, '', false);
 		// header("Location: /WebBuilder/Template?objectAction=view&id={$template->id}");
 	}
+
+	function saveAsTemplate(){
+        $newGrapesTemplate = json_decode(file_get_contents("php://input"), true);
+        $html = $newGrapesTemplate['html'];
+		$css = $newGrapesTemplate['css'];
+		$projectData = $newGrapesTemplate['projectData'];
+        $template = new Template();
+        $template->htmlData = $html;
+		$template->cssData = $css;
+		$template->templateContent = $projectData;
+        $template->insert();
+    }
 
 	function canView(): bool {
 		return true;

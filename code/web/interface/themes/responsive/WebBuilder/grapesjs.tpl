@@ -54,56 +54,60 @@
 
       editor.Commands.add('save-as-page', {
         run: function (editor, sender) {
-          sender && sender.set('active', 0);
-          let projectData = editor.getProjectData();
-          let html = editor.getHtml();
-          let css = editor.getCss();
-          let gjsId = projectData.pages.id;
-          let grapesPageData = {
-            grapesPageId: grapesPageId,
-            templateId: templateId . gjsId,
-            projectData: projectData,
-            html: html,
-            css: css,
-          };
-          console.log(grapesPageData.templateId);
-          localStorage.setItem('grapesPageData', JSON.stringify(grapesPageData));
+                sender && sender.set('active', 0);
+                let projectData = editor.getProjectData();
+                let grapesGenId = projectData.pages[0].id;
+                let html = editor.getHtml();
+                let css = editor.getCss();
+                let pageData = {
+                    templateId: templateId,
+                    grapesPageId: grapesPageId,
+                    projectData: projectData,
+                    html: html,
+                    css: css,
+                };  
 
-          $.ajax({
-            url: '/services/WebBuilder/Save.php',
-            type: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify({ projectData: projectData }),
-            success: function (response) {
-              console.log('Saved');
-            },
-            error: function (xhr, status, error) {
-              console.error('Error saving template:', error);
+                // localStorage.setItem('pageData', JSON.stringify(pageData));
+                // console.log(projectData);
+
+                $.ajax({
+                    url: '/services/WebBuilder/SavePage.php',
+                    action: 'saveAsPage',
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        "templateId": templateId,
+                        "grapesPageId": grapesPageId,
+                        "grapesGenId": grapesGenId,
+                        "projectData": projectData,
+                        "html": html,
+                        "css": css,
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        console.log('Saved as Grapes Page');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error saving page: ', error);
+                    }
+                });
             }
-          });
-        }
-      });
+      })
 
     editor.on('load', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const templateId = urlParams.get('templateId'); 
       const grapesPageId = urlParams.get('id');
-      const pageDataString = localStorage.getItem('pageData');
-      const pageData = JSON.parse(pageDataString);
-
-      const grapesPageDataString = localStorage.getItem('grapesPageData');
-      const grapesPageData = JSON.parse(grapesPageDataString);
-      console.log('DATA: ', grapesPageData);
-
-      if (pageData.templateId === templateId) {
-                console.log('match');
-                editor.setComponents(pageData.html)
-                editor.setStyle(pageData.css)
-      } else if (grapesPageData.templateId === templateId) {
-        console.log('grapes pages match');
-        editor.setComponents(grapesPageData.html);
-        editor.setStyles(grapesPageData.css)
-      }
+  
+      $.get('/services/WebBuilder/LoadPage.php?id=' + grapesPageId + 'templateId=' + templateId, function(data) {
+        if (data.success) {
+          editor.setComponents(data.html);
+          editor.setStyle(data.css);
+          editor.loadPojectData(data.projectData);
+        } else {
+          console.erro("Error loading page:", data.message);
+        }
+      });
     })
     
   </script>

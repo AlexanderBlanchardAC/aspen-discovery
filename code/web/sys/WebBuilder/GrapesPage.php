@@ -13,6 +13,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public $templateNames;
 	private $_libraries;
 
+	/** @var Template[] */
+	private $_templates;
 
 	public function getUniquenessFields(): array {
 		return [
@@ -121,7 +123,19 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		require_once ROOT_DIR . '/sys/Parsedown/AspenParsedown.php';
 		$parsedown = AspenParsedown::instance();
 		$parsedown->setBreaksEnabled(true);
-		return $parsedown->parse();
+
+		$tplFilePath = $this->getTplFilePath();
+		if (file_exists($tplFilePath)) {
+			$tplContent = file_get_contents($tplFilePath);
+			return $parsedown->parse($tplContent);
+		} else {
+			return 'Content file not found';
+		}
+	}
+
+	public function getTplFilePath() {
+		$relativePath = 	'code/web/interface/themes/responsive/WebBuilder/grapesjs.tpl';
+		return $relativePath;
 	}
 
 	public function insert($context = '') {
@@ -145,7 +159,9 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public function __get($name) {
 		if ($name == "libraries") {
 			return $this->getLibraries();
-         } else {
+         } elseif ($name == "templateContent") {
+			return $this->getTemplates();
+		 } else {
 			return parent::__get($name);
 		}
 	}
@@ -153,6 +169,8 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public function __set($name, $value) {
 		if ($name == "libraries") {
 			$this->_libraries = $value;
+		} elseif ($name == "templateContent") {
+			$this->_templateContent = $value;
 		} else {
 			parent::__set($name, $value);
 		}
@@ -162,6 +180,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$ret = parent::delete($useWhere);
 		if ($ret && !empty($this->id)) {
 			$this->clearLibraries();
+			$this->clearTemplateContent();
 		}
 		return $ret;
 	}
@@ -178,6 +197,39 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		}
 		return $this->_libraries;
 	}
+
+	// public function getTemplates() {
+	// 	if (is_null($this->_templates)) {
+	// 		$this->_templates = [];
+	// 		require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
+	// 		$template = new Template();
+	// 		if ($this->id) {
+	// 			if (!empty($this->templatesSelect)) {
+	// 				$template = new Template();
+	// 				$template->id = $this->templatesSelect;
+	// 				if ($template->find(true)) {
+	// 					$this->_templates[$template->id] = clone $template;
+	// 				}
+	// 			}
+	// 		}
+	// 		/** @noinspection SqlResolve */
+	// 		// $template->query("SELECT templates.* FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE templates.id = grapes_web_builder.templatesSelect");
+	// 		$template->query("SELECT templates.htmlData, templates.cssData FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.id = " .(int)$this->id);
+			
+	// 		// $template->query("SELECT templates.*, grapes_web_builder.templateContent FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.grapes_page_id = " . (int)$this->id);
+
+	// 		while ($template->fetch()) {
+	// 			$this->_templates[$template->id] = new Template();
+	// 			$this->_templates[$template->id]->htmlData = $template->htmlData;
+	// 			$this->_templates[$template->id]->cssData = $template->cssData;
+	// 		}
+			
+	// 		// while ($template->fetch()) {
+	// 		// 	$this->_templates[$template->id] = clone $template;
+	// 		// }
+	// 	}
+	// 	return $this->_templates;
+	// }
 
 	public function saveLibraries() {
 		if (isset($this->_libraries) && is_array($this->_libraries)) {
@@ -199,6 +251,12 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$libraryLink = new LibraryGrapesPage();
 		$libraryLink->grapesPageId = $this->id;
 		return $libraryLink->delete(true);
+	}
+
+	private function clearTemplateContent() {
+		$template = new Template();
+		$template->id = $this->id;
+		return $template->delete(true);
 	}
 
 

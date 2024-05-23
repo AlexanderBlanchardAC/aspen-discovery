@@ -80,5 +80,14 @@ class Template extends DataObject {
       return false;
     }
 
+    function saveAsTemplate(){
+        $newGrapesTemplate = json_decode(file_get_contents("php://input"), true);
+        $html = $newGrapesTemplate['html'];
+        $template = new Template();
+        $template->htmlData = $html;
+        $template->insert();
+
+    }
+
  
 }
