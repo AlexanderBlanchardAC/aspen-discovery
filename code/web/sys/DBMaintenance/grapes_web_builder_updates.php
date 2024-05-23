@@ -256,6 +256,19 @@ function getGrapesWebBuilderUpdates() {
 				'ALTER TABLE grapes_web_builder ADD COLUMN grapesPageId VARCHAR(100) Not NULL DEFAULT ""',
 			],
 		],
+		'grapes_page_web_builder_scope_by_library' => [
+			'title' => 'Web Builder Grapes Page Scope By Library',
+			'description' => 'Add the ability to scope Grapes Pages By Library',
+			'sql' => [
+				'CREATE TABLE library_web_builder_grapes_page (
+					id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					libraryId INT(11) NOT NULL,
+					grapesPageId INT(11) NOT NULL,
+					INDEX libraryId(libraryId),
+					INDEX grapesPageId(grapesPageId)
+				) ENGINE INNODB',
+			],
+		],
 	];
 }
 

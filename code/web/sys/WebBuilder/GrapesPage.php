@@ -1,5 +1,5 @@
 <?php
-require_once ROOT_DIR . '/sys/WebBuilder/LibraryBasicPage.php';
+require_once ROOT_DIR . '/sys/WebBuilder/LibraryGrapesPage.php';
 require_once ROOT_DIR . '/sys/DB/LibraryLinkedObject.php';
 require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
 class GrapesPage extends DB_LibraryLinkedObject {
@@ -169,7 +169,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	public function getLibraries(): ?array {
 		if (!isset($this->_libraries) && $this->id) {
 			$this->_libraries = [];
-			$libraryLink = new LibraryBasicPage();
+			$libraryLink = new LibraryGrapesPage();
 			$libraryLink->grapesPageId = $this->id;
 			$libraryLink->find();
 			while ($libraryLink->fetch()) {
@@ -184,7 +184,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
 			$this->clearLibraries();
 
 			foreach ($this->_libraries as $libraryId) {
-				$libraryLink = new LibraryBasicPage();
+				$libraryLink = new LibraryGrapesPage();
 
 				$libraryLink->grapesPageId = $this->id;
 				$libraryLink->libraryId = $libraryId;
@@ -196,7 +196,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
 
 	private function clearLibraries() {
 		//Delete links to the libraries
-		$libraryLink = new LibraryBasicPage();
+		$libraryLink = new LibraryGrapesPage();
 		$libraryLink->grapesPageId = $this->id;
 		return $libraryLink->delete(true);
 	}
