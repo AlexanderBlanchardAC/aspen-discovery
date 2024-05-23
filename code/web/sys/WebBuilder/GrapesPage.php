@@ -121,7 +121,19 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		require_once ROOT_DIR . '/sys/Parsedown/AspenParsedown.php';
 		$parsedown = AspenParsedown::instance();
 		$parsedown->setBreaksEnabled(true);
-		return $parsedown->parse();
+
+		$tplFilePath = $this->getTplFilePath();
+		if (file_exists($tplFilePath)) {
+			$tplContent = file_get_contents($tplFilePath);
+			return $parsedown->parse($tplContent);
+		} else {
+			return 'Content file not found';
+		}
+	}
+
+	public function getTplFilePath() {
+		$relativePath = 	'code/web/interface/themes/responsive/WebBuilder/grapesjs.tpl';
+		return $relativePath;
 	}
 
 	public function insert($context = '') {
