@@ -85,8 +85,12 @@ class WebBuilder_Templates  extends ObjectEditor{
     function saveAsTemplate(){
         $newGrapesTemplate = json_decode(file_get_contents("php://input"), true);
         $html = $newGrapesTemplate['html'];
+		$css = $newGrapesTemplate['css'];
+		$projectData = $newGrapesTemplate['projectData'];
         $template = new Template();
-        $template->html = $html;
+        $template->htmlData = $html;
+		$template->cssData = $css;
+		$template->templateContent = $projectData;
         $template->insert();
 
     }

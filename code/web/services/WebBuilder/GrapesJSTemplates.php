@@ -1,14 +1,15 @@
 <?php
+ require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
 
 class WebBuilder_GrapesJSTemplates extends Action {
 
     /** @var Template */
     private $template;
 
-    function __construct() {
-        parent::__construct();
-        require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
-    }
+    // function __construct() {
+    //     parent::__construct();
+    //     require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
+    // }
 
     function launch() {
         $this->display('createTemplatejs.tpl', '', '', false);

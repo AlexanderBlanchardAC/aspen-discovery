@@ -522,28 +522,6 @@ if ($isLoggedIn) {
 			}
 			header("Location: " . $followupUrl);
 			exit();
-		} elseif ($_REQUEST['followupModule'] == 'GrapesWebBuilder') {
-			echo("Redirecting to followup location");
-			$followupUrl = "/" . strip_tags($_REQUEST['followupModule']);
-			$followupUrl .= "/" . strip_tags($_REQUEST['followupAction']);
-			if (!empty($_REQUEST['pageId'])) {
-				if ($_REQUEST['followupAction'] == "Page") {
-					require_once ROOT_DIR . '/sys/GrapesWebBuilder/Page.php';
-					$page = new page();
-					$page->id = $_REQUEST['pageId'];
-					if ($page->find(true)) {
-						if ($page->urlAlias) {
-							$followupUrl = $page->urlAlias;
-						} else {
-							$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
-						}
-					} else {
-						$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
-					}
-				}
-			}
-			header("Location: " . $followupUrl);
-			exit();
 		} elseif ($_REQUEST['followupModule'] == 'WebBuilder') {
 			echo("Redirecting to followup location");
 			$followupUrl = "/" . strip_tags($_REQUEST['followupModule']);
@@ -569,6 +547,19 @@ if ($isLoggedIn) {
 					if ($portalPage->find(true)) {
 						if ($portalPage->urlAlias) {
 							$followupUrl = $portalPage->urlAlias;
+						} else {
+							$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
+						}
+					} else {
+						$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
+					}
+				} elseif ($_REQUEST['followupAction'] == "GrapesPage") {
+					require_once ROOT_DIR . '/sys/WebBuilder/GrapesPage.php';
+					$grapesPage = new GrapesPage();
+					$grapesPage->id = $_REQUEST['pageId'];
+					if ($grapesPage->find(true)) {
+						if ($grapesPage->urlAlias) {
+							$followupUrl = $grapesPage->urlAlias;
 						} else {
 							$followupUrl .= "?id=" . strip_tags($_REQUEST['pageId']);
 						}
@@ -1216,6 +1207,21 @@ function loadModuleActionId() {
 							$_REQUEST['module'] = 'WebBuilder';
 							$_REQUEST['action'] = 'QuickPoll';
 							$_REQUEST['id'] = $quickPoll->id;
+						} else {
+							require_once ROOT_DIR . '/sys/WebBuilder/GrapesPage.php';
+							$grapesPage = new GrapesPage();
+							$grapesPage->urlAlias = $requestPath;
+							$grapesPageLibrary = new LibraryGrapesPage();
+							$grapesPageLibrary->libraryId = $library->libraryId;
+							$grapesPage->joinAdd($grapesPageLibrary, 'INNER', 'libraryFilter', 'id', 'grapesPageId');
+							if ($grapesPage->find(true)) {
+								$_GET['module'] = 'WebBuilder';
+								$_GET['action'] = 'GrapesPage';
+								$_GET['id'] = $grapesPage->id;
+								$_REQUEST['module'] = 'WebBuilder';
+								$_REQUEST['action'] = 'GrapesPage';
+								$_REQUEST['id'] = $grapesPage->id;
+							}
 						}
 					}
 				}
