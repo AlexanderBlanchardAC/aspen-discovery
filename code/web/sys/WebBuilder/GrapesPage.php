@@ -198,38 +198,38 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		return $this->_libraries;
 	}
 
-	// public function getTemplates() {
-	// 	if (is_null($this->_templates)) {
-	// 		$this->_templates = [];
-	// 		require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
-	// 		$template = new Template();
-	// 		if ($this->id) {
-	// 			if (!empty($this->templatesSelect)) {
-	// 				$template = new Template();
-	// 				$template->id = $this->templatesSelect;
-	// 				if ($template->find(true)) {
-	// 					$this->_templates[$template->id] = clone $template;
-	// 				}
-	// 			}
-	// 		}
-	// 		/** @noinspection SqlResolve */
-	// 		// $template->query("SELECT templates.* FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE templates.id = grapes_web_builder.templatesSelect");
-	// 		$template->query("SELECT templates.htmlData, templates.cssData FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.id = " .(int)$this->id);
+	public function getTemplates() {
+		if (is_null($this->_templates)) {
+			$this->_templates = [];
+			require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
+			$template = new Template();
+			if ($this->id) {
+				if (!empty($this->templatesSelect)) {
+					$template = new Template();
+					$template->id = $this->templatesSelect;
+					if ($template->find(true)) {
+						$this->_templates[$template->id] = clone $template;
+					}
+				}
+			}
+			/** @noinspection SqlResolve */
+			// $template->query("SELECT templates.* FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE templates.id = grapes_web_builder.templatesSelect");
+			$template->query("SELECT templates.htmlData, templates.cssData FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.id = " .(int)$this->id);
 			
-	// 		// $template->query("SELECT templates.*, grapes_web_builder.templateContent FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.grapes_page_id = " . (int)$this->id);
+			// $template->query("SELECT templates.*, grapes_web_builder.templateContent FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.grapes_page_id = " . (int)$this->id);
 
-	// 		while ($template->fetch()) {
-	// 			$this->_templates[$template->id] = new Template();
-	// 			$this->_templates[$template->id]->htmlData = $template->htmlData;
-	// 			$this->_templates[$template->id]->cssData = $template->cssData;
-	// 		}
+			while ($template->fetch()) {
+				$this->_templates[$template->id] = new Template();
+				$this->_templates[$template->id]->htmlData = $template->htmlData;
+				$this->_templates[$template->id]->cssData = $template->cssData;
+			}
 			
-	// 		// while ($template->fetch()) {
-	// 		// 	$this->_templates[$template->id] = clone $template;
-	// 		// }
-	// 	}
-	// 	return $this->_templates;
-	// }
+			// while ($template->fetch()) {
+			// 	$this->_templates[$template->id] = clone $template;
+			// }
+		}
+		return $this->_templates;
+	}
 
 	public function saveLibraries() {
 		if (isset($this->_libraries) && is_array($this->_libraries)) {
