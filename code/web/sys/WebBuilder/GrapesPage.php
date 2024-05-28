@@ -219,14 +219,10 @@ class GrapesPage extends DB_LibraryLinkedObject {
 			// $template->query("SELECT templates.*, grapes_web_builder.templateContent FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.grapes_page_id = " . (int)$this->id);
 
 			while ($template->fetch()) {
-				$this->_templates[$template->id] = new Template();
-				$this->_templates[$template->id]->htmlData = $template->htmlData;
-				$this->_templates[$template->id]->cssData = $template->cssData;
+				$templateContent = "<style>" . $template->cssData . "</style>" . $template->htmlData;
+				$this->_tempaltes[$template->id] = new Template();
+				$this->_templates[$template->id]->templateContent = $templateContent;
 			}
-			
-			// while ($template->fetch()) {
-			// 	$this->_templates[$template->id] = clone $template;
-			// }
 		}
 		return $this->_templates;
 	}
