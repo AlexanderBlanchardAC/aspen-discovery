@@ -1,15 +1,13 @@
-<div class="col-xs-12">
-	<h1>{$title}</h1>
-	{* {$contents} *}
-	{$templateContent|print_r}
-	{* {assign var="templateContentArray" value=$templateContent|@json_decode:true}
-
-	{if isset($templateContentArray.html)}
-		{$templateContentArray.html nofilter}
-	{/if}
-
-	{if isset($templateContentArray.css)}
-		<style>{$templateContentArray.css}</style>
-	{/if} *}
-
-	</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$title|escape: 'html'}</title>
+</head>
+<body>
+    <h1>{$title|escape: 'html'}</h1>
+    <div id="content">
+        {$templateContent}
+    </div>
+</body>
+</html>
