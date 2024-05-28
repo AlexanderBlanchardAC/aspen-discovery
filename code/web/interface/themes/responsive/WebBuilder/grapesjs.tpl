@@ -97,10 +97,10 @@
       const grapesPageId = urlParams.get('id');
       console.log('LOADING');
   
-      $.get('/services/WebBuilder/LoadPage.php?id=' + grapesPageId, function(data) {
-        console.log('GET');
+      $.get('/services/WebBuilder/LoadPage.php?id=' + grapesPageId + 'templateId=' + templateId, function(data) {
         if (data.success) {
-          console.log('DATA')
+          editor.setComponents(data.html);
+          editor.setStyle(data.css);
           editor.loadPojectData(data.projectData);
         } else {
           console.log('ERROR');

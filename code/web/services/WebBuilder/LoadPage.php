@@ -2,12 +2,12 @@
 header("Content-Type: application/json");
 include('db.php');
 
-$grapePageId = $_GET['id']; // Assuming the GrapesJS page ID is passed as a query parameter
+$grapePageId = $_GET['id']; 
 $response = [];
 
 if ($grapePageId) {
     // Fetch the templateContent value from grapes_web_builder table
-    $stmt = mysqli_prepare($con, "SELECT templateContent, templateSelect FROM `grapes_web_builder` WHERE id=?");
+    $stmt = mysqli_prepare($con, "SELECT templateContent, templatesSelect FROM `grapes_web_builder` WHERE id=?");
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "s", $grapePageId);
         mysqli_stmt_execute($stmt);
