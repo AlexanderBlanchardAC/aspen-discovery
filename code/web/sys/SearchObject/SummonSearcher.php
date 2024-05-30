@@ -104,6 +104,7 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 
 
 	protected $facetFields;
+	protected $filteredRecords;
 
     public function __construct() {
         //Initialize properties with default values
@@ -283,6 +284,13 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 	public function processData($recordData) {
 			$recordData = $this->process($recordData); 
 			if (is_array($recordData)){
+				$this->filteredRecords = [];
+				foreach ($recordData['documents'] as $record) {
+					if ($record['DatabaseName'][0] !== 'House of Lords Library Catalogue') {
+						$filteredRecords[] = $record;
+					}
+				}
+				$recordData['documents'] = $filteredRecords;
 				$this->sessionId = $recordData['sessionId'];
 				$this->lastSearchResults = $recordData['documents'];
 				$this->page = $recordData['query']['pageNumber'];
@@ -462,6 +470,12 @@ class SearchObject_SummonSearcher extends SearchObject_BaseSearcher{
 		if (isset($this->facetFields)) {
 			foreach ($this->facetFields as $facetField) {
 				$facetId = $facetField['displayName'];
+				if ($facetId === 'DatabaseName') {
+					$filteredValues = array_filter($facetField['counts'], function ($value) {
+						return $value['value'] !== 'House of Lords Library Catalogue';
+					});
+					$facetField['counts'] = array_values($filteredValues);
+				}
 				//results array does not return human readable option
 				$parts = preg_split('/(?=[A-Z])/', $facetId, -1, PREG_SPLIT_NO_EMPTY);
 				$displayName = implode(' ', $parts);
