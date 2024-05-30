@@ -269,6 +269,28 @@ function getGrapesWebBuilderUpdates() {
 				) ENGINE INNODB',
 			],
 		],
+		'add_html_and_css_columns_to_grapes_web_builder' => [
+			'title' => 'Add columns to Grapes Web Builder Table',
+			'description' => 'Add columns to Grapes Web Builder Table',
+			'sql' => [
+				"ALTER TABLE grapes_web_builder ADD COLUMN htmlData TEXT NOT NULL DEFAULT ' '",
+				"ALTER TABLE grapes_web_builder ADD COLUMN cddData TEXT NOT NULL DEFAULT ' '",
+			],
+		],
+		'alter_name_of_grapes_web_builder_grapes_id_column' => [
+			'title' => 'Alter Name of grapesPageId column',		
+			'description' => 'Alter name of grapesPageId column for clarity',
+			'sql' => [
+				"ALTER TABLE grapes_web_builder RENAME COLUMN grapesPageId to grapesGenId",
+			],
+		],
+		'correct_typo_in_column_name' => [
+			'title' => 'Correct Typo in Column Name',
+			'description' => 'Correct typo in cssData column',
+			'sql' => [
+				"ALTER TABLE grapes_web_builder RENAME COLUMN cddData to cssData",
+			],
+		],		
 	];
 }
 

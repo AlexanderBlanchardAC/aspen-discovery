@@ -99,6 +99,20 @@ class GrapesPage extends DB_LibraryLinkedObject {
 				'values' => $libraryList,
 				'hideInLists' => true,
 			],
+			'htmlData' => [
+				'property' => 'htmlData',
+				'type' => 'hidden',
+				'label' => 'htmlData',
+				'description' => 'html data',
+				'hideInLists' => true,
+			],
+			'cssData' => [
+				'property' => 'cssData',
+				'type' => 'hidden',
+				'label' => 'cssData',
+				'description' => 'css data',
+				'hideInLists' => true,
+			],
 		];
 		if($context == 'addNew') {
 			unset($structure['templateSelect']);
@@ -198,34 +212,69 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		return $this->_libraries;
 	}
 
+	// public function getTemplates() {
+	// 	if (is_null($this->_templates)) {
+	// 		$this->_templates = [];
+	// 		require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
+	// 		$template = new Template();
+	// 		if ($this->id) {
+	// 			if (!empty($this->templatesSelect)) {
+	// 				$template = new Template();
+	// 				$template->id = $this->templatesSelect;
+	// 				if ($template->find(true)) {
+	// 					$this->_templates[$template->id] = clone $template;
+	// 				}
+	// 			}
+	// 		}
+	// 		/** @noinspection SqlResolve */
+	// 		// $template->query("SELECT templates.* FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE templates.id = grapes_web_builder.templatesSelect");
+	// 		$template->query("SELECT templates.htmlData, templates.cssData FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.id = " .(int)$this->id);
+			
+	// 		// $template->query("SELECT templates.*, grapes_web_builder.templateContent FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.grapes_page_id = " . (int)$this->id);
+
+	// 		while ($template->fetch()) {
+	// 			$templateContent = "<style>" . $template->cssData . "</style>" . $template->htmlData;
+	// 			$this->_tempaltes[$template->id] = new Template();
+	// 			$this->_templates[$template->id]->templateContent = $templateContent;
+	// 		}
+	// 	}
+	// 	return $this->_templates;
+	// }
+
 	public function getTemplates() {
 		if (is_null($this->_templates)) {
 			$this->_templates = [];
 			require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
-			$template = new Template();
-			if ($this->id) {
-				if (!empty($this->templatesSelect)) {
+	
+			/** @noinspection SqlResolve */
+			$this->query("SELECT htmlData, cssData, templatesSelect FROM grapes_web_builder WHERE id=" . (int)$this->id);
+			
+			while ($this->fetch()) {
+				$htmlData = $this->htmlData;
+				$cssData = $this->cssData;
+				$templatesSelect = $this->templatesSelect;
+	
+				// If htmlData and cssData are empty, fetch from templates table
+				if (empty($htmlData) && empty($cssData) && !empty($templatesSelect)) {
 					$template = new Template();
-					$template->id = $this->templatesSelect;
+					$template->id = $templatesSelect;
+					
 					if ($template->find(true)) {
-						$this->_templates[$template->id] = clone $template;
+						$htmlData = $template->htmlData;
+						$cssData = $template->cssData;
 					}
 				}
-			}
-			/** @noinspection SqlResolve */
-			// $template->query("SELECT templates.* FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE templates.id = grapes_web_builder.templatesSelect");
-			$template->query("SELECT templates.htmlData, templates.cssData FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.id = " .(int)$this->id);
-			
-			// $template->query("SELECT templates.*, grapes_web_builder.templateContent FROM templates INNER JOIN grapes_web_builder ON templates.id = grapes_web_builder.templatesSelect WHERE grapes_web_builder.grapes_page_id = " . (int)$this->id);
-
-			while ($template->fetch()) {
-				$templateContent = "<style>" . $template->cssData . "</style>" . $template->htmlData;
-				$this->_tempaltes[$template->id] = new Template();
-				$this->_templates[$template->id]->templateContent = $templateContent;
+	
+				$templateContent = "<style>" . $cssData . "</style>" . $htmlData;
+				
+				// Ensure _templates[$this->id] is correctly instantiated as Template
+				$this->_templates[$this->id] = new Template();
+				$this->_templates[$this->id]->templateContent = $templateContent;
 			}
 		}
 		return $this->_templates;
 	}
+	
 
 	public function saveLibraries() {
 		if (isset($this->_libraries) && is_array($this->_libraries)) {

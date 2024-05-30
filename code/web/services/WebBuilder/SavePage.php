@@ -16,7 +16,7 @@ if ($grapesPageId) {
     // Check if the record exists
     $stmt = mysqli_prepare($con, "SELECT COUNT(*) FROM `grapes_web_builder` WHERE id=?");
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "s", $grapesPageId);
+        mysqli_stmt_bind_param($stmt, "i", $grapesPageId);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_bind_result($stmt, $count);
         mysqli_stmt_fetch($stmt);
@@ -24,9 +24,9 @@ if ($grapesPageId) {
 
         if ($count > 0) {
             // Update existing record
-            $stmt = mysqli_prepare($con, "UPDATE `grapes_web_builder` SET templateContent=? WHERE id=?");
+            $stmt = mysqli_prepare($con, "UPDATE `grapes_web_builder` SET templateContent=?, htmlData=?, cssData=?, grapesGenId=? WHERE id=?");
             if ($stmt) {
-                mysqli_stmt_bind_param($stmt, "ss", $projectData, $grapesPageId);
+                mysqli_stmt_bind_param($stmt, "ssssi", $projectData, $html, $css, $grapesGenId, $grapesPageId);
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_affected_rows($stmt);
                 mysqli_stmt_close($stmt);
@@ -44,9 +44,9 @@ if ($grapesPageId) {
             }
         } else {
             // Insert new record
-            $stmt = mysqli_prepare($con, "INSERT INTO `grapes_web_builder` (id, templateContent, grapesPageId) VALUES (?, ?, ?)");
+            $stmt = mysqli_prepare($con, "INSERT INTO `grapes_web_builder` (id, templateContent, htmlData, cssData, grapesPageId) VALUES (?, ?, ?, ?, ?)");
             if ($stmt) {
-                mysqli_stmt_bind_param($stmt, "sss", $templateId, $projectData, $grapesGenId);
+                mysqli_stmt_bind_param($stmt, "issss", $grapesPageId, $projectData, $html, $css, $grapesGenId);
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_affected_rows($stmt);
                 mysqli_stmt_close($stmt);
