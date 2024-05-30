@@ -13,11 +13,26 @@ class WebBuilder_GrapesJSEditor extends Action {
         $this->display('grapesjs.tpl', '', '', false);
     }
 
-    function getBreadCrumbs(): array {
+    // function getBreadCrumbs(): array {
+    //     $breadcrumbs = [];
+    //     $breadcrumbs[] = new Breadcrumb('/', 'Home');
+    //     if ($this->grapesPage != null) {
+    //         $breadcrumbs[] = new Breadcrumb('', $this->grapesPage->title, true);
+    //     }
+    //     return $breadcrumbs;
+    // }
+
+    function getBreadcrumbs(): array {
         $breadcrumbs = [];
         $breadcrumbs[] = new Breadcrumb('/', 'Home');
         if ($this->grapesPage != null) {
             $breadcrumbs[] = new Breadcrumb('', $this->grapesPage->title, true);
+            if (UserAccount::userHasPermission([
+                'Administer All Basic Pages',
+                'Administer Library Basic Pages',
+            ])) {
+                $breadcrumbs[] = new Breadcrumb('/WebBuilder/GrapesPages?id=' . $this->grapesPage->id . '&objectAction=edit', 'Edit', true);
+            }
         }
         return $breadcrumbs;
     }

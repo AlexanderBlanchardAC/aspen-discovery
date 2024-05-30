@@ -9,6 +9,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.10/css/grapes.min.css" integrity="sha512-F+EUNfBQvAXDvJcKgbm5DgtsOcy+5uhbGuH8VtK0ru/N6S3VYM9OHkn9ACgDlkwoxesxgeaX/6BdrQItwbBQNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/grapesjs-blocks-basic@1.0.2/dist/index.min.js"></script>
   <script src="https://unpkg.com/grapesjs-script-editor"></script>
+  <script src="https://unpkg.com/grapesjs-plugin-forms"></script>
+  <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2"></script>
+  <script src="https://unpkg.com/grapesjs-tabs@1.0.6"></script>
+  <script src="https://unpkg.com/grapesjs-custom-code@1.0.1"></script>
+  <script src="https://unpkg.com/grapesjs-parser-postcss@1.0.1"></script>
+  <script src="https://unpkg.com/grapesjs-tooltip@0.1.7"></script>
+  <script src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"></script>
+  <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
+  <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
 
 </head>
 <body>
@@ -34,10 +43,31 @@
           storeCss: true,
           headers: { 'Content-Type': 'application/json' },
         },
-        plugins: ['gjs-blocks-basic', 'grapesjs-script-editor'],
+        plugins: [
+          'gjs-blocks-basic', 
+          'grapesjs-script-editor',
+          'grapesjs-plugin-forms',
+          'grapesjs-preset-webpage',
+          'grapesjs-tabs',
+          'grapesjs-custom-code',
+          'grapesjs-parser-postcss',
+          'grapesjs-tooltip',
+          'grapesjs-tui-image-editor',
+          'grapesjs-style-bg',
+          'grapesjs-typed',
+        ],
         pluginsOpts: {
           'gjs-blocks-basic': {},
           'grapesjs-script-editor': {},
+          'grapesjs-plugin-forms': {},
+          'grapesjs-preset-webpage': {},
+          'grapesjs-tabs': {},
+          'grapesjs-custom-code': {},
+          'grapesjs-parser-postcss': {},
+          'grapesjs-tooltip': {},
+          'grapesjs-tui-image-editor': {},
+          'grapesjs-style-bg': {},
+          'grapesjs-typed': {}
         },
       });
 
@@ -59,6 +89,7 @@
                 let pageData = {
                     templateId: templateId,
                     grapesPageId: grapesPageId,
+                    grapesGenId: grapesGenId,
                     projectData: projectData,
                     html: html,
                     css: css,
@@ -101,7 +132,7 @@
         if (data.success) {
           editor.setComponents(data.html);
           editor.setStyle(data.css);
-          editor.loadPojectData(data.projectData);
+          //editor.loadPojectData(data.projectData);
         } else {
           console.log('ERROR');
           console.error("Error loading page:", data.message);
