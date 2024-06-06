@@ -632,6 +632,14 @@ class AJAX_JSON extends Action {
 		];
 	}
 
+	function manageCookiePreferences(){
+		global $interface;
+		return [
+			'success' => true,
+			'modalBody' => $interface->fetch('AJAX/cookieManagement.tpl'),
+		];
+	}
+
 	function getBreadcrumbs(): array {
 		return [];
 	}

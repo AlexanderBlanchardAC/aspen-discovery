@@ -15831,6 +15831,21 @@ AspenDiscovery.CookieConsent = (function() {
             AspenDiscovery.showMessage("Cookie Policy", Globals.cookiePolicyHTML);
             return;
         },
+        cookieManage: function() {
+            var url = Globals.path + "/AJAX/JSON?method=manageCookiePreferences";
+            $.getJSON(url, 
+                function(data) {
+                    console.log('success:', data.result.success);
+                    console.log('DATA:', data);
+                    if(data.result.success){
+                        AspenDiscovery.showMessage("Manage Your Cookie Preferences", data.result.modalBody);
+                    } else {
+                        AspenDiscovery.showMessage("There was an error retreiving your cookie preference options.");
+                    }
+                }
+             ).fail(AspenDiscovery.ajaxFail);
+            return false;
+        },
         fetchUserCookie: function(Values) {
             document.cookie = 'cookieConsent' + '=' + encodeURIComponent(Values) + ';  path=/';
             return;
