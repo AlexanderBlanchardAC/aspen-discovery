@@ -123,16 +123,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		}
 	}
 
-    //TODO:: Work out why none of the delete options are working - all causing an AJAX error
-    //TODO:: Untangle what from info for tempaltes needs to be / is going to each table. PageType in Grapes 
-    //is getting name and sort of contents of template. 
-    //TemplateContent column is remaining null. 
-
-    // - templates - get the contents from this table for the template name that matches the one chosen
-    // - add this content to the grapes table, also add the tempalte name
-    // - add a column to both tables of templateID
-    // - create a unique id for each template when insterted to db and use this to get the correct content for the grapes table
-
 	public function getFormattedContents() {
 		require_once ROOT_DIR . '/sys/Parsedown/AspenParsedown.php';
 		$parsedown = AspenParsedown::instance();
