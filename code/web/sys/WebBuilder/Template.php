@@ -7,7 +7,6 @@ class Template extends DataObject {
     public $templateName;
     public $templateContent;
     public $templateId;
-    private $_libraries;
 
 
     public function getUniquenessFields(): array {
@@ -16,7 +15,6 @@ class Template extends DataObject {
 		];
 	}
     static function getObjectStructure($context = ''): array {
-        $libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Grapes Pages'));
 
         return [
             'id' => [
