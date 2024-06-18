@@ -6,7 +6,6 @@
   <title>Grapes JS Page Editor</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grapesjs@0.21.10/dist/css/grapes.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.10/grapes.min.js" integrity="sha512-TavCuu5P1hn5roGNJSursS0xC7ex1qhRcbAG90OJYf5QEc4C/gQfFH/0MKSzkAFil/UBCTJCe/zmW5Ei091zvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  {* <script src="https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.10/css/grapes.min.css" integrity="sha512-F+EUNfBQvAXDvJcKgbm5DgtsOcy+5uhbGuH8VtK0ru/N6S3VYM9OHkn9ACgDlkwoxesxgeaX/6BdrQItwbBQNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> *}
   <script src="https://cdn.jsdelivr.net/npm/grapesjs-blocks-basic@1.0.2/dist/index.min.js"></script>
   <script src="https://unpkg.com/grapesjs-script-editor"></script>
   <script src="https://unpkg.com/grapesjs-plugin-forms"></script>
@@ -95,8 +94,6 @@
                     css: css,
                 };  
 
-                // localStorage.setItem('pageData', JSON.stringify(pageData));
-                // console.log(projectData);
 
                 $.ajax({
                     url: '/services/WebBuilder/SavePage.php',
@@ -132,7 +129,6 @@
         if (data.success) {
           editor.setComponents(data.html);
           editor.setStyle(data.css);
-          //editor.loadPojectData(data.projectData);
         } else {
           console.log('ERROR');
           console.error("Error loading page:", data.message);
