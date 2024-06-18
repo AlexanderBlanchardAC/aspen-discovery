@@ -32,16 +32,25 @@ class Template extends DataObject {
         ];
     }
 
+    function getAdditionalObjectActions($existingObject): array {
+        $objectActions = [];
+
+        if ($existingObject instanceof Template) {
+            $objectActions[] = [
+                'text' => 'Open in Editor',
+                'url' => '/services/WebBuilder/GrapesJSTemplates?objectAction=edit&id=' . $existingObject->id,
+            ];
+        }
+        return $objectActions;
+    }
 
     function getAdditionalListActions(): array {
 		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
         $objectActions = [];
-        // $objectActions[] =
-    //     [
-    //        'text' => 'Open Editor',
-    //        'url' => '/WebBuilder/GrapesJSTemplates?objectAction=edit&id=' . $id,
-    //    ];
-    
+        $objectActions[] = [
+            'text' => 'Open in Editor',
+            'url' => '/services/WebBuilder/GrapesJSTemplates?objectAction=edit&id=' . $this->id,
+        ];
         return $objectActions;
     }
 
