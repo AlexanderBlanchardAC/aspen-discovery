@@ -3364,12 +3364,12 @@ class User extends DataObject {
 				'Administer Library Basic Pages',
 			]);
 			$sections['web_builder']->addAction(new AdminAction('Grapes Pages', 'Create pages with Grapes JS simple layout.', '/WebBuilder/GrapesPages'), [
-				'Administer All Basic Pages',
-				'Administer Library Basic Pages',
+				'Administer All Grapes Pages',
+				'Administer Library Grapes Pages',
 			]);
 			$sections['web_builder']->addAction(new AdminAction('Templates', 'Create templates with Grapes JS simple layout.', '/WebBuilder/Templates'), [
-				'Administer All Basic Pages',
-				'Administer Library Basic Pages',
+				'Administer All Grapes Pages',
+				'Administer Library Grapes Pages',
 			]);
 			$sections['web_builder']->addAction(new AdminAction('Custom Pages', 'Create custom pages with a more complex cell based layout.', '/WebBuilder/PortalPages'), [
 				'Administer All Custom Pages',

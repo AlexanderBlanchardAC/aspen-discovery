@@ -57,8 +57,8 @@ class WebBuilder_CreateTemplate extends Action {
 		if ($this->createTemplate != null) {
 			$breadcrumbs[] = new Breadcrumb('', $this->createTemplate->title, true);
 			if (UserAccount::userHasPermission([
-				'Administer All Basic Pages',
-				'Administer Library Basic Pages',
+				'Administer All Grapes Pages',
+				'Administer Library Grapes Pages',
 			])) {
 				$breadcrumbs[] = new Breadcrumb('/WebBuilder/CreateTemplates?id=' . $this->createTemplate->id . '&objectAction=createFromBlankPage', 'Edit', true);
 			}

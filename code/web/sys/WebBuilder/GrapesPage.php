@@ -23,7 +23,7 @@ class GrapesPage extends DB_LibraryLinkedObject {
 	}
 
 	static function getObjectStructure($context = ''): array {
-		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
+		$libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Grapes Pages'));
 		$templateList = Template::getTemplateList();
 		require_once ROOT_DIR . '/services/WebBuilder/Templates.php';
         $templateNames = [];
