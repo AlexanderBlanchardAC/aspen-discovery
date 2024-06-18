@@ -7,6 +7,8 @@ class Template extends DataObject {
     public $templateName;
     public $templateContent;
     public $templateId;
+    public $htmlData;
+    public $cssData;
 
 
     public function getUniquenessFields(): array {
@@ -28,6 +30,27 @@ class Template extends DataObject {
 				'type' => 'text',
 				'label' => 'Template Name',
 				'description' => 'The Name assigned to the template',
+			],
+            'templateContent' => [
+                'property' => 'templateContent',
+                'type' => 'hidden',
+                'label' => 'templateContent',
+                'description' => 'The content of the template',
+                'hideInLists' => true,
+            ],
+            'htmlData' => [
+				'property' => 'htmlData',
+				'type' => 'hidden',
+				'label' => 'htmlData',
+				'description' => 'html data',
+				'hideInLists' => true,
+			],
+			'cssData' => [
+				'property' => 'cssData',
+				'type' => 'hidden',
+				'label' => 'cssData',
+				'description' => 'css data',
+				'hideInLists' => true,
 			],
         ];
     }
