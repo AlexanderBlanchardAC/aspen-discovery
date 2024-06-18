@@ -82,8 +82,8 @@ class WebBuilder_Template extends Action {
 		if ($this->template != null) {
 			$breadcrumbs[] = new Breadcrumb('', $this->template->title, true);
 			if (UserAccount::userHasPermission([
-				'Administer All Basic Pages',
-				'Administer Library Basic Pages',
+				'Administer All Grapes Pages',
+				'Administer Library Grapes Pages',
 			])) {
 				$breadcrumbs[] = new Breadcrumb('/WebBuilder/Templates?id=' . $this->template->id . '&objectAction=edit', 'Edit', true);
 			}

@@ -28,8 +28,8 @@ class WebBuilder_GrapesJSEditor extends Action {
         if ($this->grapesPage != null) {
             $breadcrumbs[] = new Breadcrumb('', $this->grapesPage->title, true);
             if (UserAccount::userHasPermission([
-                'Administer All Basic Pages',
-                'Administer Library Basic Pages',
+                'Administer All Grapes Pages',
+                'Administer Library Grapes Pages',
             ])) {
                 $breadcrumbs[] = new Breadcrumb('/WebBuilder/GrapesPages?id=' . $this->grapesPage->id . '&objectAction=edit', 'Edit', true);
             }

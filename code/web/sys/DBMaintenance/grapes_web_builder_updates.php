@@ -290,7 +290,26 @@ function getGrapesWebBuilderUpdates() {
 			'sql' => [
 				"ALTER TABLE grapes_web_builder RENAME COLUMN cddData to cssData",
 			],
-		],		
+		],	
+		'grapes_js_web_builder_roles' => [
+			'title' => 'Grapes JS Web Builder Roles and Permissions',
+			'description' => 'Setup roles and permissions for the Grapes JS Web Builder Pages',
+			'sql' => [
+				"INSERT INTO permissions (sectionName, name, requiredModule, weight, description) VALUES
+				('Web Builder', 'Administer All Grapes Pages', 'Web Builder', 150, 'Allows the user to define grapes pages for all libraries.'),
+				('Web Builder', 'Administer Library Grapes Pages', 'Web Builder', 151, 'Allows the user to define grapes pages for their home library.')
+				",
+			],
+		],
+		'grapes_js_web_builder_roles_for_permissions' => [
+			'title' => 'Grapes JS Web Builder Roles',
+			'description' => 'Setup roles for Grapes Js Pages',
+			'sql' => [
+				"INSERT INTO role_permissions(roleId, permissionId) VALUES ((SELECT roleId from roles where name='opacAdmin'), (SELECT id from permissions where name='Administer All Grapes Pages'))",
+				"INSERT INTO role_permissions(roleId, permissionId) VALUES ((SELECT roleId from roles where name='Web Admin'), (SELECT id from permissions where name='Administer All Grapes Pages'))",
+				"INSERT INTO role_permissions(roleId, permissionId) VALUES ((SELECT roleId from roles where name='Library Web Admin'), (SELECT id from permissions where name='Administer Library Grapes Pages'))"
+			],
+		],
 	];
 }
 

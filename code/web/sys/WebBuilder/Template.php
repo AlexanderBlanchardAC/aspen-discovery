@@ -16,7 +16,7 @@ class Template extends DataObject {
 		];
 	}
     static function getObjectStructure($context = ''): array {
-        $libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Basic Pages'));
+        $libraryList = Library::getLibraryList(!UserAccount::userHasPermission('Administer All Grapes Pages'));
 
         return [
             'id' => [
