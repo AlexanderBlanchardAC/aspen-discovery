@@ -917,12 +917,22 @@ class WebBuilder_AJAX extends JSON_Action {
 	}	
 
 	function saveAsTemplate(){
-        $newGrapesTemplate = json_decode(file_get_contents("php://input"), true);
-        $html = $newGrapesTemplate['html'];
-        $template = new Template();
-        $template->htmlData = $html;
-        $template->insert();
+      require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
+	  $newGrapesPageContent = json_decode(file_get_contents("php://input"), true);
+		$templateId = $newGrapesPageContent['templateId'];
+		$html = $newGrapesPageContent['html'];
+		$css = $newGrapesPageContent['css'];
+		$projectData = json_encode($newGrapesPageContent['projectData']);
 
+		$template = new Template();
+		$template->id = $templateId;
+
+		if ($template->find(true)) {
+			$template->templateContent = $projectData;
+			$template->htmlData = $html;
+			$template->cssData = $css;
+		}
+		$template->update();
     }
 
 	function saveAsPage() {

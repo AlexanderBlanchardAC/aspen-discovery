@@ -97,10 +97,11 @@
                     css: css,
                 };
                 
-
+                var url = Globals.path + '/WebBuilder/AJAX?method=saveAsTemplate';
                 $.ajax({
-                    url: '/services/WebBuilder/SaveTemplate.php',
-                    action: 'saveAsTemplate',
+                    // url: '/services/WebBuilder/SaveTemplate.php',
+                    //action: 'saveAsTemplate',
+                    url: url,
                     type: "POST",
                     dataType: "json",
                     data: JSON.stringify({
