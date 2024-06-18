@@ -94,10 +94,9 @@
                     css: css,
                 };  
 
-
+                var url = Globals.path + '/WebBuilder/AJAX?method=saveAsPage';
                 $.ajax({
-                    url: '/services/WebBuilder/SavePage.php',
-                    action: 'saveAsPage',
+                    url: url,
                     type: "POST",
                     dataType: "json",
                     data: JSON.stringify({
