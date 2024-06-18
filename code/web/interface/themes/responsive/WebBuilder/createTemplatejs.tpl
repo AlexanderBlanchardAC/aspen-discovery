@@ -96,8 +96,7 @@
                     html: html,
                     css: css,
                 };
-                // localStorage.setItem('pageData', JSON.stringify(pageData));
-                // console.log(projectData);
+                
 
                 $.ajax({
                     url: '/services/WebBuilder/SaveTemplate.php',
