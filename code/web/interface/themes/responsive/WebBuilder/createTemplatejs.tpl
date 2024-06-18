@@ -135,6 +135,12 @@
             });
         });
     </script>
+    <style>
+    .gjs-editor-cont {
+        z-index: 1;
+        position: relative;
+    }
+    </style>
 </body>
 
 </html>
