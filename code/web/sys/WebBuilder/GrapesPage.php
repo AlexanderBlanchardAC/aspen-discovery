@@ -308,6 +308,28 @@ class GrapesPage extends DB_LibraryLinkedObject {
     public function canEdit(): bool {
         return false;
     }
+
+	function getAdditionalObjectActions($existingObject): array{
+		$objectActions = [];
+
+		if ($existingObject instanceof GrapesPage) {
+			$objectActions[] = [
+				'text' => 'Open in Editor',
+				'url' => '/services/WebBuilder/GrapesJSTemplates?objectAction=edit&id=' . $existingObject->id,
+			];
+		}
+		return $objectActions;
+	}
+
+	function getAdditionalListActions(): array {
+		require_once ROOT_DIR . '/services/WebBuilder/GrapesPages.php';
+		$objectActions = [];
+		$objectActions[] = [
+			'text' => 'Open in Editor',
+			'url' => '/services/WebBuilder/GrapesJSTemplates?objectAction=edit&id=' . $this->id,
+		];
+		return $objectActions;
+	}
 }
 
 
