@@ -1,5 +1,4 @@
 <?php
-// require_once ROOT_DIR . '/sys/DBMaintenance/grapes_web_builder_updates.php';
 require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
 require_once ROOT_DIR . '/services/Admin/ObjectEditor.php';
 class WebBuilder_Templates  extends ObjectEditor{
@@ -34,16 +33,6 @@ class WebBuilder_Templates  extends ObjectEditor{
 
 	function getIdKeyColumn(): string {
 		return 'id';
-	}
-
-	function getTemplates() {
-        addTemplatesToDatabase();
-
-        $template = new Template();
-        $template->find();
-        $templates = $template->fetchAll();
-
-		return $templates;
 	}
 
     function getAllObjects($page, $recordsPerPage): array {
