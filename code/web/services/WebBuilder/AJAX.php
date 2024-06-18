@@ -925,5 +925,25 @@ class WebBuilder_AJAX extends JSON_Action {
 
     }
 
+	function saveAsPage() {
+		require_once ROOT_DIR .  '/sys/WebBuilder/GrapesPage.php';
+		$newGrapesPageContent = json_decode(file_get_contents("php://input"), true);
+		$grapesPageId = $newGrapesPageContent['grapesPageId'];
+		$grapesGenId = $newGrapesPageContent['grapesGenId'];
+		$templateId = $newGrapesPageContent['templateId'];
+		$html = $newGrapesPageContent['html'];
+		$css = $newGrapesPageContent['css'];
+		$grapesPage = new GrapesPage();
+		$grapesPage->id = $grapesPageId;
+		$projectData = json_encode($newGrapesPageContent['projectData']);
+
+		if ($grapesPage->find(true)) {
+			$grapesPage->grapesGenId = $grapesGenId;
+			$grapesPage->templateContent = $projectData;
+			$grapesPage->htmlData = $html;
+			$grapesPage->cssData = $css;
+		}
+		$grapesPage->update();
+	}
 	
 }
