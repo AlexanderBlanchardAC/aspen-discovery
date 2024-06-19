@@ -418,13 +418,6 @@ AspenDiscovery.WebBuilder = function () {
 			return false;
 		},
 
-		getOpenTemplateModal: function() {
-
-		},
-		templateModal: function() {
-			var url = Globals.path + '/WebBuilder/AJAX';
-			
-		}
 		
 	};
 }(AspenDiscovery.WebBuilder || {});
