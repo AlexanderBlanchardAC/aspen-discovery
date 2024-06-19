@@ -967,12 +967,33 @@ class WebBuilder_AJAX extends JSON_Action {
 		$grapesPage->id = $grapesPageId;
 
 		if ($grapesPage->find(true)) {
-		
-			$response['success'] = true;
-			$response['html'] = $grapesPage->htmlData;
-			$response['css'] = $grapesPage->cssData;
-			$response['projectData'] = json_decode($grapesPage->templateContent, true);
-			
+			if(empty($grapesPage->templateContent) && $grapesPage->templatesSelect !== null) {
+				$template = new Template();
+				$template->id = $grapesPage->templatesSelect;
+
+				if ($template->find(true)) {
+					$response['success'] = true;
+					$response['html'] = $template->htmlData;
+					$response['css'] = $template->cssData;
+					$response['projectData'] = json_decode($template->templateContent, true);
+
+					$grapesPage->templateContent = $template->templateContent;
+					$grapesPage->htmlData = $tempalte->htmlData;
+					$grapesPage->cssData = $template->cssData;
+					$grapesPage->update();
+				} else {
+					$response['success'] = false;
+					$response['message'] = 'Template not found';
+				}
+			} elseif ($grapesPage->templateContent !== null) {
+				$response['success'] = true;
+				$response['html'] = $grapesPage->htmlData;
+				$response['css'] = $grapesPage->cssData;
+				$response['projectData'] = json_decode($grapesPage->templateContent, true);
+			} else {
+				$response['success'] = false;
+				$response['message'] = 'Template Content and Template Select are both empty';
+			}
 		} else {
 			$response['success'] = false;
 			$response['message'] = 'Page not found';
@@ -980,4 +1001,5 @@ class WebBuilder_AJAX extends JSON_Action {
 		echo json_encode($response);
 		exit();
 	}
+	
 }
