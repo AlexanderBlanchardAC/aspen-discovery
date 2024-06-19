@@ -1001,5 +1001,32 @@ class WebBuilder_AJAX extends JSON_Action {
 		echo json_encode($response);
 		exit();
 	}
+
+	function loadGrapesTemplate() {
+		require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
+
+		$templateId = $_GET['id'];
+		$response = [];
+
+		$template = new Template();
+		$template->id = $templateId;
+
+		if ($template->find(true)) {
+			if ($template->htmlData !== null && $template->cssData !== null) {
+				$response['success'] = true;
+				$response['html'] = $template->htmlData;
+				$response['css'] = $template->cssData;
+				$response['projectData'] = json_decode($template->templateContent, true);
+			} else {
+				$response['success'] = false;
+				$response['message'] = 'Template has no data.';
+			}
+		} else {
+			$response['success'] = false;
+			$response['message'] = 'Template not found.';
+		}
+		echo json_encode($response);
+		exit();
+	}
 	
 }
