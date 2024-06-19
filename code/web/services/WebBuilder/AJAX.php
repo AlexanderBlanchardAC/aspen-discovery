@@ -977,15 +977,15 @@ class WebBuilder_AJAX extends JSON_Action {
 					$response['css'] = $template->cssData;
 					$response['projectData'] = json_decode($template->templateContent, true);
 
-					$grapesPage->templateContent = $template->templateContent;
-					$grapesPage->htmlData = $tempalte->htmlData;
+					$grapesPage->templateContent = json_decode($template->templateContent, true);
+					$grapesPage->htmlData = $template->htmlData;
 					$grapesPage->cssData = $template->cssData;
 					$grapesPage->update();
 				} else {
 					$response['success'] = false;
 					$response['message'] = 'Template not found';
 				}
-			} elseif ($grapesPage->templateContent !== null) {
+			} elseif (!empty($grapesPage->templateContent)) {
 				$response['success'] = true;
 				$response['html'] = $grapesPage->htmlData;
 				$response['css'] = $grapesPage->cssData;

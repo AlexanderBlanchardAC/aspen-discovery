@@ -132,6 +132,7 @@
             if (data.success) {
               editor.setComponents(data.html);
               editor.setStyle(data.css);
+              editor.loadProjectData(data.projectData);
             } else {
               console.log('Error Loading Page:', data.message);
             }
