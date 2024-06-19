@@ -213,7 +213,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$ret = parent::delete($useWhere);
 		if ($ret && !empty($this->id)) {
 			$this->clearLibraries();
-			$this->clearTemplateContent();
 		}
 		return $ret;
 	}
@@ -315,12 +314,6 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		$libraryLink = new LibraryGrapesPage();
 		$libraryLink->grapesPageId = $this->id;
 		return $libraryLink->delete(true);
-	}
-
-	private function clearTemplateContent() {
-		$template = new Template();
-		$template->id = $this->id;
-		return $template->delete(true);
 	}
 
 
