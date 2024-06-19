@@ -123,17 +123,44 @@
       const templateId = urlParams.get('templateId'); 
       const grapesPageId = urlParams.get('id');
       console.log('LOADING');
+      var url = Globals.path + '/WebBuilder/AJAX?method=loadGrapesPage&id=' + grapesPageId + '&templateId=' + templateId;
+
   
-      $.get('/services/WebBuilder/LoadPage.php?id=' + grapesPageId + 'templateId=' + templateId, function(data) {
-        if (data.success) {
-          editor.setComponents(data.html);
-          editor.setStyle(data.css);
-        } else {
-          console.log('ERROR');
-          console.error("Error loading page:", data.message);
+      // $.get('/services/WebBuilder/LoadPage.php?id=' + grapesPageId + 'templateId=' + templateId, function(data) {
+      //   $.get(url, function(data){
+      //   if (data.success) {
+      //     console.log(data);
+      //     // editor.setComponents(data.html);
+      //     // editor.setStyle(data.css);
+      //   } else {
+      //     console.log('ERROR');
+      //     console.error("Error loading page:", data.message);
+      //   }
+      // });
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+          try {
+            console.log('Response data: ', data);
+            if (data.success) {
+              console.log('Loaded');
+              console.log(data);
+              editor.setComponents(data.html);
+              editor.setStyle(data.css);
+            } else {
+              console.log('ERROR');
+              console.log('ERROR LOADING PAGE:', data.message);
+            }
+          } catch (e) {
+            console.error("Failed to parse JSON response:", e);
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error("AJAX call failed:", textStatus, errorThrown);
         }
       });
-    })
+    });
     
   </script>
   <style>

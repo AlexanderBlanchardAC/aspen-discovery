@@ -55,6 +55,11 @@ class Template extends DataObject {
         ];
     }
 
+    public function findById($id) {
+        $this->id = $id;
+        return $this->find(true);
+    }
+
     function getAdditionalObjectActions($existingObject): array {
         $objectActions = [];
 
