@@ -955,5 +955,29 @@ class WebBuilder_AJAX extends JSON_Action {
 		}
 		$grapesPage->update();
 	}
+
+	function loadGrapesPage() {
+		require_once ROOT_DIR . '/sys/WebBuilder/GrapesPage.php';
+		require_once ROOT_DIR . '/sys/WebBuilder/Template.php';
 	
+		$grapesPageId = $_GET['id'];
+		$response = [];
+
+		$grapesPage = new GrapesPage();
+		$grapesPage->id = $grapesPageId;
+
+		if ($grapesPage->find(true)) {
+		
+			$response['success'] = true;
+			$response['html'] = $grapesPage->htmlData;
+			$response['css'] = $grapesPage->cssData;
+			$response['projectData'] = json_decode($grapesPage->templateContent, true);
+			
+		} else {
+			$response['success'] = false;
+			$response['message'] = 'Page not found';
+		}
+		echo json_encode($response);
+		exit();
+	}
 }

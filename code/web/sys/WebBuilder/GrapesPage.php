@@ -154,6 +154,18 @@ class GrapesPage extends DB_LibraryLinkedObject {
 		}
 	}
 
+	public function findById($id) {
+		$this->id = $id;
+		return $this->find(true);
+	}
+
+	public function updatePage($templateContent, $htmlData, $cssData) {
+		$this->templateContent = $templateContent;
+		$this->htmlData = $htmlData;
+		$this->cssData = $cssData;
+		return $this->update();
+	}
+
 	public function getTplFilePath() {
 		$relativePath = 	'code/web/interface/themes/responsive/WebBuilder/grapesjs.tpl';
 		return $relativePath;
