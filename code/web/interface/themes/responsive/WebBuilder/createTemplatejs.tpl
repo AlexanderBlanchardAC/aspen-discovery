@@ -124,13 +124,34 @@
         editor.on('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const templateId = urlParams.get('id');
-            $.get('/services/WebBuilder/LoadTemplate.php?id=' + templateId, function(data) {
-                if (data.success) {
-                    editor.setComponents(data.html);
-                    editor.setStyle(data.css);
-                    editor.loadProjectData(data.projectData);
-                } else {
-                    console.error('Error loading template:', data.message);
+            const url = Globals.path + '/WebBuilder/AJAX?method=loadGrapesTemplate&id=' + templateId;
+            // $.get('/services/WebBuilder/LoadTemplate.php?id=' + templateId, function(data) {
+            //     if (data.success) {
+            //         editor.setComponents(data.html);
+            //         editor.setStyle(data.css);
+            //         editor.loadProjectData(data.projectData);
+            //     } else {
+            //         console.error('Error loading template:', data.message);
+            //     }
+            // });
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data) {
+                    try {
+                        if (data.success) {
+                            editor.setComponents(data.html);
+                            editor.setStyle(data.css);
+                            editor.loadProjectData(data.projectData);
+                        } else {
+                            console.log('Error Loading Template: ', data.message);
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse JSON response: ", e);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("AA=JAX call failed: ", textStatus, errorThrown);
                 }
             });
         });
