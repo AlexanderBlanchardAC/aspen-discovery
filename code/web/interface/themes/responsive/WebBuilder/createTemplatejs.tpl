@@ -99,8 +99,6 @@
                 
                 var url = Globals.path + '/WebBuilder/AJAX?method=saveAsTemplate';
                 $.ajax({
-                    // url: '/services/WebBuilder/SaveTemplate.php',
-                    //action: 'saveAsTemplate',
                     url: url,
                     type: "POST",
                     dataType: "json",
@@ -125,15 +123,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const templateId = urlParams.get('id');
             const url = Globals.path + '/WebBuilder/AJAX?method=loadGrapesTemplate&id=' + templateId;
-            // $.get('/services/WebBuilder/LoadTemplate.php?id=' + templateId, function(data) {
-            //     if (data.success) {
-            //         editor.setComponents(data.html);
-            //         editor.setStyle(data.css);
-            //         editor.loadProjectData(data.projectData);
-            //     } else {
-            //         console.error('Error loading template:', data.message);
-            //     }
-            // });
+        
             $.ajax({
                 url: url,
                 type: 'GET',
