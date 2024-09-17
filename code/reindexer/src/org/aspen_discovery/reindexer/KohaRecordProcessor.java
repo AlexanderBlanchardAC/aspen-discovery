@@ -327,7 +327,7 @@ class KohaRecordProcessor extends IlsRecordProcessor {
 				boolean isOneClickDigital = false;
 				if (itemField.getSubfield(settings.getITypeSubfield()) != null){
 					String iType = itemField.getSubfield(settings.getITypeSubfield()).getData().toLowerCase().trim();
-					if (iType.equals("ebook") || iType.equals("ebk") || iType.equals("eaudio") || iType.equals("evideo") || iType.equals("online") || iType.equals("oneclick") || iType.equals("eaudiobook") || iType.equals("download") || iType.equals("ELECTRONIC RESOURCES")){
+					if (iType.equals("ebook") || iType.equals("ebk") || iType.equals("eaudio") || iType.equals("evideo") || iType.equals("online") || iType.equals("oneclick") || iType.equals("eaudiobook") || iType.equals("download") || iType.equals("ELECTRONIC RESOURCES") || iType.equals("eresource") || iType.equals("ERESOURCE")){
 						isEContent = true;
 						String sourceType = getSourceType(record, itemField);
 						if (sourceType != null){
