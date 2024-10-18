@@ -6936,7 +6936,6 @@ class MyAccount_AJAX extends JSON_Action {
 				$totalRecords = 0;
 			} else {
 				$userList->id = $listId;
-				// $totalRecords = $userList->numValidListItems();
 				if (!$userList->find(true)) {
 					$result['success'] = false;
 					$result['message'] = translate([
