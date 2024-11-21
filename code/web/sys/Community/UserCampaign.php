@@ -100,4 +100,53 @@ class UserCampaign extends DataObject {
         return $milestoneCompletionStatus;
     }
 
+    function getTotalEnrollmentsThisMonth() {
+        $userCampaign = new UserCampaign();
+
+        $startOfMonth = date('Y-m-01');
+        $endOfMonth = date('Y-m-t');
+
+        $userCampaign->whereAdd("enrollmentDate >= '$startOfMonth'");
+        $userCampaign->whereAdd("enrollmentDate <= '$endOfMonth'");
+
+        var_dump($userCampaign->count());
+        return $userCampaign->count();
+    }
+
+    function getTotalEnrollmentsLastMonth() {
+        $userCampaign = new UserCampaign();
+
+        $lastMonthStart = date('Y-m-01', strtotime('first day of last month'));
+        $lastMonthEnd = date('Y-m-t', strtotime('last day if last month'));
+
+        $userCampaign->whereAdd("enrollmentDate >= '$lastMonthStart'");
+        $userCampaign->whereAdd("enrollmentDate <= '$lastMonthEnd'");
+
+        return $userCampaign->count();
+    }
+
+    function getTotalEnrollmentsThisYear() {
+        $userCampaign = new UserCampaign();
+
+        $startOfYear = date('Y-01-01');
+        $today = date('Y-m-d');
+
+        $userCampaign->whereAdd("enrollmentDate >= '$startOfYear'");
+        $userCampaign->whereAdd("enrollmentDate <= '$today'");
+
+        return $userCampaign->count();
+    }
+
+    function getTotalUnenrollmentsThisMonth() {
+        $userCampaign = new UserCampaign();
+
+        $startOfMonth = date('Y-m-01');
+        $endOfMonth = date('Y-m-t');
+
+        $userCampaign->whereAdd("unEnrollmentDate >= '$startOfMonth'");
+        $userCampaign->whereAdd("unEnrollmentDate <= '$endOfMonth'");
+
+        return $userCampaign->count();
+    }
+
 }

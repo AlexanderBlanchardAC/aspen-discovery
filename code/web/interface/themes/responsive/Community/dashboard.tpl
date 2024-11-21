@@ -26,17 +26,52 @@
                     </select>
             </div>
         </div>
+        <h2 class="dashboardCategoryLabel">{translate text="All Campaigns" isAdminFacing=true}&nbsp;
+        <a href="/Community/UsageGraphs?stat=allCampaigns" >
+            <i class="fas fa-chart-line"></i></h2>
+        </a>
+        <div class="row">
+            <div class="dashboardCategory col-sm-6">
+                <div class="row">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <h2 class="dashboardCategoryLabel">{translate text="Enrollments" isAdminFacing=true} <a href="/ILS/UsageGraphs?stat=userLogins&instance={$selectedInstance}" title="{translate text="Show User Logins Graph" inAttribute="true" isAdminFacing=true}"><i class="fas fa-chart-line"></i></a></h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-tn-6">
+                        <div class="dashboardLabel">{translate text="This Month" isAdminFacing=true}</div>
+                        <div class="dashboardValue">{$totalEnrollmentsThisMonth}</div>
+                    </div>
+                    <div class="col-tn-6">
+                        <div class="dashboardLabel">{translate text="Last Month" isAdminFacing=true}</div>
+                        <div class="dashboardValue">{$totalEnrollmentsLastMonth}</div>
+                    </div>
+                    <div class="col-tn-6">
+                        <div class="dashboardLabel">{translate text="This Year" isAdminFacing=true}</div>
+                        <div class="dashboardValue">{$totalEnrollmentsThisYear}</div>
+                    </div>
+                    <div class="col-tn-6">
+                        <div class="dashboardLabel">{translate text="All Time" isAdminFacing=true}</div>
+                        <div class="dashboardValue">{$activeUsersAllTime.$profileId.totalUsers}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="campaignsList">
             <div class="dashboardCategory row" style="border: 1px solid #3174AF;padding:0 10px 10px 10px; margin-bottom: 10px;">
 
                 <div class="col-sm-12">
-                    <h2 class="dashboardCategoryLabel">{translate text="All Campaigns" isAdminFacing=true}</h2>
+                   
                     {foreach from=$campaigns item=campaign}
                         <div style="border-bottom: 2px solid #3174AF;padding: 10px; margin-bottom; 10px;">
 
                             <h5 style="font-weight:bold;">
                                 <a href="/Community/CampaignTable?id={$campaign->id}">
                                     {translate text=$campaign->name isAdminFacing=true}
+                                </a>
+                                &nbsp;
+                                <a href="/Community/UsageGraphs?stat={$campaign->id}">
+                                    <i class="fas fa-chart-line"></i>
                                 </a>
                             </h5>
 

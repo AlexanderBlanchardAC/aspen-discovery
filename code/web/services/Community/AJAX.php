@@ -125,4 +125,10 @@ class Community_AJAX extends JSON_Action {
         echo json_encode($response);
         exit;
     }
+
+    public function exportUsageData() {
+        require_once ROOT_DIR . '/services/Community/UsageGraphs.php';
+        $campaignUsageGraph = new Community_UsageGraphs();
+        $campaignUsageGraph->buildCSV();
+    }
 }

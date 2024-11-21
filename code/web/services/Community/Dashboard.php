@@ -32,11 +32,33 @@ class Community_Dashboard extends Admin_Dashboard {
         $users = $campaign->getAllUsersInCampaigns();
         $interface->assign('users', $users);
 
+        $totalEnrollmentsThisMonth = $userCampaign->getTotalEnrollmentsThisMonth();
+        $interface->assign('totalEnrollmentsThisMonth', $totalEnrollmentsThisMonth);
+
+        $totalEnrollmentsLastMonth = $userCampaign->getTotalEnrollmentsLastMonth();
+        $interface->assign('totalEnrollmentsLastMonth', $totalEnrollmentsLastMonth);
+
+        $totalEnrollmentsThisYear = $userCampaign->getTotalEnrollmentsThisYear();
+        $interface->assign('totalEnrollmentsThisYear', $totalEnrollmentsThisYear);
+
         $userCampaigns = [];
         $campaignMilestones = [];
         $userCampaignMilestones = [];
 
+        // Current Month start and end
+        // $startOfMonth = date('Y-m-01');
+        // $endOfMonth = date('Y-m-t');
+        // $enrollmentsThisMonth = [];
+        // $unenrollmentsThisMonth = [];
+
         foreach ($campaigns as $campaign) {
+            //Count which enrollements for this campaign occurred this month
+            // $userCampaign = new UserCampaign();
+            // $userCampaign->campaignId = $campaign->id;
+            // $userCampaign->whereAdd("DATA(enrollmentDate) >= '$startOfMonth'");
+            // $userCampaign->whereAdd("DATE(enrollmentDate) <= '$endOfMonth'");
+            // $enrollmentsThisMonth[$campaign->id] = $userCampaign->count();
+
             $milestones = CampaignMilestone::getMilestoneByCampaign($campaign->id);
             $campaignMilestones[$campaign->id] = $milestones;
 
