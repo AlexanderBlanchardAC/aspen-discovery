@@ -8360,7 +8360,6 @@ AspenDiscovery.Account = (function () {
 			}
 		},
 		unenroll: function (campaignId, userId) {
-			console.log('unenroll');
 			if (Globals.loggedIn) {
 				var url = Globals.path + "/MyAccount/AJAX";
 				var params = {
@@ -16720,7 +16719,6 @@ AspenDiscovery.CommunityEngagement = function() {
      
             $.getJSON(url, params, 
                 function(data) {
-                    console.log(data);
                     if (data.success) {
                         $('#filteredCampaign').html(data.html);
                         filteredCampaign.style.display = "block"; 
@@ -16733,6 +16731,24 @@ AspenDiscovery.CommunityEngagement = function() {
                     console.error('Error retrieving campaign data.');
                 });
         
+        },
+        filterLeaderboard: function() {
+            var selectedCampaignId = document.getElementById("campaign_id").value;
+            var url = Globals.path + "/Community/AJAX?method=filterLeaderboardCampaigns";
+            var params = {
+                campaignId: selectedCampaignId
+            }
+
+
+           $.getJSON(url, params, function(data) {
+                if (data.success) {
+                    $('#leaderboard-table').html(data.html);
+                } else {
+                    console.log("Failed to retrieve leaderboard data");
+                }
+           }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+           });
         }
     }
     

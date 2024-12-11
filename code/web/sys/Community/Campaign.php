@@ -654,4 +654,123 @@ class Campaign extends DataObject {
             unset($this->_availableMilestones);
         }
     }
+
+    /**
+     * Return an overall leaderboard based on the number of milestones completed by each user across all campaigns.
+     * 
+     * @return array An array of users ranked by the number of completed milestones.
+     */
+    public function getOverallLeaderboard() {
+        $userCampaign = new UserCampaign();
+        $users = $this->getAllUsersInCampaigns();
+        $leaderboard = [];
+
+        foreach ($users as $user) {
+            $totalCompletedMilestones = $userCampaign->calculateUserCompletedMilestones($user->id);
+            $leaderboard[] = [
+                'user' => $user->username,
+                'completedMilestones' => $totalCompletedMilestones
+            ];
+        }
+
+        usort($leaderboard, function ($a, $b) {
+            if ($b['completedMilestones'] !== $a['completedMilestones']) {
+                return $b['completedMilestones'] <=> $a['completedMilestones'];
+            }
+            return strcasecmp($a['user'], $b['user']);
+        });
+
+        $currentRank = 1;
+        $previousRankValue = null;
+
+        foreach ($leaderboard as $index => $entry) {
+            if ($entry['completedMilestones'] === 0) {
+                $leaderboard[$index]['rankDisplayed'] = '-';
+                continue;
+            }
+            if ($entry['completedMilestones'] !== $previousRankValue) {
+                $currentRank = $index + 1;
+                $previousRankValue = $entry['completedMilestones'];
+            }
+            $leaderboard[$index]['rankDisplayed'] = $this->getRankDisplayed($currentRank);
+        }
+        return $leaderboard;
+        
+    }
+
+    /**
+     * Return a leaderboard for each individual campaign based on the number of milestones completed by the user.
+     * 
+     * @param int $campaignId The ID of the campaign for which to fetch the leaderboard.
+     * @return array An array of users ranked by the number of completed milestones.
+     *  
+     */
+    public function getLeaderboardByCampaign($campaignId) {
+        $userCampaign = new UserCampaign();
+        $leaderboard = [];
+        $userCampaignRecords = [];
+
+       if (!$campaignId) {
+        return [];
+       }
+
+       $userCampaign->whereAdd("campaignId = '$campaignId'");
+       $userCampaign->find();
+       while ($userCampaign->fetch()) {
+        $userCampaignRecords[] = clone $userCampaign;
+       }
+
+       foreach ($userCampaignRecords as $userCampaignRecord) {
+            $milestoneCompletionStatus = $userCampaignRecord->checkMilestoneCompletionStatus();
+            $userId = $userCampaignRecord->userId;
+
+            $user = new User();
+            $user->id = $userId;
+            if (!$user->find(true)) {}
+
+            $completedMilestones = count(array_filter($milestoneCompletionStatus, function($status) {
+                return $status === true;
+            }));
+
+            $leaderboard[] = [
+                'user' => $user->username,
+                'completedMilestones' => $completedMilestones,
+            ];
+       }
+       usort($leaderboard, function($a, $b) {
+        if ($b['completedMilestones'] !== $a['completedMilestones']) {
+            return $b['completedMilestones']<=> $a['completedMilestones'];
+        }
+
+        return $a['user']<=> $b['user'];
+       });
+       //Add displayed rank after sorting, skip users with 0 completed milestones
+       $currentRank = 1;
+       $previousRankValue = null;
+       foreach ($leaderboard as $index =>$entry) {
+            if ($entry['completedMilestones'] === 0) {
+                $leaderboard[$index]['rankDisplayed'] = '-';
+                continue;
+            }
+            if ($entry['completedMilestones'] !== $previousRankValue) {
+                $currentRank = $index + 1;
+                $previousRankValue = $entry['completedMilestones'];
+            }
+            $leaderboard[$index]['rankDisplayed'] = $this->getRankDisplayed($currentRank);
+       }
+       return $leaderboard;
+    }
+
+    private function getRankDisplayed($completedMilestones) {
+        $suffix = 'th';
+
+        if ($completedMilestones % 10 == 1 && $completedMilestones % 100 != 11) {
+            $suffix= 'st';
+        } elseif ($completedMilestones % 10 == 2 && $completedMilestones % 100 != 12) {
+            $suffix = 'nd';
+        } elseif ($completedMilestones % 10 == 3 && $completedMilestones % 100 != 13) {
+            $suffix = 'rd';
+        }
+        return $completedMilestones . $suffix;
+    }
 }
