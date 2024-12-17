@@ -573,11 +573,12 @@ class Campaign extends DataObject {
                 $campaignReward = new Reward();
                 $campaignReward->id = $campaign->campaignReward;
                 if ($campaignReward->find(true)) {
+                    $pastCampaignList[$campaign->id]->rewardId = $campaignReward->id;
                     $pastCampaignList[$campaign->id]->rewardName = $campaignReward->name;
                     $pastCampaignList[$campaign->id]->rewardType = $campaignReward->rewardType;
                     $pastCampaignList[$campaign->id]->badgeImage = $campaignReward->getDisplayUrl();
+                    $pastCampaignList[$campaign->id]->shareImage = $campaignReward->getShareUrl();
                 }
-    
                 // Fetch campaign milestones and their rewards using mapping
                 $milestones = CampaignMilestone::getMilestoneByCampaign($campaign->id);
                 $pastCampaignList[$campaign->id]->milestones = $milestones;

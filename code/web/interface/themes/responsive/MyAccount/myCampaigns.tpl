@@ -293,7 +293,28 @@
                             {if $campaign->rewardType === 1}
                                 <img src="{$campaign->badgeImage}" alt="{$campaign->rewardName}" width="100" height="100"/>
                             {/if}<br>
-                             {if $campaign->campaignRewardGiven}
+                             {if $campaign->campaignRewardGiven && $campaign->rewardType ===1}
+                                <strong>{translate text="Reward Received"}</strong><br>
+                                <a 
+                                    href="https://www.facebook.com/sharer/sharer.php?u=http://localhost/{$campaign->shareImage}&quote={$campaign->rewardName}"
+                                    target="_blank"
+                                    title="{translate text="Share on Facebook" inAttribute=true isPublicFacing=true}"
+                                    aria-label="{translate text="Share on Facebook" isPublicFacing=true inAttribute=true}"
+                                >
+                                    <i class="fab fa-facebook-square fa-2x fa-fw"></i>
+                                </a>
+                                <a 
+                                    href="https://twitter.com/intent/tweet?url={$campaign->badgeImage}&text={translate text="My Badge!"}"
+                                    target="_blank"
+                                    title="{translate text="Share on Twitter" inAttribute=true isPublicFacing=true}"
+                                    aria-label="{translate text="Share on Twitter" isPublicFacing=true inAttribute=true}"
+                                >
+                                    <i class="fab fa-twitter-square fa-2x fa-fw"></i>
+                                </a>
+                                <a href="http://www.pinterest.com/pin/create/button/?url={$campaign->shareImage}&media={$campaign->shareImage}&description=Pin%20on%20Pinterest" target="_blank" title="{translate text="Pin on Pinterest" inAttribute=true isPublicFacing=true}"  aria-label="{translate text="Pin on Pinterest" isPublicFacing=true inAttribute=true}">
+				                    <i class="fab fa-pinterest-square fa-2x fa-fw"></i>
+			                    </a>
+                            {elseif $campaignRewardGiven}
                                 <strong>{translate text="Reward Received"}</strong>
                              {/if}
                              </td>
