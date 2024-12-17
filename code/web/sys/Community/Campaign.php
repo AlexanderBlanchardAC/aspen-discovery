@@ -264,11 +264,16 @@ class Campaign extends DataObject {
         return $this->_availableMilestones;
     }
 
-    public function getRewardName() {
+    public function getRewardDetails() {
         $reward = new Reward();
         $reward->id = $this->campaignReward;
         if ($reward->find(true)) {
-            return $reward->name;
+            return [
+                'name' =>$reward->name,
+                'description' => $reward->description,
+                'rewardType' => (string)$reward->rewardType,
+                'badgeImage' => $reward->badgeImage,
+            ];
         }
         return null;
     }
@@ -569,6 +574,8 @@ class Campaign extends DataObject {
                 $campaignReward->id = $campaign->campaignReward;
                 if ($campaignReward->find(true)) {
                     $pastCampaignList[$campaign->id]->rewardName = $campaignReward->name;
+                    $pastCampaignList[$campaign->id]->rewardType = $campaignReward->rewardType;
+                    $pastCampaignList[$campaign->id]->badgeImage = $campaignReward->getDisplayUrl();
                 }
     
                 // Fetch campaign milestones and their rewards using mapping

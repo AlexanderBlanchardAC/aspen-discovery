@@ -97,6 +97,8 @@ class CampaignMilestone extends DataObject {
             $reward->id = $rewardId;
             if ($reward->find(true)) {
                 $milestoneObj->rewardName = $reward->name;
+                $milestoneObj->rewardType = $reward->rewardType;
+                $milestoneObj->badgeImage = $reward->getDisplayUrl();
             }
           }
           $milestones[] = $milestoneObj;

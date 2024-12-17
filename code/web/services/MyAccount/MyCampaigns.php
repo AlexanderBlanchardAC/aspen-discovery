@@ -65,8 +65,17 @@ class MyCampaigns extends MyAccount {
             //Find out if campaign in upcoming
             $campaign->isUpcoming = isset($upcomingCampaigns[$campaignId]);
 
-            //Get campaign reward name
-            $campaign->rewardName = $campaign->getRewardName();
+            //Get campaign reward details
+            $rewardDetails = $campaign->getRewardDetails();
+            if ($rewardDetails !== null) {
+                $campaign->rewardName = $rewardDetails['name'];
+                $campaign->rewardType = $rewardDetails['rewardType'];
+                $campaign->badgeImage = $rewardDetails['badgeImage'];
+            } else {
+                $campaign->rewardName = null;
+                $campaign->rewardType = null;
+                $campaign->badgeImage = null;
+            }
 
             // if ($campaign->enrolled) {
                 //Fetch milestones for this campaign

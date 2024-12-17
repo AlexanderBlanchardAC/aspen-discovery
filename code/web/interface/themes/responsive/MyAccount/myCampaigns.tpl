@@ -280,6 +280,9 @@
                             <td>{$campaign->endDate}</td>
                             <td>
                             {$campaign->rewardName}<br>
+                            {if $campaign->rewardType === 1}
+                                <img src="{$campaign->badgeImage}" alt="{$campaign->rewardName}" width="100" height="100"/>
+                            {/if}<br>
                              {if $campaign->campaignRewardGiven}
                                 <strong>{translate text="Reward Received"}</strong>
                              {/if}
@@ -308,7 +311,12 @@
                                                     {$milestone->progress}%
                                                 </div>
                                             </td>
-                                            <td>{$milestone->rewardName}</td>
+                                            <td>
+                                                {$milestone->rewardName}
+                                                {if $milestone->rewardType === 1}
+                                                    <img src="{$milestone->badgeImage}" alt="{$milestone->rewardName}" width="100" height="100"/>
+                                                {/if}
+                                            </td>
                                             <td>
                                                 {if $milestone->rewardGiven}
                                                     {translate text="Reward Given" isPublicFacing=true}
