@@ -24,7 +24,12 @@
                         <td>{$campaign->name}</td>
                         <td>{$campaign->startDate}</td>
                         <td>{$campaign->endDate}</td>
-                        <td>{$campaign->rewardName}</td>
+                        <td>
+                            {$campaign->rewardName}
+                            {if $campaign->rewardType === 1}
+                                <img src="{$campaign->badgeImage}" alt="{$campaign->rewardName}" width="100" height="100"/>
+                            {/if}
+                        </td>
                         <td>{$campaign->numCompletedMilestones} / {$campaign->numCampaignMilestones}</td>
                         <td>
                             <button onclick="AspenDiscovery.Account.unenroll({$campaign->id}, {$userId});">{translate text="Unenroll" isPublicFacing=true}</button>
@@ -50,7 +55,12 @@
                                     {foreach from=$campaign->milestones item="milestone"}
                                         <tr>
                                             <td>{$milestone->name}</td>
-                                            <td>{$milestone->rewardName}</td>
+                                            <td>
+                                                {$milestone->rewardName}
+                                                {if $milestone->rewardType === 1}
+                                                    <img src="{$milestone->badgeImage}" alt="{$milestone->rewardName}" width="100" height="100"/>
+                                                {/if}
+                                            </td>
                                             <td>
                                                 {$milestone->completedGoals}/ {$milestone->totalGoals}
                                                 {foreach from=$milestone->progressData item="progressData"}

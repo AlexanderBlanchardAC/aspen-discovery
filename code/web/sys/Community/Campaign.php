@@ -272,7 +272,7 @@ class Campaign extends DataObject {
                 'name' =>$reward->name,
                 'description' => $reward->description,
                 'rewardType' => (string)$reward->rewardType,
-                'badgeImage' => $reward->badgeImage,
+                'badgeImage' => $reward->getDisplayUrl(),
             ];
         }
         return null;
