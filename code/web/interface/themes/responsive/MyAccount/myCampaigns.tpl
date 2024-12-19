@@ -32,6 +32,13 @@
                         </td>
                         <td>{$campaign->numCompletedMilestones} / {$campaign->numCampaignMilestones}</td>
                         <td>
+                        {if $campaign->leaderboardOptIn}
+                            <a onclick="AspenDiscovery.Account.optOutOfCampaignLeaderboard({$campaign->id});">{translate text="Opt out of leaderboard" isPublicFacing=true}</a>
+                        {else}
+                            <a onclick="AspenDiscovery.Account.optIntoCampaignLeaderboard({$campaign->id});">{translate text="Opt into leaderboard" isPublicFacing=true}</a>
+                        {/if}
+                        </td>
+                        <td>
                             <button onclick="AspenDiscovery.Account.unenroll({$campaign->id}, {$userId});">{translate text="Unenroll" isPublicFacing=true}</button>
                         </td>
                         <td>

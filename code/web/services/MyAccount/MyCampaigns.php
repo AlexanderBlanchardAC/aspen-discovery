@@ -58,6 +58,7 @@ class MyCampaigns extends MyAccount {
 
             //Find out if user is enrolled in campaign
             $campaign->enrolled = $campaign->isUserEnrolled($userId);
+            $campaign->leaderboardOptIn = $campaign->isUserOptedInToLeaderboard($userId);
 
             //Find out if campaign is active
             $campaign->isActive = isset($activeCampaigns[$campaignId]);

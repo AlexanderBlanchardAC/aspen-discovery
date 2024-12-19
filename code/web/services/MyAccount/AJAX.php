@@ -9040,4 +9040,97 @@ class MyAccount_AJAX extends JSON_Action {
 		//Since this returns an image, don't return
 		die();
 	}
+
+	public function optOutOfCampaignLeaderboard() {
+		require_once ROOT_DIR . '/sys/Community/UserCampaign.php';
+
+		$campaignId = $_POST['campaignId'] ?? null;
+
+		if (!$campaignId) {
+			return [
+				'success' => false,
+				'message' => 'Campaign ID  is missing.'
+			];
+		}
+
+		$userId = UserAccount::getActiveUserId();
+		if (!$userId) {
+			return [
+				'success' => false,
+				'message' => 'User is not logged in.'
+			];
+		}
+
+
+		$userCampaign = new UserCampaign();
+		$userCampaign->userId = $userId;
+		$userCampaign->campaignId = $campaignId;
+
+		if ($userCampaign->find(true)) {
+			$userCampaign->optInToLeaderboard = 0;
+			if ($userCampaign->update()) {
+				return [
+					'success' => true,
+					'message' => 'You have successfully opted out of the leaderboard for this campaign.'
+				];
+			} else {
+				return [
+					'success' => false,
+					'message' => 'Failed to update your leaderboard preference for this campaign.'
+				];
+			}
+		} else {
+			return [
+				'success' => false,
+				'message' => 'You are not enrolled in this campaign.'
+			];
+		}
+	}
+
+	public function optIntoCampaignLeaderboard() {
+		require_once ROOT_DIR . '/sys/Community/UserCampaign.php';
+
+		$campaignId = $_POST['campaignId'] ?? null;
+
+		if (!$campaignId) {
+			return [
+				'success' => false,
+				'message' => 'Campaign ID  is missing.'
+			];
+		}
+
+		$userId = UserAccount::getActiveUserId();
+		if (!$userId) {
+			return [
+				'success' => false,
+				'message' => 'User is not logged in.'
+			];
+		}
+
+		$userCampaign = new UserCampaign();
+		$userCampaign->userId = $userId;
+		$userCampaign->campaignId = $campaignId;
+
+		if ($userCampaign->find(true)) {
+			$userCampaign->optInToLeaderboard = 1;
+			if ($userCampaign->update()) {
+				return [
+					'success' => true,
+					'message' => 'You have successfully opted into the leaderboard for this campaign.'
+				];
+			} else {
+				return [
+					'success' => false,
+					'message' => 'Failed to update your leaderboard preference for this campaign.'
+				];
+			}
+		} else {
+			return [
+				'success' => false,
+				'message' => 'You are not enrolled in this campaign.'
+			];
+		}
+
+
+	}
 }

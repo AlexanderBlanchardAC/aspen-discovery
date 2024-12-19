@@ -291,5 +291,12 @@ function getCommunityEngagementUpdates() {
                 "ALTER TABLE ce_campaign ADD COLUMN enrollmentEndDate DATE NULL"
             ],
         ],
+        'opt_in_or_out_of_leaderboard_for_each_campaign' =>[
+            'title' => 'Opt In Or Out of Leaderboard for Each Campaign',
+            'description' => 'Add the ability for users to opt in or out of the appearing on the leaderboard for each campaign',
+            'sql' => [
+                "ALTER TABLE ce_user_campaign ADD COLUMN optInToLeaderboard TINYINT DEFAULT 1"
+            ],
+        ],
     ];
 }

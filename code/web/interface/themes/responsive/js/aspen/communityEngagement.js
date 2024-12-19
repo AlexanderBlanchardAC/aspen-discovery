@@ -80,7 +80,11 @@ AspenDiscovery.CommunityEngagement = function() {
 
            $.getJSON(url, params, function(data) {
                 if (data.success) {
-                    $('#leaderboard-table').html(data.html);
+                    if (data.message) {
+                        $('#leaderboard-table').html('<p>' + data.message + '</p>');
+                    } else {
+                        $('#leaderboard-table').html(data.html);
+                    }
                 } else {
                     console.log("Failed to retrieve leaderboard data");
                 }

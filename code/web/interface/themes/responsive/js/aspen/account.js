@@ -2869,5 +2869,47 @@ AspenDiscovery.Account = (function () {
 			document.location.href = url;
 			return false;
 		},
+		optOutOfCampaignLeaderboard: function (campaignId) {
+			if (!campaignId) {
+				alert("Invalid Campaign ID.")
+				return;
+			}
+			var url = Globals.path + "/MyAccount/AJAX?method=optOutOfCampaignLeaderboard";
+			var params = {
+				campaignId: campaignId,
+			};
+
+			$.post(url, params, function(data) {
+				if (data.success) {
+					alert(data.message);
+					window.location.reload();
+				} else {
+					alert('Failed to opt out: ' +  data.message);
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			});
+		},
+		optIntoCampaignLeaderboard: function(campaignId) {
+			if (!campaignId) {
+				alert("Invalid Campaign ID");
+				return;
+			}
+
+			var url = Globals.path + "/MyAccount/AJAX?method=optIntoCampaignLeaderboard";
+			var params = {
+				campaignId: campaignId,
+			};
+			$.post(url,params, function(data) {
+				if (data.success) {
+					alert(data.message);
+					window.location.reload();
+				} else {
+					alert('Failed to opt in: ' + data.message);
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			})
+		}
 	};
 }(AspenDiscovery.Account || {}));

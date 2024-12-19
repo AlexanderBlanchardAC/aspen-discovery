@@ -670,6 +670,16 @@ class Campaign extends DataObject {
         return $userCampaign->find(true);
     }
 
+    public function isUserOptedInToLeaderboard($userId): bool {
+        $userCampaign = new UserCampaign();
+        $userCampaign->userId = $userId;
+        $userCampaign->campaignId = $this->id;
+        if ($userCampaign->find(true)) {
+            return $userCampaign->optInToLeaderboard == 1;
+        }
+        return false;
+    }
+
     public function saveMilestones() {
         if (isset($this->_availableMilestones) && is_array($this->_availableMilestones)) {
             $this->saveOneToManyOptions($this->_availableMilestones, 'campaignId');
@@ -742,13 +752,26 @@ class Campaign extends DataObject {
         $userCampaignRecords[] = clone $userCampaign;
        }
 
+       //If there are no users enrolled in this campaign, return 
+       if (empty($userCampaignRecords)) {
+            return [
+                'success' => true,
+                'message' => 'No one is enrolled in this campaign yet.'
+            ];
+       }
+
        foreach ($userCampaignRecords as $userCampaignRecord) {
+        if ($userCampaignRecord->optInToLeaderboard != 1){
+            continue;
+        }
             $milestoneCompletionStatus = $userCampaignRecord->checkMilestoneCompletionStatus();
             $userId = $userCampaignRecord->userId;
 
             $user = new User();
             $user->id = $userId;
-            if (!$user->find(true)) {}
+            if (!$user->find(true)) {
+                continue;
+            }
 
             $completedMilestones = count(array_filter($milestoneCompletionStatus, function($status) {
                 return $status === true;
@@ -758,6 +781,13 @@ class Campaign extends DataObject {
                 'user' => $user->username,
                 'completedMilestones' => $completedMilestones,
             ];
+       }
+
+       if (empty($leaderboard)) {
+        return [
+            'success' => true,
+            'message' => 'No users have opted in to this leaderboard yet.'
+        ];
        }
        usort($leaderboard, function($a, $b) {
         if ($b['completedMilestones'] !== $a['completedMilestones']) {

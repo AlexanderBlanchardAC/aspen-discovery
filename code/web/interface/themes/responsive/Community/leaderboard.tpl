@@ -11,7 +11,6 @@
                 <option value="{$campaign->id}">{$campaign->name}</option>
             {/foreach}
         </select>
-        <h2>{$campaign->name}</h2>
         <div id="leaderboard-table"></div>
     </div>
 {/strip}

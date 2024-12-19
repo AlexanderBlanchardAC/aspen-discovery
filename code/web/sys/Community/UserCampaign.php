@@ -11,6 +11,7 @@ class UserCampaign extends DataObject {
     public $unenerollmentDate;
     public $completed;
     public $rewardGiven;
+    public $optInToLeaderboard;
 
     public static function getObjectStructure($context = ''): array {
         return [
@@ -57,6 +58,13 @@ class UserCampaign extends DataObject {
                 'label' => 'Reward Given',
                 'description' => 'Whether or not the reward for completing the campaign has been given',
                 'default' => false,
+            ],
+            'optInToLeaderboard' => [
+                'property' => 'optInToLeaderboard',
+                'type' => 'checkbox',
+                'label' => 'Opt in to Leaderboard',
+                'description' => 'Whether or not to opt in to the leaderboard for this campaign',
+                'default' => true,
             ],
         ];
     }
