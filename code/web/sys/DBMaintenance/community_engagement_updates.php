@@ -283,5 +283,13 @@ function getCommunityEngagementUpdates() {
                 "ALTER TABLE ce_reward ADD COLUMN badgeImage VARCHAR(255) NULL"
             ],
         ],
+        'add_campaign_enrollment_dates' => [
+            'title' => 'Add Campaign Enrollment Dates',
+            'description' => 'Allow users to set an enrollment period for campaigns',
+            'sql' => [
+                "ALTER TABLE ce_campaign ADD COLUMN enrollmentStartDate DATE NULL",
+                "ALTER TABLE ce_campaign ADD COLUMN enrollmentEndDate DATE NULL"
+            ],
+        ],
     ];
 }

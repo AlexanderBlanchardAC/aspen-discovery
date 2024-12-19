@@ -16,6 +16,8 @@ class Campaign extends DataObject {
     public $milestones;
     public $startDate;
     public $endDate;
+    public $enrollmentStartDate;
+    public $enrollmentEndDate;
     public $enrollmentCounter;
     public $unenrollmentCounter;
     public $currentEnrollments;
@@ -92,6 +94,18 @@ class Campaign extends DataObject {
                 'label' => 'Reward for Completing Campaign',
                 'values' => $rewardList, 
                 'description' => 'The reward given for completing the campaign.'
+            ],
+            'enrollmentStartDate'=> [
+                'property' => 'enrollmentStartDate',
+                'type' => 'date',
+                'label' => 'Enrollment Period Start Date',
+                'description' => 'The date patrons can enroll in the campaign from',
+            ],
+            'enrollmentEndDate'=> [
+                'property' => 'enrollmentEndDate',
+                'type' => 'date',
+                'label' => 'Enrollment Period End Date',
+                'description' => 'The date patrons can enroll in the campaign until',
             ],
             'allowPatronTypeAccess' => [
 				'property' => 'allowPatronTypeAccess',

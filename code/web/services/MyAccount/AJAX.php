@@ -8853,6 +8853,25 @@ class MyAccount_AJAX extends JSON_Action {
 			];
 		}
 
+		$today = new DateTime();
+		$enrollmentStartDate = $campaign->enrollmentStartDate ? new DateTime($campaign->enrollmentStartDate) : null;
+		$enrollmentEndDate = $campaign->enrollmentEndDate ? new DateTime($campaign->enrollmentEndDate) : null;
+
+
+		if ($enrollmentStartDate && $enrollmentEndDate) {
+			if ($today < $enrollmentStartDate) {
+				return [
+					'sucess' => false,
+					'message' => 'Enrollment for this campaign has not started yet.'
+				];
+			}
+			if ($today > $enrollmentEndDate) {
+				return [
+					'success' => false,
+					'message' => 'Enrollment for this campaign has ended'
+				];
+			}
+		}
 		if ($userCampaign->find(true)) {
 			return [
 				'success' => false,
