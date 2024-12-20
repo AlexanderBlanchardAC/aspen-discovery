@@ -166,7 +166,13 @@ class MyCampaigns extends MyAccount {
         foreach ($linkedUsers as $linkedUser) {
             $eligibleCampaigns = [];
             $campaign = new Campaign();
-
+            //Get global opt-in status for linked user
+            $globalLeaderboardPref = new UserLeaderboardPreference();
+            $globalLeaderboardPref->userId = $linkedUser->id;
+            if ($globalLeaderboardPref->find(true)) {
+                $globalOptInStatus = $globalLeaderboardPref->globalOptIn;
+            }     
+         
             if ($campaign->find()) {
                 while ($campaign->fetch()) {
                     $userCampaign = new UserCampaign();
@@ -231,7 +237,8 @@ class MyCampaigns extends MyAccount {
             $groupedLinkedCampaigns[] = [
                 'linkedUserName' => $linkedUser->displayName,
                 'linkedUserId' => $linkedUser->id,
-                'campaigns' => $eligibleCampaigns
+                'campaigns' => $eligibleCampaigns,
+                'globalOptIn' => $globalOptInStatus
             ];
 
         }

@@ -9127,6 +9127,7 @@ class MyAccount_AJAX extends JSON_Action {
 
 	}
 
+	//TODO:: These two need testing when clicked and the user has never enrolled in a campaign before
 	public function optOutOfGlobalLeaderboard() {
 		require_once ROOT_DIR . '/sys/Community/UserLeaderboardPreference.php';
 
@@ -9156,10 +9157,18 @@ class MyAccount_AJAX extends JSON_Action {
 				];
 			}
 		} else {
-			return [
-				'success' => false,
-				'message' => 'User global leaderboard preference not found.'
-			];
+			$globalLeaderboardOref->globalOptIn = 0;
+			if ($globalLeaderboardPref->insert()) {
+				return [
+					'success' => true,
+					'message' => 'User successfully opted out of all campaign leaderboards.'
+				];
+			} else {
+				return [
+					'success' => false,
+					'message' => 'Failed to update global leaderboard preference.'
+				];
+			}	
 		}
 	}
 
@@ -9192,10 +9201,18 @@ class MyAccount_AJAX extends JSON_Action {
 				];
 			}
 		} else {
-			return [
-				'success' => false,
-				'message' => 'User global leaderboard preference not found.'
-			];
+			$globalLeaderboardOref->globalOptIn = 1;
+			if ($globalLeaderboardPref->insert()) {
+				return [
+					'success' => true,
+					'message' => 'User successfully opted into all campaign leaderboards.'
+				];
+			} else {
+				return [
+					'success' => false,
+					'message' => 'Failed to update global leaderboard preference.'
+				];
+			}	
 		}
 	}
 }

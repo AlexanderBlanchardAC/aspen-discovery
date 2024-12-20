@@ -103,6 +103,11 @@
             <h2>{translate text="Linked Account Campaigns" isPublicFacing=true}</h2>
             {foreach from=$linkedCampaigns item="linkedUser"}
                 <h3>{$linkedUser.linkedUserName}</h3>
+                {if $linkedUser.globalOptIn}
+                    <a onclick="AspenDiscovery.Account.optOutGlobalLeaderboard({$linkedUser.linkedUserId})"><h5>Opt user out of all leaderboards</h5></a>
+                {else}
+                    <a onclick="AspenDiscovery.Account.optIntoGlobalLeaderboard({$linkedUser.linkedUserId})"><h5>Opt user into all leaderboards</h5></a>
+                {/if}
                 <table>
                     <thead>
                         <tr>
