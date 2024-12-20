@@ -162,13 +162,18 @@ class Community_AJAX extends JSON_Action {
             } else {
                 $leaderboard = $campaign->getOverallLeaderboard();
                 if ($leaderboard) {
-                    $html ='<table><thead><tr><th>User</th><th>Rank</th><th>Completed Milestones</th></tr></thead><tbody>';
-                    foreach ($leaderboard as $entry) {
-                        $html .= "<tr><td>{$entry['user']}</td><td>{$entry['rankDisplayed']}</td><td>{$entry['completedMilestones']}</td></tr>";
-                    }
-                    $html .= '</tbody></table>';
-                    $response['html'] = $html;
-                    $response['success'] = true;
+                    if (isset($leaderboard['message'])) {
+                        $response['success'] = true;
+                        $response['message'] = $leaderboard['message'];
+                    } else {
+                        $html ='<table><thead><tr><th>User</th><th>Rank</th><th>Completed Milestones</th></tr></thead><tbody>';
+                        foreach ($leaderboard as $entry) {
+                            $html .= "<tr><td>{$entry['user']}</td><td>{$entry['rankDisplayed']}</td><td>{$entry['completedMilestones']}</td></tr>";
+                        }
+                        $html .= '</tbody></table>';
+                        $response['html'] = $html;
+                        $response['success'] = true;
+                    }   
                 } else {
                     $response['success'] = false;
                     $response['message'] = 'No leaderboard data found.';

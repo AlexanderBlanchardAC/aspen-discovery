@@ -298,5 +298,16 @@ function getCommunityEngagementUpdates() {
                 "ALTER TABLE ce_user_campaign ADD COLUMN optInToLeaderboard TINYINT DEFAULT 1"
             ],
         ],
+        'create_user_leaderboard_preference_table' => [
+            'title' => 'Create User Leaderboard Preference Table',
+            'description' => 'Add a table to store the global leaderboard preferences for each user',
+            'sql' => [
+                "CREATE TABLE ce_user_leaderboard_preference (
+                    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    userId INT NOT NULL,
+                    globalOptIn TINYINT DEFAULT 1
+                )ENGINE = InnoDB",
+            ],
+        ],
     ];
 }

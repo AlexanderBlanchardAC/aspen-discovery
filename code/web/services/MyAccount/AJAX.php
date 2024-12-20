@@ -8823,6 +8823,8 @@ class MyAccount_AJAX extends JSON_Action {
 	public function enrollCampaign() {
 		require_once ROOT_DIR . '/sys/Community/UserCampaign.php';
 		require_once ROOT_DIR . '/sys/Community/Campaign.php';
+		require_once ROOT_DIR . '/sys/Community/UserLeaderboardPreference.php';
+
 
 		$campaignId = $_GET['campaignId'] ?? null;
 		$userId = $_GET['userId'] ?? null;
@@ -8834,6 +8836,8 @@ class MyAccount_AJAX extends JSON_Action {
 			];
 		}
 
+		$globalLeaderboardPref = new UserLeaderboardPreference();
+		$globalLeaderboardPref->ensureGlobalLeaderboardPref($userId);
 
 		$userCampaign = new UserCampaign();
         $userCampaign->userId = $userId;
@@ -9075,6 +9079,7 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
+	//TODO:: FIX FOR LINKED USERS
 	public function optIntoCampaignLeaderboard() {
 		require_once ROOT_DIR . '/sys/Community/UserCampaign.php';
 
@@ -9120,5 +9125,77 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 
 
+	}
+
+	public function optOutOfGlobalLeaderboard() {
+		require_once ROOT_DIR . '/sys/Community/UserLeaderboardPreference.php';
+
+		$userId = $_REQUEST['userId'] ?? null;
+
+		if (!$userId) {
+			return [
+				'success' => false,
+				'message' => 'User ID is missing.'
+			];
+		} 
+
+		$globalLeaderboardPref = new UserLeaderboardPreference();
+		$globalLeaderboardPref->userId = $userId;
+
+		if ($globalLeaderboardPref->find(true)) {
+			$globalLeaderboardPref->globalOptIn = 0;
+			if ($globalLeaderboardPref->update()) {
+				return [
+					'success' => true,
+					'message' => 'User successfully opted out of all leaderboards.'
+				];
+			} else {
+				return [
+					'success' => false,
+					'message' => 'Failed to update global leaderboard preference.'
+				];
+			}
+		} else {
+			return [
+				'success' => false,
+				'message' => 'User global leaderboard preference not found.'
+			];
+		}
+	}
+
+	public function optIntoGlobalLeaderboard() {
+		require_once ROOT_DIR . '/sys/Community/UserLeaderboardPreference.php';
+
+		$userId = $_REQUEST['userId'] ?? null;
+
+		if (!$userId) {
+			return [
+				'success' => false,
+				'message' => 'User ID is missing.'
+			];
+		} 
+
+		$globalLeaderboardPref = new UserLeaderboardPreference();
+		$globalLeaderboardPref->userId = $userId;
+
+		if ($globalLeaderboardPref->find(true)) {
+			$globalLeaderboardPref->globalOptIn = 1;
+			if ($globalLeaderboardPref->update()) {
+				return [
+					'success' => true,
+					'message' => 'User successfully opted into all leaderboards.'
+				];
+			} else {
+				return [
+					'success' => false,
+					'message' => 'Failed to update global leaderboard preference.'
+				];
+			}
+		} else {
+			return [
+				'success' => false,
+				'message' => 'User global leaderboard preference not found.'
+			];
+		}
 	}
 }

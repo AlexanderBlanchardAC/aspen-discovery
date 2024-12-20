@@ -5,6 +5,8 @@ require_once ROOT_DIR . '/sys/Community/CampaignMilestone.php';
 require_once ROOT_DIR . '/sys/Community/Milestone.php';
 require_once ROOT_DIR . '/sys/Community/UserCompletedMilestone.php';
 require_once ROOT_DIR . '/sys/Account/User.php';
+require_once ROOT_DIR . '/sys/Community/UserLeaderboardPreference.php';
+
 
 class MyCampaigns extends MyAccount {
 
@@ -20,8 +22,10 @@ class MyCampaigns extends MyAccount {
           $hasLinkedUsers = UserAccount::hasLinkedUsers();
           $interface->assign('hasLinkedUsers', $hasLinkedUsers);
           $linkedCampaigns = $this->getLinkedUserCampaigns($userId);
+          $userGlobalLeaderboardPref = UserLeaderboardPreference::getGlobalLeaderboardPrefByUser($userId);
 
           $interface->assign('linkedCampaigns', $linkedCampaigns);
+          $interface->assign('userGlobalLeaderboardPref', $userGlobalLeaderboardPref);
 
         //Get Campaigns
         $campaignList = $this->getCampaigns();

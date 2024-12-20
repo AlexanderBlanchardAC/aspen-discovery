@@ -1,6 +1,11 @@
 {strip}
     <h1>{translate text="Campaigns" isPublicFacing=true}</h1>
     <h3><a href="/Community/Leaderboard">See the Leaderboard</a></h3>
+    {if $userGlobalLeaderboardPref}
+        <a onclick="AspenDiscovery.Account.optOutGlobalLeaderboard({$userId})"><h5>Opt out of all leaderboards</h5></a>
+    {else}
+        <a onclick="AspenDiscovery.Account.optIntoGlobalLeaderboard({$userId})"><h5>Opt into all leaderboards</h5></a>
+    {/if}
     {if empty($campaignList)}
         <div class="alert alert-info">
             {translate text="There are no available campaigns at the moment" isPublicFacing=true}

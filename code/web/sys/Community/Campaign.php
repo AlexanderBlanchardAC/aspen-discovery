@@ -6,6 +6,8 @@ require_once ROOT_DIR . '/sys/Community/Reward.php';
 require_once ROOT_DIR . '/sys/Community/CampaignPatronTypeAccess.php';
 require_once ROOT_DIR . '/sys/Community/CampaignLibraryAccess.php';
 require_once ROOT_DIR . '/sys/Account/User.php';
+require_once ROOT_DIR . '/sys/Community/UserLeaderboardPreference.php';
+
 
 
 class Campaign extends DataObject {
@@ -698,10 +700,22 @@ class Campaign extends DataObject {
         $leaderboard = [];
 
         foreach ($users as $user) {
-            $totalCompletedMilestones = $userCampaign->calculateUserCompletedMilestones($user->id);
-            $leaderboard[] = [
-                'user' => $user->username,
-                'completedMilestones' => $totalCompletedMilestones
+            $globalLeaderboardPref = new UserLeaderboardPreference();
+            $globalLeaderboardPref->userId = $user->id;
+
+            if ($globalLeaderboardPref->find(true) && $globalLeaderboardPref->globalOptIn == 1){
+                $totalCompletedMilestones = $userCampaign->calculateUserCompletedMilestones($user->id);
+                $leaderboard[] = [
+                    'user' => $user->username,
+                    'completedMilestones' => $totalCompletedMilestones
+                ];
+            }
+        }
+
+        if (empty($leaderboard)) {
+            return [
+                'success' => true,
+                'message' => 'There are currently no users on this leaderboard.'
             ];
         }
 
