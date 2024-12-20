@@ -94,6 +94,41 @@
             {/foreach}
             </tbody>
         </table>
+        {if $hasLinkedUsers}
+            <h2>{translate text="Linked Account Campaigns" isPublicFacing=true}</h2>
+            {foreach from=$linkedCampaigns item="linkedUser"}
+                <h3>{$linkedUser.linkedUserName}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>{translate text="Campaign Name" isPublicFacing=true}</th>
+                            <th>{translate text="Enrollment Status" isPublicFacing=true}</th>
+                            <th>{translate text="Action" isPublicFacing=true}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach from=$linkedUser.campaigns item="campaign"}
+                            <tr>
+                                <td>{$campaign.campaignName}</td>
+                                <td>
+                                    {if $campaign.isEnrolled}
+                                        {translate text="Enrolled" isPublicFacing=true}
+                                    {else}
+                                        {translate text="Not Enrolled" isPublicFacing=true}
+                                    {/if}</td>
+                                <td>
+                                    {if $campaign.isEnrolled}
+                                        <button onclick="AspenDiscovery.Account.unenroll({$campaign.campaignId}, {$linkedUser.linkedUserId});">{translate text="Unenroll" isPublicFacing=true}</button>
+                                    {else}
+                                        <button onclick="AspenDiscovery.Account.enroll({$campaign.campaignId}, {$linkedUser.linkedUserId});">{translate text="Enroll" isPublicFacing=true}</button>
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            {/foreach}
+        {/if}
         <h2>Active Campaigns</h2>
         <table id="activeCampaignsTable" class="table table-striped">
             <thead>

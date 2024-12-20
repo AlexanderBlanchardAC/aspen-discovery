@@ -4,6 +4,7 @@ require_once ROOT_DIR . '/sys/Community/Campaign.php';
 require_once ROOT_DIR . '/sys/Community/CampaignMilestone.php';
 require_once ROOT_DIR . '/sys/Community/Milestone.php';
 require_once ROOT_DIR . '/sys/Community/UserCompletedMilestone.php';
+require_once ROOT_DIR . '/sys/Account/User.php';
 
 class MyCampaigns extends MyAccount {
 
@@ -16,6 +17,11 @@ class MyCampaigns extends MyAccount {
           //Get User
           $userId = $this->getUserId();
           $interface->assign('userId', $userId);
+          $hasLinkedUsers = UserAccount::hasLinkedUsers();
+          $interface->assign('hasLinkedUsers', $hasLinkedUsers);
+          $linkedCampaigns = $this->getLinkedUserCampaigns($userId);
+
+          $interface->assign('linkedCampaigns', $linkedCampaigns);
 
         //Get Campaigns
         $campaignList = $this->getCampaigns();
@@ -132,6 +138,53 @@ class MyCampaigns extends MyAccount {
         return $campaignList;
     }
 
+
+    function getLinkedUserCampaigns($userId) {
+        if (empty($userId)) {
+            throw new InvalidArgumentException("User ID is required.");
+        }
+        $user = new User();
+        $user->id = $userId;
+
+        if (!$user->find(true)) {
+            throw new RuntimeException("User not found.");
+        }
+
+        $linkedUsers = $user->getLinkedUsers();
+        if (empty($linkedUsers)){
+            return [];
+        }
+
+    
+        $groupedLinkedCampaigns = [];
+
+        foreach ($linkedUsers as $linkedUser) {
+            $eligibleCampaigns = [];
+            $campaign = new Campaign();
+
+            if ($campaign->find()) {
+                while ($campaign->fetch()) {
+                    $userCampaign = new UserCampaign();
+                    $userCampaign->userId = $linkedUser->id;
+                    $userCampaign->campaignId = $campaign->id;
+
+                    $isEnrolled = $userCampaign->find(true);
+                    $eligibleCampaigns[] = [
+                        'campaignId' => $campaign->id, 
+                        'campaignName' => $campaign->name,
+                        'isEnrolled' => $isEnrolled
+                    ];
+                }
+            }
+
+            $groupedLinkedCampaigns[] = [
+                'linkedUserName' => $linkedUser->displayName,
+                'linkedUserId' => $linkedUser->id,
+                'campaigns' => $eligibleCampaigns
+            ];
+        }
+        return $groupedLinkedCampaigns;
+    }
 
 
     //TODO:: Write a function that uses the milestone id for each progress bar to use the ce_milestone_progress_entries table and 

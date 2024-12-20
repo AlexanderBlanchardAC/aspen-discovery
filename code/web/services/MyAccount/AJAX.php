@@ -8825,21 +8825,15 @@ class MyAccount_AJAX extends JSON_Action {
 		require_once ROOT_DIR . '/sys/Community/Campaign.php';
 
 		$campaignId = $_GET['campaignId'] ?? null;
+		$userId = $_GET['userId'] ?? null;
 
-		if (!$campaignId) {
+		if (!$campaignId || !$userId) {
 			return[
 				'success' => false,
            		 'message' => 'Campaign ID is missing.'
 			];
 		}
 
-		$userId = UserAccount::getActiveUserId();
-		if (!$userId) {
-			return [
-				'success' => false,
-				'message' => 'User is not logged in.'
-			];
-		}
 
 		$userCampaign = new UserCampaign();
         $userCampaign->userId = $userId;
@@ -8900,21 +8894,15 @@ class MyAccount_AJAX extends JSON_Action {
 		require_once ROOT_DIR . '/sys/Community/Campaign.php';
 
 		$campaignId = $_GET['campaignId'] ?? null;
+		$userId = $_GET['userId'] ?? null;
 
-		if (!$campaignId) {
+		if (!$campaignId || !$userId) {
 			return [
 				'success' => false,
 				'message' => 'Campaign ID is missing.'
 			];
 		}
 
-		$userId = UserAccount::getActiveUserId();
-		if (!$userId) {
-			return [
-				'success' => false,
-				'message' => 'User is not logged in.'
-			];
-		}
 
 		$userCampaign = new UserCampaign();
 		$userCampaign->userId = $userId;
