@@ -184,6 +184,20 @@ AspenDiscovery.CommunityEngagement = function() {
                 console.log('Ajax request failed', jqXHR, textStatus, errorThrown);
                 AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
             });
+        },
+        resetLeaderboard: function() {
+            var url = Globals.path + "/Community/AJAX?method=getDefaultLeaderboardDisplay";
+
+            $.get(url, function(data) {
+                if (data.success){
+                    alert("Leaderboard reset to default.");
+                    location.reload();
+                } else {
+                    console.log("Failed to load default leaderboard content: " + data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("Failed to fetch default content", textStatus, errorThrown);
+            })
         }
     }
     

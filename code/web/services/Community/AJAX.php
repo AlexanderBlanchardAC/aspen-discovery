@@ -278,4 +278,21 @@ class Community_AJAX extends JSON_Action {
             ];
         }
     }
+    //TODO:: Next hide reset leaderboard button if the current display is not customized
+    public function getDefaultLeaderboardDisplay() {
+        require_once ROOT_DIR . '/sys/Community/LeaderboardTemplate.php';
+        require_once ROOT_DIR . '/sys/UserAccount.php';
+
+        $userId = UserAccount::getActiveUserId();
+        $template = new LeaderboardTemplate();
+        $template->whereAdd('userId = ' .  $template->escape($userId));
+        $template->find();
+
+        if ($template->fetch()) {
+            $template->delete();
+        }
+        return [
+            'success' => true,
+        ];      
+    }
 }

@@ -8,6 +8,8 @@
 </head>
 <body>
 {strip}
+    <button onclick="AspenDiscovery.CommunityEngagement.resetLeaderboard()">{translate text="Reset Leaderboard" isPublicFacing=true}</button><br><br>
+
     <button onclick="AspenDiscovery.CommunityEngagement.customizeLeaderboard()">{translate text="Customize Leaderboard" isPublicFacing=true}</button><br><br>
     <div id="gjs" display="none"></div>
    
