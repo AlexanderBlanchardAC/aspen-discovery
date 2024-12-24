@@ -192,4 +192,90 @@ class Community_AJAX extends JSON_Action {
             ]);
         }
     }
+
+    public function getLeaderboardPage() {
+        $tplPath = ROOT_DIR . '/interface/themes/responsive/Community/leaderboard.tpl';
+        global $interface;
+
+        if (file_exists($tplPath)) {
+            $content = $interface->fetch($tplPath);
+
+            //Extract body content
+            preg_match('/<body.*?>(.*?)<\/body>/is', $content, $matches);
+            $htmlContent = isset($matches[1]) ? $matches[1] : '';
+
+            //Remove GrapesJS div
+            $htmlContent = preg_replace('/<div id=["\']gjs["\'].*?>.*?<\/div>/is', '', $htmlContent);
+
+            //Remove customization button
+            $htmlContent = preg_replace('/<button[^>]*onclick="AspenDiscovery.CommunityEngagement.customizeLeaderboard\(\)"[^<]*>.*?<\/button>/is', '', $htmlContent);
+
+            //Remove dropdown filter
+            $htmlContent = preg_replace('/<label[^>]*for=["\']campaignFilter["\'].*?>.*?<\/select>/is', '', $htmlContent);
+
+            //Remove the loading spinner
+            $htmlContent = preg_replace('/<div id=["\']loading-placeholder["\'][^>]*>.*?<p>.*?<\/p>.*?<\/div>/is', '', $htmlContent);
+            //Extract all CSS styles
+            preg_match_all('/<style.*?>(.*?)<\/style>/s', $content, $cssMatches);
+            $css = isset($cssMatches[1]) ? implode("\n", $cssMatches[1]) : '';
+
+            //Handle external CSS
+            preg_match_all('/<link.*?href=["\'](.*?)["\'].*?>/is', $content, $linkMatches);
+            $externalCss = '';
+
+            foreach($linkMatches[1] as $cssUrl) {
+                $fullPath = ROOT_DIR . '/interface/themes/responsive/Community/' . basename($cssUrl);
+                if (file_exists($fullPath)) {
+                    $externalCss .= file_get_contents($fullPath) . "\n";
+                }
+            }
+
+            preg_match_all('/style=["\'](.*?)["\']/is', $content, $inlineCssMatches);
+            $inlineCss = isset($inlineCssMatches[1]) ? implode(";\n", $inlineCssMatches[1]) : '';
+
+            $combinedCss = trim($css . "\n" . $externalCss . "\n" .  $inlineCss);
+
+
+            return [
+                'success' =>true,
+                'html' => $htmlContent,
+                'css' => $combinedCss
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Leaderboard template file not found.'
+            ];
+        }
+    }
+
+    public function getUpdatedLeaderboardPage() {
+        require_once ROOT_DIR . '/sys/Community/LeaderboardTemplate.php';
+		require_once ROOT_DIR . '/sys/UserAccount.php';
+        try {
+            $userId = UserAccount::getActiveUserId();
+            $template = new LeaderboardTemplate();
+
+            $template->whereAdd('userId = ' .  $template->escape($userId));
+            $template->find();
+
+            if ($template->fetch()) {
+                return [
+                    'success' => true,
+                    'html' => $template->htmlContent,
+                    'css' => $template->cssContent
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'No custom leaderboard found for this user.'
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ];
+        }
+    }
 }

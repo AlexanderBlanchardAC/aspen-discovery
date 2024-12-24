@@ -1032,4 +1032,50 @@ class WebBuilder_AJAX extends JSON_Action {
 		  exit();
 	  }
 
+	  public function saveUpdatedLeaderboardPage() {
+		require_once ROOT_DIR . '/sys/Community/LeaderboardTemplate.php';
+		require_once ROOT_DIR . '/sys/UserAccount.php';
+
+		$html = $_POST['html'] ?? null;
+		$css = $_POST['css'] ?? null;
+		$userId = UserAccount::getActiveUserId();
+
+
+		if (!$html) {
+			return [
+				'success' => false,
+				'message' => 'HTML or CSS data is missing.'
+			];
+		}
+
+		try {
+			$template = new LeaderboardTemplate();
+			$template->whereAdd('userId = ' . $template->escape($userId));
+			$template->find();
+
+
+			if ($template->fetch()) {
+				$template->htmlContent = $html;
+				$template ->cssContent = $css;
+				$template->update();
+			} else {
+				$template = new LeaderboardTemplate();
+				$template->userId = $userId;
+				$template->htmlContent = $html;
+				$template->cssContent = $css;
+				$template->insert();
+			}
+			return [
+				'success' => true,
+				'message' => 'Leaderboard page updated successfully.'
+			];
+
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'message' => 'Error saving leaderboard page: ' . $e->getMessage()
+			];
+		}
+	  }
+
 }

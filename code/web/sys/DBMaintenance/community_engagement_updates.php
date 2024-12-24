@@ -309,5 +309,17 @@ function getCommunityEngagementUpdates() {
                 )ENGINE = InnoDB",
             ],
         ],
+        'create_leaderboard_templates_tables' => [
+            'title' => 'Create Leaderboard Templates Table',
+            'description' => 'Add a table to store updated leaderboard displays',
+            'sql' => [
+                "CREATE TABLE ce_leaderboard_template (
+                    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    userId INT NOT NULL,
+                    htmlContent TEXT,
+                    cssContent TEXT
+                )ENGINE = InnoDB",
+            ],
+        ],
     ];
 }

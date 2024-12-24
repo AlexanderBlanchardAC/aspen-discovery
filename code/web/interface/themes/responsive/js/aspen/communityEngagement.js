@@ -91,6 +91,99 @@ AspenDiscovery.CommunityEngagement = function() {
            }).fail(function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX Error:", textStatus, errorThrown);
            });
+        },
+        customizeLeaderboard: function() {
+            var url = Globals.path + "/Community/AJAX?method=getLeaderboardPage";
+            var gjs = document.getElementById("gjs");
+
+            $.get(url, function(data) {
+                if (data.success) {
+                    AspenDiscovery.CommunityEngagement.initGrapesEditor(data.html, data.css);
+                    gjs.style.display = "block"; 
+                } else {
+                    alert("Failed to load leaderboard data: " + data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log('Ajax request failed', jqXHR, textStatus, errorThrown);
+                AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+            })
+        },
+        initGrapesEditor: function(html, css) {
+            try {
+                var editor = grapesjs.init({
+                    container: '#gjs',
+                    storageManager: { autoload: false },
+                    components: html,
+                    style: css,
+                    plugins: [
+                        'grapesjs-preset-webpage'
+                    ],
+                    pluginsOpts: {
+                        'grapesjs-preset-webpage': {}
+                    }
+                });
+                editor.Panels.addButton('options', [{
+                    id: 'save-updated-leaderboard-page',
+                    className: 'fas fa-save',
+                    command: 'save-updated-leaderboard-page',
+                    attributes: {
+                        title: 'Save Leaderboard'
+                    }
+                }]);
+                editor.Commands.add('save-updated-leaderboard-page', {
+                    run: function (editor, sender) {
+                        sender && sender.set('active', 0);
+
+                        var updatedHtml = editor.getHtml();
+                        var updatedCss = editor.getCss();
+                    
+
+                        $.ajax({
+                            url: Globals.path + 'WebBuilder/AJAX?method=saveUpdatedLeaderboardPage',
+                            type: 'POST',
+                            data: {
+                                html: updatedHtml,
+                                css: updatedCss
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    alert('Leaderboard page updated successfully!');
+                                    document.getElementById("gjs").style.display = "none";
+                                    AspenDiscovery.CommunityEngagement.refreshLeaderboardPage();
+                                } else {
+                                    alert("Failed to save leaderboard page: " + response.message);
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Error saving leaderboard: ' + textStatus);
+                            }
+                        })
+                    }
+                })
+                editor.on('load', () => {
+               
+                })
+            } catch (e) {
+                console.error('Error initializing GrapesJS editor: ', e);
+            }
+        },
+        refreshLeaderboardPage: function() {
+            var url = Globals.path + "/Community/AJAX?method=getUpdatedLeaderboardPage";
+
+            $.get(url, function(data) {
+                console.log("Server Response: ", data);
+                if (data.success) {
+                    $('#leaderboard-main-content').html(data.html);
+                    var style = document.createElement('style');
+                    style.innerHTML = data.css;
+                    document.head.appendChild(style);
+                } else {
+                    alert("Failed to load leaderboard data after save: " + data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log('Ajax request failed', jqXHR, textStatus, errorThrown);
+                AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+            });
         }
     }
     
