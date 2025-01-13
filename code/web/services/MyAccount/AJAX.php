@@ -2,10 +2,12 @@
 
 require_once ROOT_DIR . '/JSON_Action.php';
 
-class MyAccount_AJAX extends JSON_Action {
+class MyAccount_AJAX extends JSON_Action
+{
 	const SORT_LAST_ALPHA = 'zzzzz';
 
-	function launch($method = null) {
+	function launch($method = null)
+	{
 		$method = (isset($_GET['method']) && !is_array($_GET['method'])) ? $_GET['method'] : '';
 		switch ($method) {
 			case 'renewItem':
@@ -20,7 +22,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getAddBrowseCategoryFromListForm() {
+	function getAddBrowseCategoryFromListForm()
+	{
 		global $interface;
 
 		// Select List Creation using Object Editor functions
@@ -42,14 +45,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch('Browse/newBrowseCategoryForm.tpl'),
 			'modalButtons' => "<button class='tool btn btn-primary' onclick='$(\"#createBrowseCategory\").submit();'>" . translate([
-					'text' => 'Create Category',
-					'isAdminFacing' => 'true',
-				]) . "</button>",
+				'text' => 'Create Category',
+				'isAdminFacing' => 'true',
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function addAccountLink(): array {
+	function addAccountLink(): array
+	{
 		if (!UserAccount::isLoggedIn()) {
 			$result = [
 				'success' => false,
@@ -201,7 +205,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function removeManagingAccount(): array {
+	function removeManagingAccount(): array
+	{
 		if (!UserAccount::isLoggedIn()) {
 			$result = [
 				'success' => false,
@@ -233,9 +238,9 @@ class MyAccount_AJAX extends JSON_Action {
 							'isPublicFacing' => true,
 						]),
 						'modalButtons' => "<button type='button' class='tool btn btn-primary' onclick='AspenDiscovery.Account.redirectPinReset(); return false;'>" . translate([
-								'text' => "Request PIN Change",
-								'isPublicFacing' => true,
-							]) . "</button>",
+							'text' => "Request PIN Change",
+							'isPublicFacing' => true,
+						]) . "</button>",
 					];
 				} else {
 					$result = [
@@ -268,7 +273,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function removeAccountLink(): array {
+	function removeAccountLink(): array
+	{
 		if (!UserAccount::isLoggedIn()) {
 			$result = [
 				'success' => false,
@@ -325,7 +331,8 @@ class MyAccount_AJAX extends JSON_Action {
 	//WHAT IS IN MODAL POPUP FOR LINK DISABLE
 
 	/** @noinspection PhpUnused */
-	function disableAccountLinkingInfo(): array {
+	function disableAccountLinkingInfo(): array
+	{
 		$user = UserAccount::getActiveUserObj();
 		if ($user->disableAccountLinking == 1) {
 			return [
@@ -338,9 +345,9 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]),
 				'modalButtons' => "<button type='button' class='tool btn btn-primary' onclick='AspenDiscovery.Account.toggleAccountLinkingAccept(); return false;'>" . translate([
-						'text' => "Accept",
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => "Accept",
+					'isPublicFacing' => true,
+				]) . "</button>",
 			];
 		} else {
 			return [
@@ -353,9 +360,9 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]),
 				'modalButtons' => "<button type='button' class='tool btn btn-primary' onclick='AspenDiscovery.Account.toggleAccountLinkingAccept(); return false;'>" . translate([
-						'text' => "Accept",
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => "Accept",
+					'isPublicFacing' => true,
+				]) . "</button>",
 			];
 		}
 	}
@@ -363,7 +370,8 @@ class MyAccount_AJAX extends JSON_Action {
 	//USED UPON SUBMITTING
 
 	/** @noinspection PhpUnused */
-	function toggleAccountLinking() {
+	function toggleAccountLinking()
+	{
 		if (!UserAccount::isLoggedIn()) {
 			$result = [
 				'message' => translate([
@@ -404,9 +412,9 @@ class MyAccount_AJAX extends JSON_Action {
 								'isPublicFacing' => true,
 							]),
 							'modalButtons' => "<button type='button' class='tool btn btn-primary' onclick='AspenDiscovery.Account.redirectPinReset(); return false;'>" . translate([
-									'text' => "Request PIN Change",
-									'isPublicFacing' => true,
-								]) . "</button>",
+								'text' => "Request PIN Change",
+								'isPublicFacing' => true,
+							]) . "</button>",
 						];
 					} else {
 						$result = [
@@ -420,7 +428,6 @@ class MyAccount_AJAX extends JSON_Action {
 								'isPublicFacing' => true,
 							]),
 						];
-
 					}
 				} else {
 					$result = [
@@ -437,7 +444,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getTermsModalContent() {
+	function getTermsModalContent()
+	{
 		$catalog = CatalogFactory::getCatalogConnectionInstance();
 		$selfRegTerms = $catalog->getSelfRegistrationTerms();
 		return [
@@ -450,7 +458,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getAddAccountLinkForm() {
+	function getAddAccountLinkForm()
+	{
 		global $interface;
 		global $library;
 
@@ -465,14 +474,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch('MyAccount/addAccountLink.tpl'),
 			'modalButtons' => "<button type='button' class='tool btn btn-primary' id = 'AddAccountSubmit' onclick='AspenDiscovery.Account.processAddLinkedUser(); return false;'>" . translate([
-					'text' => "Add Account",
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => "Add Account",
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function allowAccountLink() {
+	function allowAccountLink()
+	{
 		require_once ROOT_DIR . '/sys/Account/UserMessage.php';
 
 		$activeUserId = UserAccount::getActiveUserId();
@@ -493,7 +503,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getBulkAddToListForm() {
+	function getBulkAddToListForm()
+	{
 		global $interface;
 		// Display Page
 		$interface->assign('listId', strip_tags($_REQUEST['listId']));
@@ -505,14 +516,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch('MyAccount/bulkAddToListPopup.tpl'),
 			'modalButtons' => "<button type='button' class='tool btn btn-primary' onclick='AspenDiscovery.Lists.processBulkAddForm(); return false;'>" . translate([
-					'text' => "Add To List",
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => "Add To List",
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function saveSearch() {
+	function saveSearch()
+	{
 		$result = [
 			'success' => false,
 			'message' => 'Unknown error saving search',
@@ -535,9 +547,9 @@ class MyAccount_AJAX extends JSON_Action {
 							'isPublicFacing' => true,
 						]);
 						$result['modalButtons'] = "<a class='tool btn btn-primary' id='viewSavedSearches' href='/Search/History?require_login'>" . translate([
-								'text' => "View Saved Searches",
-								'isPublicFacing' => true,
-							]) . "</a>";
+							'text' => "View Saved Searches",
+							'isPublicFacing' => true,
+						]) . "</a>";
 					} else {
 						$result['message'] = translate([
 							'text' => "Sorry, we could not save that search for you.  It may have expired.",
@@ -551,9 +563,9 @@ class MyAccount_AJAX extends JSON_Action {
 						'isPublicFacing' => true,
 					]);
 					$result['modalButtons'] = "<a class='tool btn btn-primary' id='viewSavedSearches' href='/Search/History?require_login'>" . translate([
-							'text' => "View Saved Searches",
-							'isPublicFacing' => true,
-						]) . "</a>";
+						'text' => "View Saved Searches",
+						'isPublicFacing' => true,
+					]) . "</a>";
 				}
 			} else {
 				$result['message'] = translate([
@@ -571,7 +583,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getSaveSearchForm() {
+	function getSaveSearchForm()
+	{
 		global $interface;
 
 		$searchId = $_REQUEST['searchId'];
@@ -587,14 +600,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch('MyAccount/saveSearch.tpl'),
 			'modalButtons' => "<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.saveSearch(); return false;'>" . translate([
-					'text' => 'Save',
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => 'Save',
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmCancelHold(): array {
+	function confirmCancelHold(): array
+	{
 		$patronId = $_REQUEST['patronId'];
 		$recordId = $_REQUEST['recordId'];
 		$cancelId = $_REQUEST['cancelId'];
@@ -617,7 +631,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function cancelHold(): array {
+	function cancelHold(): array
+	{
 		$result = [
 			'success' => false,
 			'title' => translate([
@@ -686,7 +701,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmCancelHoldSelected(): array {
+	function confirmCancelHoldSelected(): array
+	{
 		$patronId = $_REQUEST['patronId'];
 		$recordId = $_REQUEST['recordId'];
 		$cancelId = $_REQUEST['cancelId'];
@@ -707,7 +723,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function cancelHoldSelectedItems() {
+	function cancelHoldSelectedItems()
+	{
 		$result = [
 			'success' => false,
 			'title' => translate([
@@ -784,12 +801,12 @@ class MyAccount_AJAX extends JSON_Action {
 						}
 
 						$message = '<div class="alert alert-success">' . translate([
-								'text' => '%1% of %2% holds were cancelled',
-								1 => $success,
-								2 => $total,
-								'isPublicFacing' => true,
-								'inAttribute' => true,
-							]) . '</div>';
+							'text' => '%1% of %2% holds were cancelled',
+							1 => $success,
+							2 => $total,
+							'isPublicFacing' => true,
+							'inAttribute' => true,
+						]) . '</div>';
 						$tmpResult['message'] = $message;
 						$tmpResult['title'] = translate([
 							'text' => 'Success',
@@ -810,7 +827,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function cancelVdxRequest(): array {
+	function cancelVdxRequest(): array
+	{
 		$result = [
 			'success' => false,
 			'message' => translate([
@@ -854,7 +872,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmCancelHoldAll(): array {
+	function confirmCancelHoldAll(): array
+	{
 		$cancelButtonLabel = translate([
 			'text' => 'Confirm Cancel Holds',
 			'isPublicFacing' => true,
@@ -872,7 +891,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function cancelAllHolds() {
+	function cancelAllHolds()
+	{
 		$tmpResult = [
 			'success' => false,
 			'title' => translate([
@@ -929,18 +949,17 @@ class MyAccount_AJAX extends JSON_Action {
 				}
 
 				$message = '<div class="alert alert-success">' . translate([
-						'text' => '%1% of %2% holds were canceled',
-						1 => $success,
-						2 => $total,
-						'isPublicFacing' => true,
-						'inAttribute' => true,
-					]) . '</div>';
+					'text' => '%1% of %2% holds were canceled',
+					1 => $success,
+					2 => $total,
+					'isPublicFacing' => true,
+					'inAttribute' => true,
+				]) . '</div>';
 				$tmpResult['message'] = $message;
 				$tmpResult['title'] = translate([
 					'text' => 'Success',
 					'isPublicFacing' => true
 				]);
-
 			}
 		} else {
 			$tmpResult['message'] = translate([
@@ -953,7 +972,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $tmpResult;
 	}
 
-	function freezeHold(): array {
+	function freezeHold(): array
+	{
 		$user = UserAccount::getLoggedInUser();
 		$result = [
 			'success' => false,
@@ -1033,7 +1053,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmFreezeHoldSelected(): array {
+	function confirmFreezeHoldSelected(): array
+	{
 		$user = UserAccount::getLoggedInUser();
 		$patronId = $_REQUEST['patronId'];
 		$recordId = $_REQUEST['recordId'];
@@ -1074,7 +1095,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function freezeHoldSelectedItems() {
+	function freezeHoldSelectedItems()
+	{
 		$user = UserAccount::getLoggedInUser();
 		$tmpResult = [ // set default response
 			'success' => false,
@@ -1150,11 +1172,11 @@ class MyAccount_AJAX extends JSON_Action {
 									$failed++;
 								}
 								//cloudLibrary holds can't be frozen
-//							} else if ($holdType == 'cloud_library') {
-//								require_once ROOT_DIR . '/Drivers/CloudLibraryDriver.php';
-//								$driver = new CloudLibraryDriver();
-//								$tmpResult = $driver->freezeHold($user, $recordId);
-//								if($tmpResult['success']){$success++;}else{$failed++;}
+								//							} else if ($holdType == 'cloud_library') {
+								//								require_once ROOT_DIR . '/Drivers/CloudLibraryDriver.php';
+								//								$driver = new CloudLibraryDriver();
+								//								$tmpResult = $driver->freezeHold($user, $recordId);
+								//								if($tmpResult['success']){$success++;}else{$failed++;}
 							} else {
 								$failed++;
 							}
@@ -1174,18 +1196,17 @@ class MyAccount_AJAX extends JSON_Action {
 							$alertStatus = 'alert-success';
 						}
 						$message = '<div class="alert ' . $alertStatus . '">' . translate([
-								'text' => '%1% of %2% holds were frozen',
-								1 => $success,
-								2 => $total,
-								'isPublicFacing' => true,
-								'inAttribute' => true,
-							]) . '</div>';
+							'text' => '%1% of %2% holds were frozen',
+							1 => $success,
+							2 => $total,
+							'isPublicFacing' => true,
+							'inAttribute' => true,
+						]) . '</div>';
 						$tmpResult['message'] = $message;
 						$tmpResult['title'] = translate([
 							'text' => 'Your results',
 							'isPublicFacing' => true,
 						]);
-
 					}
 				}
 			} else {
@@ -1201,7 +1222,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmFreezeHoldAll(): array {
+	function confirmFreezeHoldAll(): array
+	{
 		$user = UserAccount::getLoggedInUser();
 		$patronId = $_REQUEST['patronId'];
 		$freezeButtonLabel = translate([
@@ -1238,7 +1260,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function freezeHoldAll() {
+	function freezeHoldAll()
+	{
 		$user = UserAccount::getLoggedInUser();
 		$tmpResult['title'] = translate([
 			'text' => 'Error',
@@ -1268,7 +1291,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $tmpResult;
 	}
 
-	function thawHold(): array {
+	function thawHold(): array
+	{
 		$user = UserAccount::getLoggedInUser();
 		$result = [ // set default response
 			'success' => false,
@@ -1326,7 +1350,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmThawHoldSelected(): array {
+	function confirmThawHoldSelected(): array
+	{
 		$patronId = $_REQUEST['patronId'];
 		$recordId = $_REQUEST['recordId'];
 		$holdId = $_REQUEST['holdId'];
@@ -1348,7 +1373,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function thawHoldSelectedItems() {
+	function thawHoldSelectedItems()
+	{
 		$result = [ // set default response
 			'success' => false,
 			'title' => translate([
@@ -1442,12 +1468,12 @@ class MyAccount_AJAX extends JSON_Action {
 							$alertStatus = 'alert-success';
 						}
 						$message = '<div class="alert ' . $alertStatus . '">' . translate([
-								'text' => '%1% of %2% holds were thawed',
-								1 => $success,
-								2 => $total,
-								'isPublicFacing' => true,
-								'inAttribute' => true,
-							]) . '</div>';
+							'text' => '%1% of %2% holds were thawed',
+							1 => $success,
+							2 => $total,
+							'isPublicFacing' => true,
+							'inAttribute' => true,
+						]) . '</div>';
 						$tmpResult['message'] = $message;
 						$tmpResult['title'] = translate([
 							'text' => 'Your results',
@@ -1468,7 +1494,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmThawHoldAll(): array {
+	function confirmThawHoldAll(): array
+	{
 		$patronId = $_REQUEST['patronId'];
 		$thawButtonLabel = translate([
 			'text' => 'Confirm Thaw Holds',
@@ -1487,7 +1514,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function thawHoldAll() {
+	function thawHoldAll()
+	{
 		$tmpResult['title'] = translate([
 			'text' => 'Error',
 			'isPublicFacing' => true,
@@ -1501,7 +1529,6 @@ class MyAccount_AJAX extends JSON_Action {
 			]);
 		} elseif (!empty($_REQUEST['patronId'])) {
 			$tmpResult = $user->thawAllHolds();
-
 		} else {
 			// We aren't getting all the expected data, so make a log entry & tell user.
 			global $logger;
@@ -1513,7 +1540,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function addList() {
+	function addList()
+	{
 		$return = [];
 		if (UserAccount::isLoggedIn()) {
 			$user = UserAccount::getLoggedInUser();
@@ -1682,7 +1710,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getCreateListForm() {
+	function getCreateListForm()
+	{
 		global $interface;
 
 		if (isset($_REQUEST['sourceId'])) {
@@ -1735,14 +1764,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch("MyAccount/createListForm.tpl"),
 			'modalButtons' => "<button type='button' class='tool btn btn-primary' onclick='AspenDiscovery.Account.addList(); return false;'>" . translate([
-					'text' => 'Create List',
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => 'Create List',
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function getLoginForm() {
+	function getLoginForm()
+	{
 		global $interface;
 		global $library;
 		global $locationSingleton;
@@ -1855,9 +1885,9 @@ class MyAccount_AJAX extends JSON_Action {
 					]),
 					'body' => $interface->fetch('MyAccount/2fa/login.tpl'),
 					'buttons' => "<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.verify2FALogin(); return false;'>" . translate([
-							'text' => 'Verify',
-							'isPublicFacing' => true,
-						]) . "</button>",
+						'text' => 'Verify',
+						'isPublicFacing' => true,
+					]) . "</button>",
 					'closeDestination' => '/MyAccount/Logout'
 				];
 			}
@@ -1919,10 +1949,10 @@ class MyAccount_AJAX extends JSON_Action {
 		$loginButtons .= '"/>';
 		if ($interface->getVariable('ssoIsEnabled') && !$interface->getVariable('ssoStaffOnly') && $interface->getVariable('ssoService') == 'ldap' && !empty($interface->getVariable('ldapLabel'))) {
 			$loginButtons .= '<input type="submit" name="submit" value="' . translate([
-					'text' => "Sign in with %1%",
-					'1' => $interface->getVariable('ldapLabel'),
-					'isPublicFacing' => true
-				]) . ' id="loginFormSubmit" class="btn btn-primary extraModalButton" onclick="return AspenDiscovery.Account.processAjaxLogin();">';
+				'text' => "Sign in with %1%",
+				'1' => $interface->getVariable('ldapLabel'),
+				'isPublicFacing' => true
+			]) . ' id="loginFormSubmit" class="btn btn-primary extraModalButton" onclick="return AspenDiscovery.Account.processAjaxLogin();">';
 		} else {
 			$loginButtons .= '<input type="submit" name="submit" value="';
 			if (!empty($multiStep)) {
@@ -1952,7 +1982,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMasqueradeAsForm() {
+	function getMasqueradeAsForm()
+	{
 		global $library;
 		global $interface;
 		$catalog = CatalogFactory::getCatalogConnectionInstance();
@@ -1965,26 +1996,29 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch("MyAccount/ajax-masqueradeAs.tpl"),
 			'modalButtons' => '<button class="tool btn btn-primary" onclick="$(\'#masqueradeForm\').submit()">' . translate([
-					'text' => 'Start',
-					'isPublicFacing' => true,
-				]) . '</button>',
+				'text' => 'Start',
+				'isPublicFacing' => true,
+			]) . '</button>',
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function initiateMasquerade() {
+	function initiateMasquerade()
+	{
 		require_once ROOT_DIR . '/services/MyAccount/Masquerade.php';
 		return MyAccount_Masquerade::initiateMasquerade();
 	}
 
 	/** @noinspection PhpUnused */
-	function endMasquerade() {
+	function endMasquerade()
+	{
 		require_once ROOT_DIR . '/services/MyAccount/Masquerade.php';
 		return MyAccount_Masquerade::endMasquerade();
 	}
 
 	/** @noinspection PhpUnused */
-	function getChangeHoldLocationForm() : array {
+	function getChangeHoldLocationForm(): array
+	{
 		global $interface;
 		/** @var $interface UInterface
 		 * @var $user User
@@ -2050,9 +2084,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'modalBody' => $interface->fetch("MyAccount/changeHoldLocation.tpl"),
 				'modalButtons' => '<button type="button" class="tool btn btn-primary" onclick="AspenDiscovery.Account.doChangeHoldLocation(); return false;">' . translate([
-						'text' => 'Change Location',
-						'isPublicFacing' => true,
-					]) . '</button>',
+					'text' => 'Change Location',
+					'isPublicFacing' => true,
+				]) . '</button>',
 			];
 		} else {
 			$results = [
@@ -2069,7 +2103,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getReactivationDateForm() {
+	function getReactivationDateForm()
+	{
 		global $interface;
 
 		$user = UserAccount::getLoggedInUser();
@@ -2105,7 +2140,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function changeHoldLocation() {
+	function changeHoldLocation()
+	{
 		try {
 			$holdId = $_REQUEST['holdId'];
 			$newPickupLocation = $_REQUEST['newLocation'];
@@ -2159,7 +2195,6 @@ class MyAccount_AJAX extends JSON_Action {
 					'modalButtons' => "",
 				];
 			}
-
 		} catch (PDOException $e) {
 			// What should we do with this error?
 			if (IPAddress::showDebuggingInformation()) {
@@ -2178,7 +2213,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function requestPinReset() {
+	function requestPinReset()
+	{
 		$catalog = CatalogFactory::getCatalogConnectionInstance();
 
 		//Get the list of pickup branch locations for display in the user interface.
@@ -2186,7 +2222,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getCitationFormatsForm() {
+	function getCitationFormatsForm()
+	{
 		global $interface;
 		$interface->assign('listId', $_REQUEST['listId']);
 		$citationFormats = CitationBuilder::getCitationFormats();
@@ -2199,15 +2236,16 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $pageContent,
 			'modalButtons' => '<input class="btn btn-primary" onclick="AspenDiscovery.Lists.processCiteListForm(); return false;" value="' . translate([
-					'text' => 'Generate Citations',
-					'isPublicFacing' => true,
-					'inAttribute' => true,
-				]) . '">',
+				'text' => 'Generate Citations',
+				'isPublicFacing' => true,
+				'inAttribute' => true,
+			]) . '">',
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function sendMyListEmail() {
+	function sendMyListEmail()
+	{
 		global $interface;
 
 		// Get data from AJAX request
@@ -2268,13 +2306,11 @@ class MyAccount_AJAX extends JSON_Action {
 							'message' => 'Sorry, we can&apos;t send emails with html or other data in it.',
 						];
 					}
-
 				} else {
 					$result = [
 						'result' => false,
 						'message' => 'You do not have access to this list.',
 					];
-
 				}
 			} else {
 				$result = [
@@ -2293,7 +2329,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getEmailMyListForm() {
+	function getEmailMyListForm()
+	{
 		global $interface;
 		if (isset($_REQUEST['listId']) && ctype_digit($_REQUEST['listId'])) {
 			$listId = $_REQUEST['listId'];
@@ -2304,10 +2341,10 @@ class MyAccount_AJAX extends JSON_Action {
 				'title' => 'Email a list',
 				'modalBody' => $interface->fetch('MyAccount/emailListPopup.tpl'),
 				'modalButtons' => '<button type="button" class="btn btn-primary" onclick="$(\'#emailListForm\').submit();">' . translate([
-						'text' => 'Send Email',
-						'isPublicFacing' => true,
-						'inAttribute' => true,
-					]) . '</button>',
+					'text' => 'Send Email',
+					'isPublicFacing' => true,
+					'inAttribute' => true,
+				]) . '</button>',
 			];
 		} else {
 			return [
@@ -2317,7 +2354,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function renewCheckout() {
+	function renewCheckout()
+	{
 		if (isset($_REQUEST['patronId']) && isset($_REQUEST['recordId']) && isset($_REQUEST['renewIndicator'])) {
 			if (strpos($_REQUEST['renewIndicator'], '|') > 0) {
 				[
@@ -2366,9 +2404,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'modalBody' => $interface->fetch('MyAccount/renew-item-results.tpl'),
 				'modalButtons' => "<button onclick=\"return AspenDiscovery.Account.confirmRenewalFee('$patronId', '$recordId', '$renewIndicator');\" class=\"modal-buttons btn btn-primary\">" . translate([
-						'text' => 'Renew Item',
-						'isAdminFacing' => true,
-					]) . '</button>',
+					'text' => 'Renew Item',
+					'isAdminFacing' => true,
+				]) . '</button>',
 				'success' => $renewResults['success'],
 			];
 		}
@@ -2384,7 +2422,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function renewSelectedItems() {
+	function renewSelectedItems()
+	{
 		if (!UserAccount::isLoggedIn()) {
 			$renewResults = [
 				'success' => false,
@@ -2467,7 +2506,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function renewAll() {
+	function renewAll()
+	{
 		$renewResults = [
 			'success' => false,
 			'message' => ['Unable to renew all titles'],
@@ -2489,9 +2529,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'modalBody' => $interface->fetch('Record/renew-results.tpl'),
 				'modalButtons' => "<button onclick=\"return AspenDiscovery.Account.confirmRenewalFeeAll();\" class=\"modal-buttons btn btn-primary\">" . translate([
-						'text' => 'Renew Items',
-						'isPublicFacing' => true,
-					]) . '</button>',
+					'text' => 'Renew Items',
+					'isPublicFacing' => true,
+				]) . '</button>',
 				'success' => $renewResults['success'],
 			];
 		}
@@ -2508,7 +2548,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function setListEntryPositions() {
+	function setListEntryPositions()
+	{
 		$success = false; // assume failure
 		$listId = $_REQUEST['listID'];
 		$updates = $_REQUEST['updates'];
@@ -2540,7 +2581,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataIls() {
+	function getMenuDataIls()
+	{
 		global $timer;
 		global $interface;
 
@@ -2627,7 +2669,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataCloudLibrary() {
+	function getMenuDataCloudLibrary()
+	{
 		global $timer;
 		$result = [
 			'success' => false,
@@ -2669,7 +2712,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataAxis360() {
+	function getMenuDataAxis360()
+	{
 		global $timer;
 		$result = [
 			'success' => false,
@@ -2711,7 +2755,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataHoopla() {
+	function getMenuDataHoopla()
+	{
 		global $timer;
 		$result = [
 			'success' => false,
@@ -2752,7 +2797,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataOverdrive() {
+	function getMenuDataOverdrive()
+	{
 		global $timer;
 		$result = [
 			'success' => false,
@@ -2792,7 +2838,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataPalaceProject() {
+	function getMenuDataPalaceProject()
+	{
 		global $timer;
 		$result = [
 			'success' => false,
@@ -2834,7 +2881,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getMenuDataInterlibraryLoan() {
+	function getMenuDataInterlibraryLoan()
+	{
 		global $timer;
 		$result = [
 			'success' => false,
@@ -2871,7 +2919,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getRatingsData() {
+	function getRatingsData()
+	{
 		global $interface;
 		$result = [];
 		if (UserAccount::isLoggedIn()) {
@@ -2881,13 +2930,14 @@ class MyAccount_AJAX extends JSON_Action {
 			//Count of ratings
 			$result['ratings'] = $user->getNumRatings();
 			$result['notInterested'] = $user->getNumNotInterested();
-		}//User is not logged in
+		} //User is not logged in
 
 		return $result;
 	}
 
 	/** @noinspection PhpUnused */
-	function getListData() {
+	function getListData()
+	{
 		global $timer;
 		global $interface;
 		global $configArray;
@@ -2923,14 +2973,14 @@ class MyAccount_AJAX extends JSON_Action {
 
 			$interface->assign('lists', $lists);
 			$result['lists'] = $interface->fetch('MyAccount/listsMenu.tpl');
-
-		}//User is not logged in
+		} //User is not logged in
 
 		return $result;
 	}
 
 	/** @noinspection PhpUnused */
-	public function exportCheckouts() {
+	public function exportCheckouts()
+	{
 		$source = $_REQUEST['source'];
 		$user = UserAccount::getActiveUserObj();
 		$allCheckedOut = $user->getCheckouts(true, $source);
@@ -2985,7 +3035,7 @@ class MyAccount_AJAX extends JSON_Action {
 				}
 				$title = $titleCell;
 
-				if (isset ($row->author)) {
+				if (isset($row->author)) {
 					if (is_array($row->author)) {
 						$authorCell = implode(', ', $row->author);
 					} else {
@@ -3057,7 +3107,6 @@ class MyAccount_AJAX extends JSON_Action {
 				}
 				fputcsv($fp, $row);
 			}
-
 		} catch (Exception $e) {
 			global $logger;
 			$logger->log("Error exporting to csv " . $e, Logger::LOG_ERROR);
@@ -3066,7 +3115,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	public function exportHolds() {
+	public function exportHolds()
+	{
 		$source = $_REQUEST['source'];
 		$user = UserAccount::getActiveUserObj();
 
@@ -3161,11 +3211,11 @@ class MyAccount_AJAX extends JSON_Action {
 
 					foreach ($allHolds['available'] as $row) {
 						$title = preg_replace("~([/:])$~", "", $row->title);
-						if (isset ($row->title2)) {
+						if (isset($row->title2)) {
 							$title .= preg_replace("~([/:])$~", "", $row->title2);
 						}
 
-						if (isset ($row->author)) {
+						if (isset($row->author)) {
 							if (is_array($row->author)) {
 								$author = implode(',', $row->author);
 							} else {
@@ -3297,11 +3347,11 @@ class MyAccount_AJAX extends JSON_Action {
 
 					foreach ($allHolds['unavailable'] as $row) {
 						$title = preg_replace("~([/:])$~", "", $row->title);
-						if (isset ($row->title2)) {
+						if (isset($row->title2)) {
 							$title .= preg_replace("~([/:])$~", "", $row->title2);
 						}
 
-						if (isset ($row->author)) {
+						if (isset($row->author)) {
 							if (is_array($row->author)) {
 								$author = implode(', ', $row->author);
 							} else {
@@ -3372,7 +3422,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	public function exportReadingHistory() {
+	public function exportReadingHistory()
+	{
 		$user = UserAccount::getActiveUserObj();
 		if ($user) {
 			$selectedSortOption = $this->setSort('sort', 'readingHistory');
@@ -3431,7 +3482,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	public function getCheckouts(): array {
+	public function getCheckouts(): array
+	{
 		global $interface;
 		global $library;
 
@@ -3551,7 +3603,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	public function getHolds(): array {
+	public function getHolds(): array
+	{
 		global $interface;
 
 		$result = [
@@ -3634,7 +3687,8 @@ class MyAccount_AJAX extends JSON_Action {
 					$availableHoldSortOptions['location'] = 'Pickup Location';
 				}
 
-				if (count($user->getLinkedUsers()) > 0) {
+				$linkedUsers = $user->getLinkedUsers();
+				if (count($linkedUsers) > 0) {
 					$unavailableHoldSortOptions['libraryAccount'] = 'Library Account';
 					$availableHoldSortOptions['libraryAccount'] = 'Library Account';
 				}
@@ -3643,6 +3697,7 @@ class MyAccount_AJAX extends JSON_Action {
 					'available' => $availableHoldSortOptions,
 					'unavailable' => $unavailableHoldSortOptions,
 				]);
+				$interface->assign('linkedUsers', $linkedUsers);
 
 				if ($selectedAvailableSortOption == null || !array_key_exists($selectedAvailableSortOption, $availableHoldSortOptions)) {
 					$selectedAvailableSortOption = 'expire';
@@ -3693,7 +3748,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	public function getVendor($sourceId) {
+	public function getVendor($sourceId)
+	{
 		if (preg_match('`^communico`', $sourceId)) {
 			return "communico";
 		} elseif (preg_match('`^libcal`', $sourceId)) {
@@ -3706,7 +3762,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	public function getSavedEvents() {
+	public function getSavedEvents()
+	{
 		global $interface;
 		global $timer;
 		global $library;
@@ -3735,7 +3792,6 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 		if ($eventsFilter == 'all') {
 			$event->orderBy('eventDate DESC');
-
 		}
 		$event->limit(($page - 1) * $pageSize, $pageSize);
 		$event->find();
@@ -3810,7 +3866,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	public function getReadingHistory() {
+	public function getReadingHistory()
+	{
 		global $interface;
 		$showCovers = $this->setShowCovers();
 
@@ -3913,15 +3970,18 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function renderReadingHistoryPaginationLink($page, $options) {
+	function renderReadingHistoryPaginationLink($page, $options)
+	{
 		return "<a class='page-link btn btn-default btn-sm' onclick='AspenDiscovery.Account.loadReadingHistory(\"{$options['patronId']}\", \"{$options['sort']}\", \"{$page}\", undefined, \"{$options['filter']}\");AspenDiscovery.goToAnchor(\"topOfList\")'>";
 	}
 
-	private function isValidTimeStamp($timestamp) {
+	private function isValidTimeStamp($timestamp)
+	{
 		return is_numeric($timestamp) && ($timestamp <= PHP_INT_MAX) && ($timestamp >= ~PHP_INT_MAX);
 	}
 
-	function setShowCovers() {
+	function setShowCovers()
+	{
 		global $interface;
 		// Hide Covers when the user has set that setting on a Search Results Page
 		// this is the same setting as used by the MyAccount Pages for now.
@@ -3938,7 +3998,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $showCovers;
 	}
 
-	function setSort($requestParameter, $sortType) {
+	function setSort($requestParameter, $sortType)
+	{
 		// Hide Covers when the user has set that setting on a Search Results Page
 		// this is the same setting as used by the MyAccount Pages for now.
 		$sort = null;
@@ -3958,7 +4019,8 @@ class MyAccount_AJAX extends JSON_Action {
 	 * @param Checkout[] $allCheckedOut
 	 * @return array
 	 */
-	private function sortCheckouts(string $selectedSortOption, array $allCheckedOut): array {
+	private function sortCheckouts(string $selectedSortOption, array $allCheckedOut): array
+	{
 		//Do sorting now that we have all records
 		$curTransaction = 0;
 		foreach ($allCheckedOut as $i => $curTitle) {
@@ -4009,7 +4071,8 @@ class MyAccount_AJAX extends JSON_Action {
 
 	/** @noinspection PhpUnused */
 
-	function deleteReadingHistoryEntry() {
+	function deleteReadingHistoryEntry()
+	{
 		$result = [
 			'success' => false,
 			'title' => translate([
@@ -4041,7 +4104,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function deleteReadingHistoryEntryByTitleAuthor() {
+	function deleteReadingHistoryEntryByTitleAuthor()
+	{
 		$result = [
 			'success' => false,
 			'title' => translate([
@@ -4072,7 +4136,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function dismissMessage() {
+	function dismissMessage()
+	{
 		require_once ROOT_DIR . '/sys/Account/UserMessage.php';
 		if (!isset($_REQUEST['messageId'])) {
 			return [
@@ -4113,7 +4178,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function dismissSystemMessage() {
+	function dismissSystemMessage()
+	{
 		require_once ROOT_DIR . '/sys/LocalEnrichment/SystemMessage.php';
 		if (!isset($_REQUEST['messageId'])) {
 			return [
@@ -4157,7 +4223,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createGenericDonation($paymentType = '') {
+	function createGenericDonation($paymentType = '')
+	{
 		$transactionDate = time();
 		$user = UserAccount::getLoggedInUser();
 
@@ -4408,11 +4475,11 @@ class MyAccount_AJAX extends JSON_Action {
 			$patron,
 			$donation,
 		];
-
 	}
 
 	/** @noinspection PhpUnused */
-	function addDonation($payment, $tempDonation) {
+	function addDonation($payment, $tempDonation)
+	{
 		require_once ROOT_DIR . '/sys/Donations/Donation.php';
 		$donation = new Donation();
 		$donation->paymentId = $payment->id;
@@ -4446,7 +4513,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createGenericOrder($paymentType = '') {
+	function createGenericOrder($paymentType = '')
+	{
 		$transactionDate = time();
 		$user = UserAccount::getLoggedInUser();
 		if ($user == null) {
@@ -4549,7 +4617,6 @@ class MyAccount_AJAX extends JSON_Action {
 							//Record this is a partially paid fine
 							$finePayment = 1;
 						}
-
 					} else {
 						$fineAmount = $useOutstanding ? $fine['amountOutstandingVal'] : $fine['amountVal'];
 						$finesPaid .= '|' . $fineAmount;
@@ -4762,7 +4829,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createPayPalOrder() {
+	function createPayPalOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -4892,7 +4960,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function completePayPalOrder() {
+	function completePayPalOrder()
+	{
 		global $configArray;
 
 		$orderId = $_REQUEST['orderId'];
@@ -5046,9 +5115,9 @@ class MyAccount_AJAX extends JSON_Action {
 					//If the payment does not complete in the ILS, add information to the payment for tracking
 					//Also send an email to the admin that it was completed in PayPal, but not the ILS
 					$payment->message .= translate([
-							'text' => 'Your payment was received, but was not cleared in our library software. Your account will be updated within the next business day. If you need more immediate assistance, please visit the library with your receipt.',
-							'isPublicFacing' => true
-						]) . ' ' . $result['message'];
+						'text' => 'Your payment was received, but was not cleared in our library software. Your account will be updated within the next business day. If you need more immediate assistance, please visit the library with your receipt.',
+						'isPublicFacing' => true
+					]) . ' ' . $result['message'];
 					$payment->update();
 					$result['message'] = $payment->message;
 
@@ -5069,7 +5138,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createSquareOrder() {
+	function createSquareOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5110,7 +5180,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function completeSquareOrder() {
+	function completeSquareOrder()
+	{
 		global $configArray;
 
 		$patronId = $_REQUEST['patronId'];
@@ -5262,7 +5333,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createStripeOrder() {
+	function createStripeOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5303,7 +5375,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function completeStripeOrder() {
+	function completeStripeOrder()
+	{
 		global $configArray;
 
 		$patronId = $_REQUEST['patronId'];
@@ -5383,7 +5456,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createMSBOrder() {
+	function createMSBOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5434,7 +5508,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createCompriseOrder() {
+	function createCompriseOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5522,7 +5597,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createProPayOrder() {
+	function createProPayOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5721,7 +5797,6 @@ class MyAccount_AJAX extends JSON_Action {
 						'message' => 'Payer Account ID could not be determined.',
 					];
 				}
-
 			} else {
 				return [
 					'success' => false,
@@ -5732,7 +5807,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createWorldPayOrder() {
+	function createWorldPayOrder()
+	{
 		$transactionType = $_REQUEST['type'];
 		if ($transactionType == 'donation') {
 			$result = $this->createGenericDonation('worldpay');
@@ -5771,7 +5847,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function checkWorldPayOrderStatus() {
+	function checkWorldPayOrderStatus()
+	{
 		$result = [
 			'success' => false,
 			'message' => 'Unable to check user payment status',
@@ -5810,7 +5887,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createXPressPayOrder() {
+	function createXPressPayOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5874,7 +5952,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function createCertifiedPaymentsByDeluxeOrder() {
+	function createCertifiedPaymentsByDeluxeOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -5932,7 +6011,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createNCROrder() {
+	function createNCROrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -6040,7 +6120,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function createSnapPayOrder() {
+	function createSnapPayOrder()
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -6099,7 +6180,7 @@ class MyAccount_AJAX extends JSON_Action {
 				$lineItem->amount = $payment->totalPaid;
 				$lineItem->paymentType = $snapPaySetting->paymentTypeId;
 
-// create the HMAC signature
+				// create the HMAC signature
 				$apiAuthCode = $snapPaySetting->apiAuthenticationCode;
 				$accountid = $snapPaySetting->accountId;
 				$customerid = $patron->id;
@@ -6115,17 +6196,17 @@ class MyAccount_AJAX extends JSON_Action {
 				$requestTimeStamp = (string)$timeSpan;
 
 				$signatureRawData = $accountid . $customerid . $merchantid . $transactionamount . $currencycode . $paymentmode . $email . $nonce . $requestTimeStamp;
-// Convert base64-encoded apiAuthCode to byte array
+				// Convert base64-encoded apiAuthCode to byte array
 				$secretKeyByteArray = base64_decode($apiAuthCode);
-// Encode signatureRawData to byte array using UTF-8
+				// Encode signatureRawData to byte array using UTF-8
 				$signature = utf8_encode($signatureRawData);
-// Compute HMAC SHA-256 hash
+				// Compute HMAC SHA-256 hash
 				$signatureBytes = hash_hmac('sha256', $signature, $secretKeyByteArray, true);
-// Convert hash to base64-encoded string
+				// Convert hash to base64-encoded string
 				$requestSignatureBase64String = base64_encode($signatureBytes);
-// Format signatureData string
+				// Format signatureData string
 				$signatureData = sprintf("%s:%s:%s", $requestSignatureBase64String, $nonce, $requestTimeStamp);
-// Encode signatureData to byte array using UTF-8 and convert to base64-encoded string
+				// Encode signatureData to byte array using UTF-8 and convert to base64-encoded string
 				$HmacValue = base64_encode(utf8_encode($signatureData));
 
 				$postParams = [
@@ -6171,7 +6252,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function createPayPalPayflowOrder() {
+	function createPayPalPayflowOrder()
+	{
 		global $configArray;
 		global $interface;
 		global $activeLanguage;
@@ -6290,7 +6372,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createACIOrder() {
+	function createACIOrder()
+	{
 		$transactionType = $_REQUEST['type'];
 		if ($transactionType == 'donation') {
 			$result = $this->createGenericDonation('ACI');
@@ -6328,7 +6411,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function completeACIOrder() {
+	function completeACIOrder()
+	{
 		global $configArray;
 
 		$patronId = $_REQUEST['patronId'];
@@ -6396,7 +6480,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function dismissPlacard() {
+	function dismissPlacard()
+	{
 		$patronId = $_REQUEST['patronId'];
 		$placardId = $_REQUEST['placardId'];
 
@@ -6430,7 +6515,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function createInvoiceCloudOrder(): array {
+	function createInvoiceCloudOrder(): array
+	{
 		global $configArray;
 
 		$transactionType = $_REQUEST['type'];
@@ -6558,7 +6644,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function dismissBrowseCategory() {
+	function dismissBrowseCategory()
+	{
 		$patronId = UserAccount::getActiveUserId();
 		$browseCategoryId = $_REQUEST['browseCategoryId'];
 
@@ -6665,7 +6752,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getHiddenBrowseCategories() {
+	function getHiddenBrowseCategories()
+	{
 		global $interface;
 
 		if (isset($_REQUEST['patronId'])) {
@@ -6678,7 +6766,7 @@ class MyAccount_AJAX extends JSON_Action {
 			$browseCategoryDismissals->userId = $patronId;
 			$browseCategoryDismissals->find();
 			while ($browseCategoryDismissals->fetch()) {
-				$hiddenCategories[] = clone($browseCategoryDismissals);
+				$hiddenCategories[] = clone ($browseCategoryDismissals);
 			}
 
 			if ($browseCategoryDismissals->count() > 0) {
@@ -6757,9 +6845,9 @@ class MyAccount_AJAX extends JSON_Action {
 					'title' => 'Hidden browse categories',
 					'modalBody' => $interface->fetch('MyAccount/hiddenBrowseCategories.tpl'),
 					'modalButtons' => '<button type="button" class="tool btn btn-primary" onclick="return AspenDiscovery.Account.showBrowseCategory()">' . translate([
-							'text' => 'Show These Browse Categories',
-							'isPublicFacing' => true,
-						]) . '</button>',
+						'text' => 'Show These Browse Categories',
+						'isPublicFacing' => true,
+					]) . '</button>',
 				];
 			} else {
 				$interface->assign('message', 'You have no hidden browse categories.');
@@ -6778,7 +6866,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function showBrowseCategory() {
+	function showBrowseCategory()
+	{
 		$result = [
 			'success' => false,
 			'title' => translate([
@@ -6869,7 +6958,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function updateAutoRenewal() {
+	function updateAutoRenewal()
+	{
 		$patronId = $_REQUEST['patronId'];
 		$allowAutoRenewal = ($_REQUEST['allowAutoRenewal'] == 'on' || $_REQUEST['allowAutoRenewal'] == 'true');
 
@@ -6893,7 +6983,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function eventRegistrationModal() {
+	function eventRegistrationModal()
+	{
 		$eventUrl = $_REQUEST['regLink'];
 		if (isset($_REQUEST['vendor'])) {
 			$vendor = $_REQUEST['vendor'];
@@ -6943,17 +7034,17 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'body' => $body,
 				'buttons' => '<a href="' . $eventUrl . '" class="btn btn-primary" target="_blank" aria-label="' . translate([
-						'text' => 'Go to Registration',
-						'isPublicFacing' => true,
-						'inAttribute' => true
-					]) . ' (' . translate([
-						'text' => 'opens in a new window',
-						'isPublicFacing' => true,
-						'inAttribute' => true
-					]) . ')"><i class="fas fa-external-link-alt" role="presentation"></i> ' . translate([
-						'text' => 'Go to Registration',
-						'isPublicFacing' => true,
-					]) . '</a>',
+					'text' => 'Go to Registration',
+					'isPublicFacing' => true,
+					'inAttribute' => true
+				]) . ' (' . translate([
+					'text' => 'opens in a new window',
+					'isPublicFacing' => true,
+					'inAttribute' => true
+				]) . ')"><i class="fas fa-external-link-alt" role="presentation"></i> ' . translate([
+					'text' => 'Go to Registration',
+					'isPublicFacing' => true,
+				]) . '</a>',
 			];
 		} else {
 			return [
@@ -6963,23 +7054,24 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]),
 				'buttons' => '<a href="' . $eventUrl . '" class="btn btn-primary" target="_blank" aria-label="' . translate([
-						'text' => 'Go to Registration',
-						'isPublicFacing' => true,
-						'inAttribute' => true
-					]) . ' (' . translate([
-						'text' => 'opens in a new window',
-						'isPublicFacing' => true,
-						'inAttribute' => true
-					]) . ')"><i class="fas fa-external-link-alt" role="presentation"></i> ' . translate([
-						'text' => 'Go to Registration',
-						'isPublicFacing' => true,
-					]) . '</a>',
+					'text' => 'Go to Registration',
+					'isPublicFacing' => true,
+					'inAttribute' => true
+				]) . ' (' . translate([
+					'text' => 'opens in a new window',
+					'isPublicFacing' => true,
+					'inAttribute' => true
+				]) . ')"><i class="fas fa-external-link-alt" role="presentation"></i> ' . translate([
+					'text' => 'Go to Registration',
+					'isPublicFacing' => true,
+				]) . '</a>',
 			];
 		}
 	}
 
 	/** @noinspection PhpUnused */
-	function saveEvent() {
+	function saveEvent()
+	{
 		$result = [];
 		$regRequired = 0; // set a default
 
@@ -7107,9 +7199,9 @@ class MyAccount_AJAX extends JSON_Action {
 						'isPublicFacing' => true,
 					]);
 					$result['buttons'] = "<button class='btn btn-primary' onclick='return AspenDiscovery.Account.regInfoModal(\"this\", \"{$source}\", \"{$sourceId}\", \"{$vendor}\", \"{$externalUrl}\");'>" . translate([
-							'text' => 'Registration Information',
-							'isPublicFacing' => true,
-						]) . "</button>";
+						'text' => 'Registration Information',
+						'isPublicFacing' => true,
+					]) . "</button>";
 					$result['regRequired'] = true;
 				}
 			}
@@ -7119,7 +7211,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function deleteSavedEvent() {
+	function deleteSavedEvent()
+	{
 		$id = $_GET['id'];
 		$result = ['result' => false];
 		if (!UserAccount::isLoggedIn()) {
@@ -7144,7 +7237,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getSaveToListForm() {
+	function getSaveToListForm()
+	{
 		global $interface;
 		global $library;
 
@@ -7185,14 +7279,14 @@ class MyAccount_AJAX extends JSON_Action {
 			]);
 		}
 		$modalButtons = "<button class='tool btn btn-primary' id='saveToListButton' onclick='AspenDiscovery.Account.saveToList(); return false;'>" . translate([
-				'text' => "Save To List",
-				'isPublicFacing' => true,
-			]) . "</button>";
+			'text' => "Save To List",
+			'isPublicFacing' => true,
+		]) . "</button>";
 		if ($enableAddToReadingHistory) {
 			$modalButtons .= "<button class='tool btn btn-primary' id='saveToReadingHistoryButton' style='display: none' onclick='AspenDiscovery.Account.saveToReadingHistory(); return false;'>" . translate([
-					'text' => "Save To Reading History",
-					'isPublicFacing' => true,
-				]) . "</button>";
+				'text' => "Save To Reading History",
+				'isPublicFacing' => true,
+			]) . "</button>";
 		}
 
 		return [
@@ -7203,7 +7297,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function saveToList() {
+	function saveToList()
+	{
 		$result = [];
 
 		if (!UserAccount::isLoggedIn()) {
@@ -7387,14 +7482,14 @@ class MyAccount_AJAX extends JSON_Action {
 					}
 				}
 			}
-
 		}
 
 		return $result;
 	}
 
 	/** @noinspection PhpUnused */
-	function saveToReadingHistory(): array {
+	function saveToReadingHistory(): array
+	{
 		$result = [];
 
 		if (!UserAccount::isLoggedIn()) {
@@ -7482,7 +7577,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function reloadCover() {
+	function reloadCover()
+	{
 		require_once ROOT_DIR . '/sys/UserLists/UserListEntry.php';
 		$listId = htmlspecialchars($_GET["id"]);
 		$listEntry = new UserListEntry();
@@ -7507,7 +7603,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getUploadListCoverForm() {
+	function getUploadListCoverForm()
+	{
 		global $interface;
 
 		$id = htmlspecialchars($_GET["id"]);
@@ -7520,14 +7617,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch("Lists/upload-cover-form.tpl"),
 			'modalButtons' => "<button class='tool btn btn-primary' onclick='$(\"#uploadListCoverForm\").submit()'>" . translate([
-					'text' => "Upload Cover",
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => "Upload Cover",
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function uploadListCover() {
+	function uploadListCover()
+	{
 		$result = [
 			'success' => false,
 			'title' => 'Uploading custom list cover',
@@ -7585,7 +7683,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getUploadListCoverFormByURL() {
+	function getUploadListCoverFormByURL()
+	{
 		global $interface;
 
 		$id = htmlspecialchars($_GET["id"]);
@@ -7598,14 +7697,15 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch("Lists/upload-cover-form-url.tpl"),
 			'modalButtons' => "<button class='tool btn btn-primary' onclick='$(\"#uploadListCoverFormByURL\").submit()'>" . translate([
-					'text' => "Upload Cover",
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => "Upload Cover",
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
 	/** @noinspection PhpUnused */
-	function uploadListCoverByURL() {
+	function uploadListCoverByURL()
+	{
 		$result = [
 			'success' => false,
 			'title' => 'Uploading custom list cover',
@@ -7647,7 +7747,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function deleteListItems() {
+	function deleteListItems()
+	{
 		$result = [
 			'success' => false,
 			'message' => 'Something went wrong.',
@@ -7696,7 +7797,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function deleteList() {
+	function deleteList()
+	{
 		$result = [
 			'success' => false,
 			'message' => 'Something went wrong.',
@@ -7736,7 +7838,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getEditListForm() {
+	function getEditListForm()
+	{
 		global $interface;
 
 		if (isset($_REQUEST['listId']) && isset($_REQUEST['listEntryId'])) {
@@ -7821,9 +7924,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'modalBody' => $interface->fetch('MyAccount/editListTitle.tpl'),
 				'modalButtons' => "<button class='tool btn btn-primary' onclick='$(\"#listEntryEditForm\").submit()'>" . translate([
-						'text' => 'Save',
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => 'Save',
+					'isPublicFacing' => true,
+				]) . "</button>",
 			];
 		} else {
 			return [
@@ -7837,7 +7940,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function editListItem(): array {
+	function editListItem(): array
+	{
 		/** @noinspection PhpArrayIndexImmediatelyRewrittenInspection */
 		$result = [
 			'success' => false,
@@ -7967,7 +8071,6 @@ class MyAccount_AJAX extends JSON_Action {
 							'isPublicFacing' => true,
 						]);
 					}
-
 				}
 				$list->update();
 			} else {
@@ -7992,7 +8095,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function updateWeight() {
+	function updateWeight()
+	{
 		$result = [
 			'success' => false,
 			'message' => translate([
@@ -8054,7 +8158,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function getSuggestionsSpotlight() {
+	function getSuggestionsSpotlight()
+	{
 		$result = [
 			'success' => false,
 			'message' => 'Error loading suggestions spotlight.',
@@ -8079,7 +8184,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function getCurbsidePickupScheduler() {
+	function getCurbsidePickupScheduler()
+	{
 		global $interface;
 		global $library;
 
@@ -8127,9 +8233,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'body' => $interface->fetch('MyAccount/curbsidePickupsNew.tpl'),
 				'buttons' => "<button class='btn btn-primary' onclick='return AspenDiscovery.Account.createCurbsidePickup();'>" . translate([
-						'text' => 'Schedule Pickup',
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => 'Schedule Pickup',
+					'isPublicFacing' => true,
+				]) . "</button>",
 			];
 		} else {
 			// no settings found
@@ -8139,7 +8245,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function createCurbsidePickup() {
+	function createCurbsidePickup()
+	{
 		global $interface;
 		global $library;
 		$user = UserAccount::getLoggedInUser();
@@ -8237,7 +8344,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function getCancelCurbsidePickup() {
+	function getCancelCurbsidePickup()
+	{
 		$patronId = $_REQUEST['patronId'];
 		$pickupId = $_REQUEST['pickupId'];
 		return [
@@ -8250,13 +8358,14 @@ class MyAccount_AJAX extends JSON_Action {
 				'isPublicFacing' => true,
 			]),
 			'buttons' => "<button type='button' class='btn btn-primary' onclick='AspenDiscovery.Account.cancelCurbsidePickup(\"$patronId\", \"$pickupId\")'>" . translate([
-					'text' => 'Yes, cancel pickup',
-					'isPublicFacing' => true,
-				]) . "</button>",
+				'text' => 'Yes, cancel pickup',
+				'isPublicFacing' => true,
+			]) . "</button>",
 		];
 	}
 
-	function checkInCurbsidePickup() {
+	function checkInCurbsidePickup()
+	{
 		global $interface;
 		global $library;
 		$results = [
@@ -8319,7 +8428,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $results;
 	}
 
-	function cancelCurbsidePickup() {
+	function cancelCurbsidePickup()
+	{
 		global $interface;
 		$results = [
 			'success' => false,
@@ -8373,7 +8483,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $results;
 	}
 
-	function getCurbsidePickupUnavailableDays() {
+	function getCurbsidePickupUnavailableDays()
+	{
 		if (isset($_REQUEST['locationCode'])) {
 			$pickupLocation = $_REQUEST['locationCode'];
 		} else {
@@ -8399,7 +8510,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function getCurbsidePickupAvailableTimes() {
+	function getCurbsidePickupAvailableTimes()
+	{
 		if (isset($_REQUEST['locationCode']) && isset($_REQUEST['date'])) {
 			$pickupLocation = $_REQUEST['locationCode'];
 			$pickupDate = $_REQUEST['date'];
@@ -8509,7 +8621,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function get2FAEnrollment() {
+	function get2FAEnrollment()
+	{
 		global $interface;
 
 		// if there were multiple verification methods available, you'd want to fetch them here for display
@@ -8519,13 +8632,15 @@ class MyAccount_AJAX extends JSON_Action {
 
 		if ($step == "register") {
 
-			function mask($str, $first, $last) {
+			function mask($str, $first, $last)
+			{
 				$len = strlen($str);
 				$toShow = $first + $last;
 				return substr($str, 0, $len <= $toShow ? 0 : $first) . str_repeat("*", $len - ($len <= $toShow ? 0 : $toShow)) . substr($str, $len - $last, $len <= $toShow ? 0 : $last);
 			}
 
-			function mask_email($email) {
+			function mask_email($email)
+			{
 				$mail_parts = explode("@", $email);
 				$domain_parts = explode('.', $mail_parts[1]);
 
@@ -8551,9 +8666,9 @@ class MyAccount_AJAX extends JSON_Action {
 
 			if ($hasValidEmail) {
 				$buttons = "<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.show2FAEnrollmentVerify(\"{$mandatoryEnrollment}\"); return false;'>" . translate([
-						'text' => 'Next',
-						'isPublicFacing' => true,
-					]) . "</button>";
+					'text' => 'Next',
+					'isPublicFacing' => true,
+				]) . "</button>";
 			} else {
 				$buttons = "";
 			}
@@ -8585,9 +8700,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'body' => $interface->fetch('MyAccount/2fa/enroll-verify.tpl'),
 				'buttons' => "<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.verify2FA(\"{$mandatoryEnrollment}\"); return false;'>" . translate([
-						'text' => 'Next',
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => 'Next',
+					'isPublicFacing' => true,
+				]) . "</button>",
 				'closeDestination' => '/MyAccount/Logout'
 			];
 		} elseif ($step == "validate") {
@@ -8603,9 +8718,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'body' => $interface->fetch('MyAccount/2fa/enroll-verify.tpl'),
 				'buttons' => "<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.verify2FA(\"{$mandatoryEnrollment}\"); return false;'>" . translate([
-						'text' => 'Next',
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => 'Next',
+					'isPublicFacing' => true,
+				]) . "</button>",
 				'closeDestination' => '/MyAccount/Logout'
 			];
 		} elseif ($step == "backup") {
@@ -8625,9 +8740,9 @@ class MyAccount_AJAX extends JSON_Action {
 				]),
 				'body' => $interface->fetch('MyAccount/2fa/enroll-backup.tpl'),
 				'buttons' => "<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.show2FAEnrollmentSuccess(\"{$mandatoryEnrollment}\"); return false;'>" . translate([
-						'text' => 'Next',
-						'isPublicFacing' => true,
-					]) . "</button>",
+					'text' => 'Next',
+					'isPublicFacing' => true,
+				]) . "</button>",
 			];
 		} elseif ($step == "complete") {
 			// update user table to enrolled status
@@ -8651,7 +8766,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function verify2FA() {
+	function verify2FA()
+	{
 		$code = $_REQUEST['code'] ?? '0';
 		$isLoggingIn = $_REQUEST['loggingIn'] ?? false;
 		require_once ROOT_DIR . '/sys/TwoFactorAuthCode.php';
@@ -8682,7 +8798,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function confirmCancel2FA() {
+	function confirmCancel2FA()
+	{
 		global $interface;
 
 		// on submit of button, update user table for (un)enrollment status
@@ -8699,7 +8816,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function cancel2FA() {
+	function cancel2FA()
+	{
 		require_once ROOT_DIR . '/sys/TwoFactorAuthCode.php';
 		$twoFactorAuth = new TwoFactorAuthCode();
 		$twoFactorAuth->deactivate2FA();
@@ -8718,7 +8836,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function newBackupCodes() {
+	function newBackupCodes()
+	{
 		global $interface;
 
 		require_once ROOT_DIR . '/sys/TwoFactorAuthCode.php';
@@ -8740,7 +8859,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function new2FACode() {
+	function new2FACode()
+	{
 		require_once ROOT_DIR . '/sys/TwoFactorAuthCode.php';
 		$twoFactorAuth = new TwoFactorAuthCode();
 		$twoFactorAuth->createCode();
@@ -8754,7 +8874,8 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 	}
 
-	function exportUserList() {
+	function exportUserList()
+	{
 		$result = [
 			'success' => false,
 			'message' => translate([
@@ -8801,7 +8922,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function exportUserListRIS() {
+	function exportUserListRIS()
+	{
 		$result = [
 			'success' => false,
 			'message' => translate([
@@ -8847,7 +8969,8 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	}
 
-	function getILSMessage() {
+	function getILSMessage()
+	{
 		global $interface;
 		$result = [
 			'success' => false,
@@ -8875,7 +8998,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function markILSMessageAsRead() {
+	function markILSMessageAsRead()
+	{
 		$result = [
 			'success' => false,
 			'message' => translate([
@@ -8907,7 +9031,8 @@ class MyAccount_AJAX extends JSON_Action {
 		return $result;
 	}
 
-	function markILSMessageAsUnread() {
+	function markILSMessageAsUnread()
+	{
 		$result = [
 			'success' => false,
 			'message' => translate([
@@ -8940,7 +9065,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getYearInReviewSlide(): array {
+	function getYearInReviewSlide(): array
+	{
 		$result = [
 			'success' => false,
 			'title' => translate([
@@ -8988,7 +9114,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getYearInReviewSlideImage() {
+	function getYearInReviewSlideImage()
+	{
 		$gotImage = false;
 		//This returns an image to the browser
 		if (UserAccount::isLoggedIn()) {
@@ -9019,7 +9146,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	/** @noinspection PhpUnused */
-	function getSublocationsSelect() : array {
+	function getSublocationsSelect(): array
+	{
 		$html = '';
 		$success = false;
 		$context = $_REQUEST['context'] ?? '';
@@ -9049,9 +9177,9 @@ class MyAccount_AJAX extends JSON_Action {
 							$labelText = 'Select your pickup location';
 						}
 						$html .= '<label class="control-label" for="pickupSublocation">' . translate([
-								'text' => $labelText,
-								'isPublicFacing' => true,
-							]) . '</label>';
+							'text' => $labelText,
+							'isPublicFacing' => true,
+						]) . '</label>';
 						$html .= '<div class="controls">';
 						$html .= '<select name="pickupSublocation" id="pickupSublocation" class="form-control">';
 						foreach ($sublocations as $location => $label) {
@@ -9065,7 +9193,6 @@ class MyAccount_AJAX extends JSON_Action {
 						$html .= '</div>';
 					}
 				}
-
 			}
 		}
 		return [
