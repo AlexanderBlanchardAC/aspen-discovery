@@ -32,6 +32,20 @@
 				{/foreach}
 			</select>
 
+			{if count($linkedUsers) > 0}
+				<label for="linkedUsersDropdown" class="control-label">{translate text="Linked Users" isPublicFacing=true}&nbsp;</label>
+				<div id="linkedUsersDropdownContainer" class="form-group">
+					<select id="linkedUsersDropdown" class="form-control" name="linkedUserIds[]" multiple="multiple" size="2">
+						{foreach from=$linkedUsers item=user}
+							<option value="{$user->id}">{$user->displayName}</option>
+						{/foreach}
+					</select>
+					<button type="button" class="btn btn-primary" onclick="AspenDiscovery.Account.filterOutLinkedUsers();">
+						{translate text="Hide Users" isPublicFacing=true}
+					</button>
+				</div>
+			{/if}
+
 			{if empty($hideCoversFormDisplayed)}
 				{* Display the Hide Covers switch above the first section that has holds; and only display it once *}
 				<label for="hideCovers_{$source}" class="control-label checkbox pull-right"> {translate text="Hide Covers" isPublicFacing=true} <input id="hideCovers_{$source}" type="checkbox" onclick="AspenDiscovery.Account.loadHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort option:selected').val(), !$('#hideCovers_{$source}').is(':checked'));" {if $showCovers == false}checked="checked"{/if}></label>
