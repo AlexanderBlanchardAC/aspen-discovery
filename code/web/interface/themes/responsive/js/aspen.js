@@ -6839,22 +6839,20 @@ AspenDiscovery.Account = (function () {
 
 				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
-				var showCovers = $('#showCovers').is(':checked');
+				var showCovers = $('#showCovers').prop('checked');
 				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers);
 			}
 		},
 
 		displayOnlySelectedHolds: function () {
-			if (Globals.loggedIn) {
-				var selectedTitles = AspenDiscovery.getSelectedTitles();
-
-				if (selectedTitles) {
-					var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
-					var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
-					var showCovers = $('#showCovers').is(':checked');
-					AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedTitles);
-				}
+			var selectedTitles = AspenDiscovery.getSelectedTitles();
+			if (selectedTitles) {
+				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+				var showCovers = $('#showCovers').prop('checked');
+				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers);
 			}
+
 		},
 
 		getSelectedLists: function (promptForSelectAll) {
