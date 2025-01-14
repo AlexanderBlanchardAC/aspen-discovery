@@ -4060,6 +4060,24 @@ class MyAccount_AJAX extends JSON_Action
 		return $selectedUsers;
 	}
 
+	function setFilterSelectedHolds()
+	{
+		global $interface;
+		$selectedHolds = [];
+
+		if (isset($_REQUEST['selectedHolds'])) {
+			$selectedHolds = explode(',', $_REQUEST['selectedHolds']);
+
+			if (isset($_SESSION)) {
+				$_SESSION['selectedHolds'] = $selectedHolds;
+			}
+		} elseif (isset($_SESSION['selectedHolds'])) {
+			$selectedHolds = $_SESSION['selectedHolds'];
+		}
+		$interface->assign('selectedHolds', $selectedHolds);
+		return $selectedHolds;
+	}
+
 	/**
 	 * @param string $selectedSortOption
 	 * @param Checkout[] $allCheckedOut
