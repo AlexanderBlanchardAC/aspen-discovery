@@ -3120,6 +3120,15 @@ class MyAccount_AJAX extends JSON_Action
 
 		$allHolds = $user->getHolds(true, $selectedUnavailableSortOption, $selectedAvailableSortOption, $source);
 
+		$selectedUsers = $this->setFilterLinkedUsers();
+		if (!empty($selectedUsers)) {
+			foreach (['available', 'unavailable'] as $type) {
+				$allHolds[$type] = array_filter($allHolds[$type], function ($hold) use ($selectedUsers) {
+					return !in_array($hold->userId, $selectedUsers);
+				});
+			}
+		}
+
 		$showDateWhenSuspending = $user->showDateWhenSuspending();
 
 		header('Content-Type: text/csv; charset=utf-8');
