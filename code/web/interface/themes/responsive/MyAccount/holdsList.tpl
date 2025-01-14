@@ -36,6 +36,7 @@
 				<label for="linkedUsersDropdown" class="control-label">{translate text="Linked Users" isPublicFacing=true}&nbsp;</label>
 				<div id="linkedUsersDropdownContainer" class="form-group">
 					<select id="linkedUsersDropdown" class="form-control" name="linkedUserIds[]" multiple="multiple" size="2">
+						<option value="" {if empty($selectedUsers)}selected{/if}>None</option>
 						{foreach from=$linkedUsers item=user}
 							<option value="{$user->id}"{if in_array($user->id, $selectedUsers)} selected="selected"{/if}>{$user->displayName}</option>
 						{/foreach}
