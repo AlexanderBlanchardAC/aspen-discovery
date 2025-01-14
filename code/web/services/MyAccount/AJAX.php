@@ -3667,6 +3667,9 @@ class MyAccount_AJAX extends JSON_Action
 				$selectedUsers = $this->setFilterLinkedUsers();
 				$interface->assign('selectedUsers', $selectedUsers);
 
+				$selectedHolds = $this->setFilterSelectedHolds();
+				$interface->assign('selectedHolds', $selectedHolds);
+
 				$location = new Location();
 				$pickupBranches = $location->getPickupBranches($user);
 				$interface->assign('numPickupBranches', count($pickupBranches));
@@ -4075,6 +4078,7 @@ class MyAccount_AJAX extends JSON_Action
 			$selectedHolds = $_SESSION['selectedHolds'];
 		}
 		$interface->assign('selectedHolds', $selectedHolds);
+
 		return $selectedHolds;
 	}
 
