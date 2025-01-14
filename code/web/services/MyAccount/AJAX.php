@@ -3734,9 +3734,14 @@ class MyAccount_AJAX extends JSON_Action
 						$allHolds = $user->getHolds(true, $selectedUnavailableSortOption, $selectedAvailableSortOption, $source);
 						if (!empty($selectedUsers)) {
 							$filteredHolds = [
-								'available' => $allHolds['available'],
+								'available' => [],
 								'unavailable' => [],
 							];
+							foreach ($allHolds['available'] as $key => $hold) {
+								if (!in_array($hold->userId, $selectedUsers)) {
+									$filteredHolds['available'][$key] = $hold;
+								}
+							}
 							foreach ($allHolds['unavailable'] as $key => $hold) {
 								if (!in_array($hold->userId, $selectedUsers)) {
 									$filteredHolds['unavailable'][$key] = $hold;
