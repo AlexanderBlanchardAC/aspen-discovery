@@ -3655,7 +3655,8 @@ class MyAccount_AJAX extends JSON_Action
 				$showPlacedColumn = $user->showHoldPlacedDate();
 				$interface->assign('showPlacedColumn', $showPlacedColumn);
 
-				$selectedUsers = isset($_REQUEST['selectedUsers']) ? (array)$_REQUEST['selectedUsers'] : [];
+				$selectedUsers = $this->setFilterLinkedUsers();
+				$interface->assign('selectedUsers', $selectedUsers);
 
 				$location = new Location();
 				$pickupBranches = $location->getPickupBranches($user);
@@ -4026,6 +4027,23 @@ class MyAccount_AJAX extends JSON_Action
 			$sort = $_SESSION['sort_' . $sortType];
 		}
 		return $sort;
+	}
+
+	function setFilterLinkedUsers()
+	{
+		global $interface;
+		$selectedUsers = [];
+		if (isset($_REQUEST['selectedUsers'])) {
+			$selectedUsers = explode(',', $_REQUEST['selectedUsers']);
+			if (isset($_SESSION)) {
+				$_SESSION['selectedUsers'] = $selectedUsers;
+			}
+		} elseif (isset($_SESSION['selectedUsers'])) {
+			$selectedUsers = $_SESSION['selectedUsers'];
+		}
+		$interface->assign('selectedUsers', $selectedUsers);
+
+		return $selectedUsers;
 	}
 
 	/**

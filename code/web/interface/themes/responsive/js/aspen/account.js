@@ -280,7 +280,8 @@ AspenDiscovery.Account = (function () {
 				source: source,
 				availableHoldSort: availableHoldSort,
 				unavailableHoldSort: unavailableHoldSort,
-				showCovers: showCovers
+				showCovers: showCovers,
+				selectedUsers: selectedUsers
 			};
 			var newUrl = AspenDiscovery.buildUrl(document.location.origin + document.location.pathname, 'source', source);
 			if (document.location.href) {
@@ -299,6 +300,7 @@ AspenDiscovery.Account = (function () {
 					label = 'Palace Project Holds';
 				}
 				history.pushState(stateObj, label, newUrl);
+				console.log(stateObj)
 			}
 			document.body.style.cursor = "wait";
 			// noinspection JSUnresolvedFunction
@@ -1315,7 +1317,8 @@ AspenDiscovery.Account = (function () {
 
 				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
-				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort);
+				var showCovers = $('#showCovers').is(':checked');
+				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers);
 			}
 		},
 
