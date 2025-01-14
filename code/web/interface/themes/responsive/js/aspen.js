@@ -5776,8 +5776,15 @@ AspenDiscovery.Account = (function () {
 		},
 
 		loadHolds: function (source, availableHoldSort, unavailableHoldSort, showCovers) {
+			var selectedUsers = $('#linkedUsersDropdown').val();
+
 			AspenDiscovery.Account.currentHoldSource = source;
 			var url = Globals.path + "/MyAccount/AJAX?method=getHolds&source=" + source;
+
+			if (selectedUsers && selectedUsers.length > 0) {
+				url += "&selectedUsers=" + selectedUsers.join(',');
+			}
+
 			if (availableHoldSort !== undefined) {
 				url += "&availableHoldSort=" + availableHoldSort;
 			}
@@ -6070,7 +6077,7 @@ AspenDiscovery.Account = (function () {
 					ldapLogin = "";
 				}
 				var url = Globals.path + "/AJAX/JSON?method=loginUser";
-				var params = {username: username, password: password, rememberMe: rememberMe, ldapLogin: ldapLogin};
+				var params = { username: username, password: password, rememberMe: rememberMe, ldapLogin: ldapLogin };
 				if (!Globals.opac && AspenDiscovery.hasLocalStorage()) {
 					var showCovers = window.localStorage.getItem('showCovers') || false;
 					if (showCovers && showCovers.length > 0) { // if there is a set value, pass it back with the login info
@@ -6149,7 +6156,7 @@ AspenDiscovery.Account = (function () {
 				loginErrorElem.hide();
 				$.ajax({
 					url: url,
-					data: {username: username, password: password},
+					data: { username: username, password: password },
 					success: function (response) {
 						if (response.success === true) {
 							AspenDiscovery.showMessage(response.title, response.message, true, response.success);
@@ -6820,6 +6827,17 @@ AspenDiscovery.Account = (function () {
 
 			return queryString;
 		},
+
+		filterOutLinkedUsers: function () {
+			var selectedUsers = $('#linkedUsersDropdown').val();
+			if (selectedUsers && selectedUsers.length > 0) {
+
+				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort);
+			}
+		},
+
 		getSelectedLists: function (promptForSelectAll) {
 			var selectedLists = $("input.listSelect:checked ");
 			// noinspection UnnecessaryLocalVariableJS
@@ -6918,7 +6936,7 @@ AspenDiscovery.Account = (function () {
 		showCreateListForm: function (source, sourceId) {
 			if (Globals.loggedIn) {
 				var url = Globals.path + "/MyAccount/AJAX";
-				var params = {method: "getCreateListForm"};
+				var params = { method: "getCreateListForm" };
 				if (source !== undefined) {
 					params.source = source;
 				}
@@ -6976,7 +6994,7 @@ AspenDiscovery.Account = (function () {
 		getMasqueradeForm: function () {
 			AspenDiscovery.loadingMessage();
 			var url = Globals.path + "/MyAccount/AJAX";
-			var params = {method: "getMasqueradeAsForm"};
+			var params = { method: "getMasqueradeAsForm" };
 			// noinspection JSUnresolvedFunction
 			$.getJSON(url, params, function (data) {
 				AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons)
@@ -7031,7 +7049,7 @@ AspenDiscovery.Account = (function () {
 
 		endMasquerade: function () {
 			var url = Globals.path + "/MyAccount/AJAX";
-			var params = {method: "endMasquerade"};
+			var params = { method: "endMasquerade" };
 			// noinspection JSUnresolvedFunction
 			$.getJSON(url, params).done(function (data) {
 				if (data.success) {
@@ -7802,8 +7820,8 @@ AspenDiscovery.Account = (function () {
 		getEditListForm: function (listEntryId, listId) {
 			var url = Globals.path + "/MyAccount/AJAX?method=getEditListForm&listEntryId=" + listEntryId + "&listId=" + listId;
 			$.getJSON(url, function (data) {
-					AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons);
-				}
+				AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons);
+			}
 			);
 			return false;
 		},
@@ -7826,7 +7844,7 @@ AspenDiscovery.Account = (function () {
 		},
 		loadRecommendations: function () {
 			var url = Globals.path + "/MyAccount/AJAX",
-				params = {'method': 'getSuggestionsSpotlight'};
+				params = { 'method': 'getSuggestionsSpotlight' };
 			$.getJSON(url, params, function (data) {
 				try {
 					var suggestionsData = data.suggestions;
@@ -7842,7 +7860,7 @@ AspenDiscovery.Account = (function () {
 
 						var carouselElement = $('#recommendationsCarousel');
 						carouselElement.html(html);
-						var jCarousel = carouselElement.jcarousel({wrap: null});
+						var jCarousel = carouselElement.jcarousel({ wrap: null });
 
 						// Reload carousel
 						jCarousel.jcarousel('reload');

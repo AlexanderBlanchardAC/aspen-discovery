@@ -3642,6 +3642,8 @@ class MyAccount_AJAX extends JSON_Action
 				$showPlacedColumn = $user->showHoldPlacedDate();
 				$interface->assign('showPlacedColumn', $showPlacedColumn);
 
+				$selectedUsers = isset($_REQUEST['selectedUsers']) ? (array)$_REQUEST['selectedUsers'] : [];
+
 				$location = new Location();
 				$pickupBranches = $location->getPickupBranches($user);
 				$interface->assign('numPickupBranches', count($pickupBranches));
@@ -3707,6 +3709,18 @@ class MyAccount_AJAX extends JSON_Action
 				if (!$offlineMode) {
 					if ($user) {
 						$allHolds = $user->getHolds(true, $selectedUnavailableSortOption, $selectedAvailableSortOption, $source);
+						if (!empty($selectedUsers)) {
+							$filteredHolds = [
+								'available' => $allHolds['available'],
+								'unavailable' => [],
+							];
+							foreach ($allHolds['unavailable'] as $key => $hold) {
+								if (!in_array($hold->userId, $selectedUsers)) {
+									$filteredHolds['unavailable'][$key] = $hold;
+								}
+							}
+							$allHolds = $filteredHolds;
+						}
 						$interface->assign('recordList', $allHolds);
 					}
 				}
