@@ -37,7 +37,7 @@
 				<div id="linkedUsersDropdownContainer" class="form-group">
 					<select id="linkedUsersDropdown" class="form-control" name="linkedUserIds[]" multiple="multiple" size="2">
 						{foreach from=$linkedUsers item=user}
-							<option value="{$user->id}">{$user->displayName}</option>
+							<option value="{$user->id}"{if in_array($user->id, $selectedUsers)} selected="selected"{/if}>{$user->displayName}</option>
 						{/foreach}
 					</select>
 					<button type="button" class="btn btn-primary" onclick="AspenDiscovery.Account.filterOutLinkedUsers();">
