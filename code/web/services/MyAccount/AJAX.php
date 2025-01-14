@@ -4069,7 +4069,7 @@ class MyAccount_AJAX extends JSON_Action
 		$selectedHolds = [];
 
 		if (isset($_REQUEST['selectedHolds'])) {
-			$selectedHolds = explode(',', $_REQUEST['selectedHolds']);
+			$selectedHolds = json_decode($_REQUEST['selectedHolds'], true);
 
 			if (isset($_SESSION)) {
 				$_SESSION['selectedHolds'] = $selectedHolds;

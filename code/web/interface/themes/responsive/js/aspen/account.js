@@ -258,7 +258,6 @@ AspenDiscovery.Account = (function () {
 
 		loadHolds: function (source, availableHoldSort, unavailableHoldSort, showCovers, selectedTitles) {
 			var selectedUsers = $('#linkedUsersDropdown').val();
-
 			AspenDiscovery.Account.currentHoldSource = source;
 			var url = Globals.path + "/MyAccount/AJAX?method=getHolds&source=" + source;
 
@@ -285,7 +284,8 @@ AspenDiscovery.Account = (function () {
 				availableHoldSort: availableHoldSort,
 				unavailableHoldSort: unavailableHoldSort,
 				showCovers: showCovers,
-				selectedUsers: selectedUsers
+				selectedUsers: selectedUsers,
+				selectedTitles: selectedTitles
 			};
 			var newUrl = AspenDiscovery.buildUrl(document.location.origin + document.location.pathname, 'source', source);
 			if (document.location.href) {
@@ -1327,11 +1327,12 @@ AspenDiscovery.Account = (function () {
 
 		displayOnlySelectedHolds: function () {
 			var selectedTitles = AspenDiscovery.getSelectedTitles();
+
 			if (selectedTitles) {
 				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				var showCovers = $('#showCovers').prop('checked');
-				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers);
+				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedTitles);
 			}
 
 		},
