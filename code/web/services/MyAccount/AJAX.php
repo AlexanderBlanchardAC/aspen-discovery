@@ -3133,14 +3133,47 @@ class MyAccount_AJAX extends JSON_Action
 
 		$allHolds = $user->getHolds(true, $selectedUnavailableSortOption, $selectedAvailableSortOption, $source);
 
+		$selectedHolds = $this->setFilterSelectedHolds();
 		$selectedUsers = $this->setFilterLinkedUsers();
-		if (!empty($selectedUsers)) {
-			foreach (['available', 'unavailable'] as $type) {
-				$allHolds[$type] = array_filter($allHolds[$type], function ($hold) use ($selectedUsers) {
-					return !in_array($hold->userId, $selectedUsers);
-				});
+
+		if (!empty($selectedHolds) && !is_array($selectedHolds)) {
+			$selectedhHoldsArray = [];
+			parse_str($selectedHolds, $parsedHolds);
+
+			foreach ($parsedHolds['selected'] as $holdKey => $value) {
+				if (preg_match('/\|(\d+)\|/', $holdKey, $matches)) {
+					$selectedHoldsArray[] = (int)$matches[1];
+				}
+			}
+			$selectedHolds = $selectedHoldsArray;
+		}
+
+		$filteredHolds = [
+			'available' => [],
+			'unavailable' => [],
+		];
+
+		foreach (['available', 'unavailable'] as $type) {
+			foreach ($allHolds[$type] as $key => $hold) {
+				$includeHold = true;
+
+				if (!empty($selectedUsers) && in_array($hold->userId, $selectedUsers)) {
+					$includeHold = false;
+				}
+
+				if (!empty($selectedHolds)) {
+					$recordIdMatched = in_array((int)$hold->recordId, $selectedHolds);
+					if (!$recordIdMatched) {
+						$includeHold = false;
+					}
+				}
+
+				if ($includeHold) {
+					$filteredHolds[$type][$key] = $hold;
+				}
 			}
 		}
+		$allHolds = $filteredHolds;
 
 		$showDateWhenSuspending = $user->showDateWhenSuspending();
 
