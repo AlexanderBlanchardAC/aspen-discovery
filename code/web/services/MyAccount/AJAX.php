@@ -3735,18 +3735,59 @@ class MyAccount_AJAX extends JSON_Action
 				if (!$offlineMode) {
 					if ($user) {
 						$allHolds = $user->getHolds(true, $selectedUnavailableSortOption, $selectedAvailableSortOption, $source);
-						if (!empty($selectedUsers)) {
+						if (!empty($selectedUsers) || !empty($selectedHolds)) {
 							$filteredHolds = [
 								'available' => [],
 								'unavailable' => [],
 							];
+							if (!is_array($selectedHolds)) {
+								$selectedHoldsArray = [];
+								parse_str($selectedHolds, $parsedHolds);
+
+
+								foreach ($parsedHolds['selected'] as $holdKey => $value) {
+									if (preg_match('/\|(\d+)\|/', $holdKey, $matches)) {
+										$selectedHoldsArray[] = (int)$matches[1];
+									}
+								}
+								$selectedHolds = $selectedHoldsArray;
+							}
+
+
 							foreach ($allHolds['available'] as $key => $hold) {
-								if (!in_array($hold->userId, $selectedUsers)) {
+								$includeHold = true;
+
+								if (!empty($selectedUsers) && in_array($hold->userId, $selectedUsers)) {
+									$includeHold = false;
+								}
+
+								if (!empty($selectedHolds)) {
+									$recordIdMatched = in_array((int)$hold->recordId, $selectedHolds);
+									if (!$recordIdMatched) {
+										$includeHold = false;
+									}
+								}
+								if ($includeHold) {
 									$filteredHolds['available'][$key] = $hold;
 								}
 							}
 							foreach ($allHolds['unavailable'] as $key => $hold) {
-								if (!in_array($hold->userId, $selectedUsers)) {
+								$includeHold = true;
+								$recordIdMatched = false;
+
+
+
+								if (!empty($selectedUsers) && in_array($hold->userId, $selectedUsers)) {
+									$includeHold = false;
+								}
+
+								if (!empty($selectedHolds)) {
+									$recordIdMatched = in_array((int)$hold->recordId, $selectedHolds);
+									if (!$recordIdMatched) {
+										$includeHold = false;
+									}
+								}
+								if ($includeHold) {
 									$filteredHolds['unavailable'][$key] = $hold;
 								}
 							}
