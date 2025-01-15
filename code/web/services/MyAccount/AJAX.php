@@ -4090,7 +4090,11 @@ class MyAccount_AJAX extends JSON_Action
 			$selectedHolds = json_decode($_REQUEST['selectedHolds'], true);
 
 			if (isset($_SESSION)) {
-				$_SESSION['selectedHolds'] = $selectedHolds;
+				if (empty($selectedHolds)) {
+					unset($_SESSION['selectedHolds']);
+				} else {
+					$_SESSION['selectedHolds'] = $selectedHolds;
+				}
 			}
 		} elseif (isset($_SESSION['selectedHolds'])) {
 			$selectedHolds = $_SESSION['selectedHolds'];

@@ -265,7 +265,7 @@ AspenDiscovery.Account = (function () {
 				url += "&selectedUsers=" + selectedUsers.join(',');
 			}
 
-			if (selectedTitles && selectedTitles.length > 0) {
+			if (selectedTitles !== undefined) {
 				url += "&selectedHolds=" + encodeURIComponent(JSON.stringify(selectedTitles));
 			}
 
@@ -1335,6 +1335,13 @@ AspenDiscovery.Account = (function () {
 				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedTitles);
 			}
 
+		},
+
+		clearDisplayOnlySelectedHolds: function () {
+			var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+			var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+			var showCovers = $('#showCovers').prop('checked');
+			AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, []);
 		},
 
 		getSelectedLists: function (promptForSelectAll) {
