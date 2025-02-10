@@ -8927,8 +8927,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	public function enrollCampaign() {
-		require_once ROOT_DIR . '/sys/Community/UserCampaign.php';
-		require_once ROOT_DIR . '/sys/Community/Campaign.php';
+		require_once ROOT_DIR . '/sys/CommunityEngagement/UserCampaign.php';
+		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
 
 		$campaignId = $_GET['campaignId'] ?? null;
 
@@ -9025,8 +9025,8 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	public function unenrollCampaign() {
-		require_once ROOT_DIR . '/sys/Community/UserCampaign.php';
-		require_once ROOT_DIR . '/sys/Community/Campaign.php';
+		require_once ROOT_DIR . '/sys/CommunityEngagement/UserCampaign.php';
+		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
 
 		$campaignId = $_GET['campaignId'] ?? null;
 
