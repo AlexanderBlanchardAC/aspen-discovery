@@ -329,5 +329,13 @@ function getCommunityEngagementUpdates() {
                 "INSERT INTO role_permissions(roleId, permissionId) VALUES ((SELECT roleId from roles where name='opacAdmin'), (SELECT id from permissions where name='View Community Engagement Dashboard'))"
             ],
         ],
+        'add_campaign_enrollment_dates' => [
+            'title' => 'Add Campaign Enrollment Dates',
+            'description' => 'Allow librarians to set an enrollment period for campaigns',
+            'sql' => [
+                "ALTER TABLE ce_campaign ADD COLUMN enrollmentStartDate DATE NULL",
+                "ALTER TABLE ce_campaign ADD COLUMN enrollmentEndDate DATE NULL"
+            ],
+        ],
     ];
 }
