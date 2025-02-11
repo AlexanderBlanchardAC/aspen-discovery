@@ -9163,6 +9163,9 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	public function getEnrolledCampaigns() {
+		require_once ROOT_DIR . '/sys/UserAccount.php';
+		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
+
 		$userId = UserAccount::getActiveUserId();
 		$enrolledCampaigns = Campaign::getUserEnrolledCampaigns($userId);
 		return [
