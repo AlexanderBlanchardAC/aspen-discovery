@@ -437,6 +437,9 @@ class Library extends DataObject {
 	public $cookieStorageConsent;
 	public $cookiePolicyHTML;
 
+	//Community Engagement
+	public $campaignLeaderboardDisplay;
+
 	//SHAREit
 	public $repeatInShareIt;
 	public $shareItCid;
@@ -3596,6 +3599,27 @@ class Library extends DataObject {
 						'hideInLists' => true,
 					],
 				]
+			],
+			'communityEngagement' => [
+				'property' => 'communityEngagement',
+				'type' => 'section',
+				'label' => 'Community Engagement',
+				'hideInLists' => true,
+				'renderAsHeading' => true,
+				'expandByDefault' => false,
+				'properties' => [
+					'campaignLeaderboardDisplay' => [
+						'property' => 'campaignLeaderboardDisplay',
+						'type' => 'enum',
+						'label' => 'Campaign Leaderbaord Display',
+						'description' => 'Whether to display the rank on the leaderboard by branch or by user',
+						'values' => [
+							'displayBranch' => 'Display Branch',
+							'displayUser' => 'Display User',
+						],
+						'default' => 'displayBranch',
+					],
+				],
 			],
 			'messagingSection' => [
 				'property' => 'messagingSection',
