@@ -13,6 +13,7 @@ class Milestone extends DataObject {
     public $conditionalValue;
     public $campaignId;
     public $conditionalOperator;
+    public $progressBeyondOneHundredPercent;
 
   
 
@@ -93,6 +94,13 @@ class Milestone extends DataObject {
                 'maxLength' => 100,
                 'description' => 'Optional value e.g. Fantasy',
                 'required' => false,
+            ],
+            'progressBeyondOneHundredPercent' => [
+                'property' => 'progressBeyondOneHundredPercent',
+                'type' => 'checkbox',
+                'label' => 'Track Progress Beyond 100%',
+                'description' => 'Whether or not progress should continue to be tracked once the milestone has reached 100% completion.',
+                'default' => false,
             ],
         ];
         return $structure;

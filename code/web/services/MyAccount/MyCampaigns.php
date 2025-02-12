@@ -101,6 +101,7 @@ class MyCampaigns extends MyAccount {
                     $progressData = CampaignMilestoneProgressEntry::getUserProgressDataByMilestoneId($userId, $milestoneId, $campaignId);
 
                     $milestone->progress = $milestoneProgress['progress'];
+                    $milestone->extraProgress = $milestoneProgress['extraProgress'];
                     $milestone->completedGoals = $milestoneProgress['completed'];
                     $milestone->totalGoals = CampaignMilestone::getMilestoneGoalCountByCampaign($campaignId, $milestoneId);
                     $milestone->progressData = $progressData;
@@ -187,9 +188,6 @@ class MyCampaigns extends MyAccount {
                         $completedGoals = $milestoneProgress['completed'];
                         $totalGoals = CampaignMilestone::getMilestoneGoalCountByCampaign($campaign->id, $milestone->id);
 
-                        if ($milestoneProgress['progress'] == 100) {
-                            $numCompletedMilestones++;
-                        }
 
                         $milestoneRewards[] = [
                             'milestoneName' => $milestone->name,
@@ -197,9 +195,11 @@ class MyCampaigns extends MyAccount {
                             'rewardType' => $milestone->rewardType, 
                             'badgeImage' => $milestone->badgeImage,
                             'progress' => $milestoneProgress['progress'],
+                            'extraProgress' => $milestoneProgress['extraProgress'],
                             'completedGoals' => $completedGoals,
                             'totalGoals' => $totalGoals,
-                            'progressData' => $milestoneProgress['data']
+                            'progressData' => $milestoneProgress['data'],
+                            'progressBeyondOneHundredPercent' => $milestone->progressBeyondOneHundredPercent,
                         ];
                     }
 
