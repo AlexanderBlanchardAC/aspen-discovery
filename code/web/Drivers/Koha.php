@@ -475,6 +475,8 @@ class Koha extends AbstractIlsDriver {
 			$curCheckout->sourceId = $curRow['issue_id'];
 			$allIssueIds[] = $curRow['issue_id'];
 			$curCheckout->userId = $patron->id;
+			$dateOfCheckOut= new DateTime($curRow['issuedate']);
+			$curCheckout->checkoutDate = $dateOfCheckOut->getTimestamp();
 
 			$curCheckout->recordId = $curRow['biblionumber'];
 			$curCheckout->shortId = $curRow['biblionumber'];

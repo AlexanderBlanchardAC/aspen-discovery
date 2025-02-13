@@ -2,6 +2,8 @@
 
 require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignMilestone.php';
 require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignMilestoneProgressEntry.php';
+require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
+
 
 /**
  * after_checkout_insert
@@ -13,11 +15,23 @@ require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignMilestoneProgressEntry
  */
 
 add_action('after_object_insert', 'after_checkout_insert', function ($value) {
+    global $logger;
     $campaignMilestone = CampaignMilestone::getCampaignMilestonesToUpdate($value, 'user_checkout', $value->userId);
     if (!$campaignMilestone)
         return;
 
     while ($campaignMilestone->fetch()) {
+        $campaign = new Campaign();
+        $campaign->id = $campaignMilestone->campaignId;
+        $campaign->find(true);
+        $campaignStartDate = strtotime($campaign->startDate);
+        $campaignEndDate = strtotime($campaign->endDate);
+        $checkoutDate = $value->checkoutDate;
+        if (($checkoutDate < $campaignStartDate) || ($checkoutDate > $campaignEndDate)) {
+            return;
+        }
+
+      
         if (_campaignMilestoneProgressEntryObjectAlreadyExists($value, $campaignMilestone))
             return;
 
@@ -103,6 +117,7 @@ function _campaignMilestoneProgressEntryObjectAlreadyExists($value, $campaignMil
     $campaignMilestoneProgressEntryCheck = new CampaignMilestoneProgressEntry();
     $campaignMilestoneProgressEntryCheck->initialize($campaignMilestone);
     if ($campaignMilestoneProgressEntryCheck->find()) {
+
         while ($campaignMilestoneProgressEntryCheck->fetch()) {
             $decoded_object = json_decode($campaignMilestoneProgressEntryCheck->object);
             if (
