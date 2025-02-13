@@ -15,7 +15,6 @@ require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
  */
 
 add_action('after_object_insert', 'after_checkout_insert', function ($value) {
-    global $logger;
     $campaignMilestone = CampaignMilestone::getCampaignMilestonesToUpdate($value, 'user_checkout', $value->userId);
     if (!$campaignMilestone)
         return;
@@ -27,13 +26,15 @@ add_action('after_object_insert', 'after_checkout_insert', function ($value) {
         $campaignStartDate = strtotime($campaign->startDate);
         $campaignEndDate = strtotime($campaign->endDate);
         $checkoutDate = $value->checkoutDate;
+
         if (($checkoutDate < $campaignStartDate) || ($checkoutDate > $campaignEndDate)) {
             return;
         }
 
       
-        if (_campaignMilestoneProgressEntryObjectAlreadyExists($value, $campaignMilestone))
+        if (_campaignMilestoneProgressEntryObjectAlreadyExists($value, $campaignMilestone)) {
             return;
+        }
 
         $campaignMilestone->addCampaignMilestoneProgressEntry($value, $value->userId, $value->groupedWorkId);
     }
@@ -55,8 +56,19 @@ add_action('after_object_insert', 'after_hold_insert', function ($value) {
         return;
 
     while ($campaignMilestone->fetch()) {
-        if (_campaignMilestoneProgressEntryObjectAlreadyExists($value, $campaignMilestone))
+        $campaign = new Campaign();
+        $campaign->id = $campaignMilestone->campaignId;
+        $campaign->find(true);
+        $campaignStartDate = strtotime($campaign->startDate);
+        $campaignEndDate = strtotime($campaign->endDate);
+        $holdDate = $value->createDate;
+
+        if (($holdDate < $campaignStartDate) || ($holdDate > $campaignEndDate)) {
             return;
+        }
+        if (_campaignMilestoneProgressEntryObjectAlreadyExists($value, $campaignMilestone)) {
+            return;
+        }
 
         $campaignMilestone->addCampaignMilestoneProgressEntry($value, $value->userId, $value->groupedWorkId);
     }
