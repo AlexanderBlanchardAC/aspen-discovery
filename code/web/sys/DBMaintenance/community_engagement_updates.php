@@ -365,5 +365,12 @@ function getCommunityEngagementUpdates() {
                 "ALTER TABLE user ADD COLUMN optInToAllCampaignLeaderboards TINYINT DEFAULT 0",
             ],
         ],
+        'add_individual_campaign_leaderboard_opt_in' => [
+            'title' => 'Add Individual Campaign Leaderboard Opt In',
+            'description' => 'Add the ability to opt in and out of individual campaigns',
+            'sql' => [
+                "ALTER TABLE ce_user_campaign ADD COLUMN optInToCampaignLeaderboard TINYINT DEFAULT NULL",
+            ],
+        ],
     ];
 }

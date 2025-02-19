@@ -125,6 +125,14 @@ class MyCampaigns extends MyAccount {
                 $userCampaign = new UserCampaign();
                 $userCampaign->userId = $userId;
                 $userCampaign->campaignId = $campaignId;
+                $userCampaign->find();
+                while($userCampaign->fetch()) {
+                    if ($userCampaign->optInToCampaignLeaderboard === null) {
+                        $campaign->optInToCampaignLeaderboard = $user->optInToAllCampaignLeaderboards;
+                    }else{
+                        $campaign->optInToCampaignLeaderboard = $userCampaign->optInToCampaignLeaderboard;
+                    }
+                }
                 $milestoneCompletionStatus = $userCampaign->checkMilestoneCompletionStatus();
                 $campaign->numCompletedMilestones = count(array_filter($milestoneCompletionStatus));
 
