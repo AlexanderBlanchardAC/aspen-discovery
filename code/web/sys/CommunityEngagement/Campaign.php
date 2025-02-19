@@ -618,7 +618,6 @@ class Campaign extends DataObject {
                         $pastCampaignList[$campaign->id]->rewardExists = true;
                     }
                 }
-    
                 // Fetch campaign milestones and their rewards using mapping
                 $milestones = CampaignMilestone::getMilestoneByCampaign($campaign->id);
                 // foreach ($milestones as $milestone) {

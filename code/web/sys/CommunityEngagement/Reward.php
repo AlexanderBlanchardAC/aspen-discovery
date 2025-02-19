@@ -60,11 +60,6 @@ class Reward extends DataObject {
         return '/CommunityEngagement/ViewImage?size=' .$size . '&id=' . $this->id;
     }
 
-    public function getShareUrl(): string {
-        global $serverName;
-        $size = 'full';
-        return 'http://' . $serverName . '/CommunityEngagement/ViewImage?size=' . $size . '&id=' . $this->id;
-    }
 
     public function uploadImage() {
         if (!empty($this->badgeImage)) {
