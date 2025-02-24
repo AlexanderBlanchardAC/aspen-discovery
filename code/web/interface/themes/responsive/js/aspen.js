@@ -8371,6 +8371,20 @@ AspenDiscovery.Account = (function () {
 			});
 			return false;
 		},
+		showEmailOptInPrompt: function (campaignId, userId) {
+			var url = Globals.path + "CommunityEngagement/AJAX?method=getCampaignEmailOptInForm";
+			var params = {
+				campaignId: campaignId,
+				userId: userId,
+			}
+
+			$.getJSON(url, params, function (data) {
+				if (data.success) {
+					console.log("show email opt in form");
+				}
+			})
+		},
+
 		enroll: function (campaignId, userId) {
 			if (Globals.loggedIn) {
 				var url = Globals.path + "/MyAccount/AJAX";
@@ -8382,6 +8396,9 @@ AspenDiscovery.Account = (function () {
 				$.getJSON(url, params, function (data) {
 					if (data.success) {
 						AspenDiscovery.showMessage(data.title, data.message, false, true, false, false);
+						if (response.showEmailOptInPrompt) {
+							showEmailOptInPrompt(response.campaignId, response.userId);
+						}
 					} else {
 						AspenDiscovery.showMessage(data.title, data.message);
 					}
@@ -16951,6 +16968,49 @@ AspenDiscovery.CommunityEngagement = function() {
             .fail(function(jqXHR, textStatus, errorThrown) {
                 console.error("AJAX Error: ", textStatus, errorThrown);
             });
+        },
+        toggleCampaignEmailOptIn: function ($campaignId, $userId, optIn) {
+            var url = Globals.path + "communityEngagement/AJAX?method=saveCampaignEmailOptInToggle";
+            var params = {
+                campaignId: campaignId, 
+                userId: userId, 
+                optIn: optIn,
+            };
+
+            $.getJSON(url, params, function(data) {
+                if (data.success) {
+                    AspenDiscovery.showMessage(data.title, data.message, false, true, false, false);
+                } else {
+                    AspenDiscovery.showMessage(data.title, data.message);
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error: ", textStatus, errorThrown);
+            });
+        },
+
+        openLeaderboardEditor: function() {
+            document.getElementById("gjs").style.display = 'block';
+            document.getElementById("saveLeaderboardBtn").style.display = 'inline-block';
+
+            const editor = grapesjs.init({
+                container: '#gjs',
+                height: '90vh',
+                StorageManager: { type: 'none'},
+                panels: { defaults: [] },
+                fromElement: false
+            });
+
+            const leaderboardHTML = document.getElementById("main-content").innerHTML;
+            editor.setComponents(leaderboardHTML);
+
+            const leaderboardComponents = editor.getComponents();
+            leaderboardComponents.each(component => {
+                if (component.is('div') || component.is('h1') || component.is('select')) {
+                    component.set({ draggable: false, removable: false, copyable: false });
+                }
+            });
+
         }
 
     }
