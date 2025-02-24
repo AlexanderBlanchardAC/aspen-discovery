@@ -541,6 +541,25 @@ class CommunityEngagement_AJAX extends JSON_Action {
             ];
         }
     }
+
+    public function saveLeaderboardChanges() {
+        $input = file_get_contents("php://input");
+        $data = json_decode($input, true);
+
+        if (empty($data['html'])) {
+            return [
+                'success' => false,
+                'title' => translate([
+                    'text' => 'Error',
+                    'isPublicFacing' => true,
+                ]),
+                'message' => translate([
+                    'text' => 'Nothing data to save',
+                    'isPublicFacing' => true,
+                ]),
+            ];
+        }
+    }
        
 
 }

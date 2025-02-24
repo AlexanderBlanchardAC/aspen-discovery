@@ -8,7 +8,7 @@
 		<div id="main-content" class="col-sm-12" data-leaderboard-type="{$campaignLeaderboardDisplay}">
 			<h1>{translate text="Leaderboard" isPublicFacing=true}</h1>
 			<button id="editLeaderboardBtn" onclick="AspenDiscovery.CommunityEngagement.openLeaderboardEditor()">{translate text="Edit Leaderboard" isAdminFacing=true}</button>
-			<button id="saveLeaderboardBtn" style="display: none;">{translate text="Save Changes" isAdminFacing=true}</button>
+			<button id="saveLeaderboardBtn" style="display: none;" onclick="AspenDiscovery.CommunityEngagement.saveLeaderboardChanges()">{translate text="Save Changes" isAdminFacing=true}</button>
 			<div id="gjs" style="display: none;"></div>
 			{*Filter Leaderboard by campaign*}
 			<label for="campaignFilter">{translate text="Filter by Campaign:" isPublicFacing=true}</label>

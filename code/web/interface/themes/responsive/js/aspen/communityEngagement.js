@@ -228,6 +228,33 @@ AspenDiscovery.CommunityEngagement = function() {
 				}
 			});
 
+		},
+
+		saveLeaderboardChanges: function() {
+			const editor = grapesjs.editors[0];
+			const updatedHTML = editor.getHtml();
+			var url = Globals.path + "communityEngagement/AJAX?method=saveLeaderboardChanges";
+
+			var params = {
+				html: grapesjs.editors[0].hetHtml()
+			};
+
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: JSON.stringify(params),
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						AspenDiscovery.showMessage(data.title, data.message, false, true, false, false);
+					} else {
+						AspenDiscovery.showMessage(data.title, data.message);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.error("AJAX Error: ", textStatus, errorThrown);
+				}
+			});
 		}
 
 	}
