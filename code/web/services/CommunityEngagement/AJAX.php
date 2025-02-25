@@ -559,6 +559,33 @@ class CommunityEngagement_AJAX extends JSON_Action {
                 ]),
             ];
         }
+
+        $filePath = "/interface/themes/responsive/js/CommunityEngagement/leaderboard.tpl";
+        if (file_put_contents($filePath, $data['html']) !== false) {
+            return [
+                'success' => true,
+                'title' => translate([
+                    'text' => 'Success',
+                    'isPublicFacing' => true,
+                ]),
+                'message' => translate([
+                    'text' => 'Leaderboard updated successfully!',
+                    'isPublicFacing' => true,
+                ]),
+            ];
+        } else {
+            return [
+                'success' => false,
+                'title' => translate([
+                    'text' => 'Error',
+                    'isPublicFacing' => true,
+                ]),
+                'message' => translate([
+                    'text' => 'Failed to save changes.',
+                    'isPublicFacing' => true,
+                ]),
+            ];
+        }
     }
        
 

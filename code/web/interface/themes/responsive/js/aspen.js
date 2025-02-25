@@ -17016,10 +17016,10 @@ AspenDiscovery.CommunityEngagement = function() {
 		saveLeaderboardChanges: function() {
 			const editor = grapesjs.editors[0];
 			const updatedHTML = editor.getHtml();
-			var url = Globals.path + "communityEngagement/AJAX?method=saveLeaderboardChanges";
+			var url = Globals.path + "/communityEngagement/AJAX?method=saveLeaderboardChanges";
 
 			var params = {
-				html: grapesjs.editors[0].hetHtml()
+				html: updatedHTML
 			};
 
 			$.ajax({
@@ -17030,6 +17030,9 @@ AspenDiscovery.CommunityEngagement = function() {
 				success: function(data) {
 					if (data.success) {
 						AspenDiscovery.showMessage(data.title, data.message, false, true, false, false);
+						editor.destroy();
+						$("#gjs").hide();
+						$("#main-content").show();
 					} else {
 						AspenDiscovery.showMessage(data.title, data.message);
 					}
