@@ -33,6 +33,13 @@ function getUpdates25_04_00(): array {
 		// Leo Stoyanov - BWS
 
 		//alexander - PTFS-Europe
+		'allow_filtering_of_linked_users_in_checkouts' => [
+			'title' => 'Allow Filtering of Linked Users in Checkouts',
+			'description' => 'Allow libraries the option of allowing users to filter their checkouts by linked user',
+			'sql' => [
+				'ALTER TABLE library ADD COLUMN allowFilteringOfLinkedAccountsInCheckouts TINYINT(1) DEFAULT 0',
+			]
+		], //allow_filtering_of_linked_users_in_checkouts
 
 		//chloe - PTFS-Europe
 
