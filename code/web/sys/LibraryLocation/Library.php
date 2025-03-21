@@ -331,6 +331,7 @@ class Library extends DataObject {
 
 	public $allowLinkedAccounts;
 	public $allowFilteringOfLinkedAccountsInHolds;
+	public $allowFilteringOfLinkedAccountsInCheckouts;
 	public $allowSelectingHoldsToExport;
 
 
@@ -1322,6 +1323,15 @@ class Library extends DataObject {
 						'type' => 'checkbox',
 						'label' => 'Allow Filtering of Linked Accounts in Holds',
 						'description' => 'Whether or not users can filter their holds by linked accounts.',
+						'hideInLists' => true,
+						'default' => 0,
+						'permissions' => ['Library ILS Options'],
+					],
+					'allowFilteringOfLinkedAccountsInCheckouts' => [
+						'property' => 'allowFilteringOfLinkedAccountsInCheckouts',
+						'type' => 'checkbox',
+						'label' => 'Allow Filtering of Linked Accounts in Check Out Titles',
+						'description' => 'Whether or not users can filter their checked out titles by linked accounts.',
 						'hideInLists' => true,
 						'default' => 0,
 						'permissions' => ['Library ILS Options'],
