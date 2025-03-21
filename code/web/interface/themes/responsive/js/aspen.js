@@ -5694,6 +5694,22 @@ AspenDiscovery.Account = (function () {
 			return false;
 		},
 
+		exportOnlySelectedCheckouts: function (source, sort) {
+			var url = Globals.path + "/MyAccount/AJAX?method=exportHolds&source=" + source;
+			var selectedTitles = AspenDiscovery.getSelectedTitles();
+
+			if (selectedTitles && selectedTitles.length > 0) {
+				sessionStorage.setItem('selectedHolds', JSON.stringify(selectedTitles));
+				url += "&selectedHolds=" + encodeURIComponent(JSON.stringify(selectedTitles));
+			}
+			if (sort !== undefined) {
+				url += "&sort=" + sort;
+			}
+			document.location.href = url;
+			AspenDiscovery.Account.clearSelectedTitles();
+			return false;
+		},
+
 		clearSelectedTitles: function() {
 			$('input[type="checkbox"]:checked').prop('checked', false);
 		},
