@@ -5806,6 +5806,7 @@ AspenDiscovery.Account = (function () {
 						// noinspection JSUnresolvedReference
 						$("#costSavingsPlaceholder").html(data.costSavingsMessage);
 					}
+					AspenDiscovery.Account.loadMenuData();
 				} else {
 					$("#" + source + "CheckoutsPlaceholder").html(data.message);
 				}

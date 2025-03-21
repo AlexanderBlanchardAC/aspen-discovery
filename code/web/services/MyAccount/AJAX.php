@@ -2566,6 +2566,8 @@ class MyAccount_AJAX extends JSON_Action {
 
 							$ilsSummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$ilsSummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
+							$ilsSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
+							$ilsSummary->numOverdue = $filterLinkedUserSummary->numOverdue;
 						}
 					} else {
 					/** @var User $user */
@@ -2573,14 +2575,14 @@ class MyAccount_AJAX extends JSON_Action {
 							$linkedUserSummary = $linkedUser->getCatalogDriver()->getAccountSummary($linkedUser);
 							$ilsSummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
 							$ilsSummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
+							$ilsSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
+							$ilsSummary->numOverdue += $linkedUserSummary->numOverdue;
 
 						}
 					}
 					foreach ($user->getLinkedUsers() as $linkedUser) {
 						$linkedUserSummary = $linkedUser->getCatalogDriver()->getAccountSummary($linkedUser);
 						$ilsSummary->totalFines += $linkedUserSummary->totalFines;
-						$ilsSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
-						$ilsSummary->numOverdue += $linkedUserSummary->numOverdue;
 						$ilsSummary->setMaterialsRequests($ilsSummary->getMaterialsRequests() + $linkedUser->getNumMaterialsRequests());
 
 					}
@@ -2671,17 +2673,15 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$cloudLibrarySummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$cloudLibrarySummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
+							$cloudLibrarySummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$cloudLibrarySummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
 							$cloudLibrarySummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
+							$cloudLibrarySummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
-					}
-					foreach ($user->getLinkedUsers() as $linkedUser) {
-						$linkedUserSummary = $driver->getAccountSummary($linkedUser);
-						$cloudLibrarySummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 					}
 				}
 				$timer->logTime("Loaded cloudLibrary Summary for User and linked users");
@@ -2727,17 +2727,15 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$axis360Summary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$axis360Summary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
+							$axis360Summary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$axis360Summary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
 							$axis360Summary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
+							$axis360Summary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
-					}
-					foreach ($user->getLinkedUsers() as $linkedUser) {
-						$linkedUserSummary = $driver->getAccountSummary($linkedUser);
-						$axis360Summary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 					}
 				}
 				$timer->logTime("Loaded Boundless Summary for User and linked users");
@@ -2776,11 +2774,22 @@ class MyAccount_AJAX extends JSON_Action {
 
 				if ($user->getLinkedUsers() != null) {
 					/** @var User $user */
-					foreach ($user->getLinkedUsers() as $linkedUser) {
-						$linkedUserSummary = $driver->getAccountSummary($linkedUser);
-						if ($linkedUserSummary != false) {
-							$hooplaSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
-							$hooplaSummary->numCheckoutsRemaining += $linkedUserSummary->numCheckoutsRemaining;
+					$selectedLinkedUser = $this->setFilterLinkedUser();
+					if ($selectedLinkedUser) {
+						$filterLinkedUser = new User();
+						$filterLinkedUser->id = $selectedLinkedUser;
+						if ($filterLinkedUser->find(true)) {
+							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
+							$hooplaSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
+							$hooplaSummary->numCheckoutsRemaining = $filterLinkedUserSummary->numCheckoutsRemaining;
+						}
+					} else {
+						foreach ($user->getLinkedUsers() as $linkedUser) {
+							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
+							if ($linkedUserSummary != false) {
+								$hooplaSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
+								$hooplaSummary->numCheckoutsRemaining += $linkedUserSummary->numCheckoutsRemaining;
+							}
 						}
 					}
 				}
@@ -2826,18 +2835,15 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$overDriveSummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$overDriveSummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
+							$overDriveSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$overDriveSummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
 							$overDriveSummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
+							$overDriveSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
-					}
-					
-					foreach ($user->getLinkedUsers() as $linkedUser) {
-						$linkedUserSummary = $driver->getAccountSummary($linkedUser);
-						$overDriveSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 					}
 				}
 				$timer->logTime("Loaded " . $readerName . " Summary for User and linked users");
@@ -2880,17 +2886,15 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$palaceProjectSummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$palaceProjectSummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
+							$palaceProjectSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$palaceProjectSummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
 							$palaceProjectSummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
+							$palaceProjectSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
-					}
-					foreach ($user->getLinkedUsers() as $linkedUser) {
-						$linkedUserSummary = $driver->getAccountSummary($linkedUser);
-						$palaceProjectSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 					}
 				}
 				$timer->logTime("Loaded Palace Project Summary for User and linked users");
