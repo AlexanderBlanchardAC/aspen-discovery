@@ -38,8 +38,15 @@ function getUpdates25_04_00(): array {
 			'description' => 'Allow libraries the option of allowing users to filter their checkouts by linked user',
 			'sql' => [
 				'ALTER TABLE library ADD COLUMN allowFilteringOfLinkedAccountsInCheckouts TINYINT(1) DEFAULT 0',
-			]
+			],
 		], //allow_filtering_of_linked_users_in_checkouts
+		'allow_selecting_checkouts_to_export' => [
+			'title' => 'Allow Selecting Checkouts to Export',
+			'description' => 'Allow libraries the option of allowing users to export only selected checkouts',
+			'sql' => [
+				'ALTER TABLE library ADD COLUMN allowSelectingCheckoutsToExport TINYINT(1) DEFAULT 0'
+			],
+		], //allow_selecting_checkouts_to_export
 
 		//chloe - PTFS-Europe
 
