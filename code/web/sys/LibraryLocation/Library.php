@@ -333,6 +333,7 @@ class Library extends DataObject {
 	public $allowFilteringOfLinkedAccountsInHolds;
 	public $allowFilteringOfLinkedAccountsInCheckouts;
 	public $allowSelectingHoldsToExport;
+	public $allowSelectingCheckoutsToExport;
 
 
 	public $maxFinesToAllowAccountUpdates;
@@ -1341,6 +1342,15 @@ class Library extends DataObject {
 						'type' => 'checkbox',
 						'label' => 'Allow Ability To Export Only Selected Holds',
 						'description' => 'Whether or not users can export only selected holds.',
+						'hideInLists' => true,
+						'default' => 0,
+						'permissions' => ['Library ILS Options'],
+					],
+					'allowSelectingCheckoutsToExport' => [
+'						property' => 'allowSelectingCheckoutsToExport',
+						'type' => 'checkbox',
+						'label' => 'Allow Ability To Export Only Selected Checkouts',
+						'description' => 'Whether or not users can export only selected checkouts.',
 						'hideInLists' => true,
 						'default' => 0,
 						'permissions' => ['Library ILS Options'],
