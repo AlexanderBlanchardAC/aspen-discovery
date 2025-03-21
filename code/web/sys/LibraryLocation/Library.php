@@ -1347,7 +1347,7 @@ class Library extends DataObject {
 						'permissions' => ['Library ILS Options'],
 					],
 					'allowSelectingCheckoutsToExport' => [
-'						property' => 'allowSelectingCheckoutsToExport',
+						'property' => 'allowSelectingCheckoutsToExport',
 						'type' => 'checkbox',
 						'label' => 'Allow Ability To Export Only Selected Checkouts',
 						'description' => 'Whether or not users can export only selected checkouts.',

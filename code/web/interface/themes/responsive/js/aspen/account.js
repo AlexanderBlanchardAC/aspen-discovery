@@ -167,8 +167,8 @@ AspenDiscovery.Account = (function () {
 			var selectedTitles = AspenDiscovery.getSelectedTitles();
 
 			if (selectedTitles && selectedTitles.length > 0) {
-				sessionStorage.setItem('selectedHolds', JSON.stringify(selectedTitles));
-				url += "&selectedHolds=" + encodeURIComponent(JSON.stringify(selectedTitles));
+				sessionStorage.setItem('selectedCheckouts', JSON.stringify(selectedTitles));
+				url += "&selectedCheckouts=" + encodeURIComponent(JSON.stringify(selectedTitles));
 			}
 			if (sort !== undefined) {
 				url += "&sort=" + sort;
@@ -222,6 +222,7 @@ AspenDiscovery.Account = (function () {
 		},
 
 		loadCheckouts: function (source, sort, showCovers, selectedUser) {
+
 			AspenDiscovery.Account.currentCheckoutsSource = source;
 			var url = Globals.path + "/MyAccount/AJAX?method=getCheckouts&source=" + source;
 			if (selectedUser || selectedUser == "") {
@@ -1371,19 +1372,18 @@ AspenDiscovery.Account = (function () {
 		},
 
 		filterOutLinkedUsers: function (filterType) {
+
 			var selectedUser = $('#linkedUsersDropdown').val();
 			sessionStorage.setItem('selectedUser', selectedUser);
 			var showCovers = $('#showCovers').prop('checked');
-			
 			if (filterType == "holds") {
 				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedUser, []);
 			} else if (filterType === "checkouts") {
-				var sort = $('accountSort_' + AspenDiscovery.Account.currentCheckoutsSource).val();
+				var sort = $('#accountSort_' + AspenDiscovery.Account.currentCheckoutsSource).val();
 				AspenDiscovery.Account.loadCheckouts(AspenDiscovery.Account.currentCheckoutsSource, sort, showCovers, selectedUser);
 			}
-			
 		},
 		
 

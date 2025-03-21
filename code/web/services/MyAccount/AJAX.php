@@ -3018,6 +3018,13 @@ class MyAccount_AJAX extends JSON_Action {
 
 	/** @noinspection PhpUnused */
 	public function exportCheckouts() {
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+		
+		global $logger;
+		$logger->log("celled exportcheckouts", Logger::LOG_ERROR);
+
 		$source = $_REQUEST['source'];
 		$user = UserAccount::getActiveUserObj();
 		$allCheckedOut = $user->getCheckouts(true, $source);
@@ -3025,6 +3032,16 @@ class MyAccount_AJAX extends JSON_Action {
 		if ($selectedSortOption == null) {
 			$selectedSortOption = 'dueDate';
 		}
+
+		$selectedUser = $this->setFilterLinkedUser();
+
+		$selectedCheckouts = isset($_REQUEST['selectedCheckouts']) ? json_decode($_REQUEST['selectedCheckouts'], true) : [];
+		if (!empty($selectedCheckouts)) {
+			$allCheckedOut = $this->filterCheckoutsBySelected($allCheckedOut, $selectedCheckouts);
+		} else {
+			$allCheckedOut = $this->filterCheckoutsByUser($allCheckedOut, $selectedUser);
+		}
+
 		$allCheckedOut = $this->sortCheckouts($selectedSortOption, $allCheckedOut);
 
 		$hasLinkedUsers = count($user->getLinkedUsers()) > 0;
@@ -3033,7 +3050,6 @@ class MyAccount_AJAX extends JSON_Action {
 		$showRenewed = $user->showTimesRenewed();
 		$showRenewalsRemaining = $user->showRenewalsRemaining();
 		$showWaitList = $user->showWaitListInCheckouts();
-
 
 		try {
 			// Redirect output to a client's web browser
@@ -3585,7 +3601,14 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]);
 			} else {
-				$selectedUser = $this->setFilterLinkedUser();
+
+				if ($user->getHomeLibrary() != null) {
+					$allowSelectingCheckoutsToExport = $user->getHomeLibrary()->allowSelectingCheckoutsToExport;
+				} else {
+					$allowSelectingCheckoutsToExport = $library->allowSelectingCheckoutsToExport;
+				}
+				$interface->assign('allowSelectingCheckoutsToExport', $allowSelectingCheckoutsToExport);
+
 
 				if (count($user->getLinkedUsers()) > 0) {
 					$sortOptions['libraryAccount'] = 'Library Account';
@@ -3602,6 +3625,8 @@ class MyAccount_AJAX extends JSON_Action {
 				$interface->assign('showNotInterested', false);
 
 				// Get My Transactions
+				$selectedUser = $this->setFilterLinkedUser();
+
 				$allCheckedOut = $this->filterCheckoutsByUser($user->getCheckouts(true, $source), $selectedUser);
 
 				foreach ($allCheckedOut as $checkout) {
@@ -3709,6 +3734,42 @@ class MyAccount_AJAX extends JSON_Action {
 	
 		return $filteredHolds;
 	}
+
+	public function filterCheckoutsBySelected(array $allCheckedOut, $selectedCheckouts): array {
+		if (!empty($selectedCheckouts) && !is_array($selectedCheckouts)) {
+			$selectedCheckoutsArray = [];
+			parse_str($selectedCheckouts, $parsedCheckouts);
+
+			if (isset($parsedCheckouts['selected'])) {
+				foreach ($parsedCheckouts['selected'] as $checkoutKey => $value) {
+
+					if (preg_match('/(\d+)\|([a-zA-Z0-9:._-]+)\|?/', $checkoutKey, $matches)) {
+						$selectedCheckoutsArray[] = [
+							'recordId' => $this->normalizeRecordId($matches[2]),
+						];
+					}
+				}
+			}
+			$selectedCheckouts = $selectedCheckoutsArray;
+
+		}
+		$filteredCheckouts = [];
+	
+		foreach ($allCheckedOut as $key => $checkout) {
+			$checkout->recordId = $this->normalizeRecordId($checkout->recordId);
+			$matchFound = false;
+			foreach ($selectedCheckouts as $selectedCheckout) {
+				if (strval($checkout->recordId) === strval($selectedCheckout['recordId'])) {
+					$matchFound = true;
+					break;
+				}
+			}
+			if ($matchFound) {
+				$filteredCheckouts[$key] = $checkout;
+			}
+		}
+		return $filteredCheckouts;
+	}
 	
 
 	public function filterHolds(array $allHolds, string $selectedUser): array {
@@ -3737,9 +3798,9 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	public function filterCheckoutsByUser(array $allCheckedOut, string $selectedUser): array {
+		$filteredCheckouts = [];
 	
-		// Check if we're filtering by a specific user
-		$allUsersSelected = (empty($selectedUser) || $selectedUser === "" | $selectedUser === '[""]');
+		$allUsersSelected = (empty($selectedUser) || $selectedUser === "" || $selectedUser === '[""]');
 	
 		foreach ($allCheckedOut as $key => $checkout) {
 			if ($allUsersSelected || intval($checkout->userId) === intval($selectedUser)) {
@@ -3750,8 +3811,7 @@ class MyAccount_AJAX extends JSON_Action {
 		return $filteredCheckouts;
 	}
 
-	public function setFilterLinkedUser() : string {
-
+	public function setFilterLinkedUser() : string {		
 		$selectedUser = '';
 		if (isset($_REQUEST['selectedUser'])) {
 			$selectedUser = $_REQUEST['selectedUser'];
