@@ -29,7 +29,7 @@
 					<div class="col-tn-12">
 						<div id="linkedUserOptions" class="form-group">
 							<label class="control-label" for="linkedUsersDropdown">{translate text="Linked Users" isPublicFacing=true}&nbsp;</label>
-							<select name="selectedUser" id="linkedUsersDropdown" class="form-control" onchange="AspenDiscovery.Account.filterOutLinkedUsers();">
+							<select name="selectedUser" id="linkedUsersDropdown" class="form-control" onchange="AspenDiscovery.Account.filterOutLinkedUsers('checkouts');">
 								<option value="" {if $selectedUser == ""}selected{/if}>All</option>
 								<option value="{$currentUserId}" {if $selectedUser == $currentUserId} selected="selected"{/if}>
 									{$currentUserName}

@@ -3585,6 +3585,8 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]);
 			} else {
+				$selectedUser = $this->setFilterLinkedUser();
+
 				if (count($user->getLinkedUsers()) > 0) {
 					$sortOptions['libraryAccount'] = 'Library Account';
 				}
@@ -3600,7 +3602,7 @@ class MyAccount_AJAX extends JSON_Action {
 				$interface->assign('showNotInterested', false);
 
 				// Get My Transactions
-				$allCheckedOut = $user->getCheckouts(true, $source);
+				$allCheckedOut = $this->filterCheckoutsByUser($user->getCheckouts(true, $source), $selectedUser);
 
 				foreach ($allCheckedOut as $checkout) {
 					if ($checkout->canRenew == 1) {
@@ -3732,6 +3734,20 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 	
 		return $filteredHolds;
+	}
+
+	public function filterCheckoutsByUser(array $allCheckedOut, string $selectedUser): array {
+	
+		// Check if we're filtering by a specific user
+		$allUsersSelected = (empty($selectedUser) || $selectedUser === "" | $selectedUser === '[""]');
+	
+		foreach ($allCheckedOut as $key => $checkout) {
+			if ($allUsersSelected || intval($checkout->userId) === intval($selectedUser)) {
+				$filteredCheckouts[$key] = $checkout;
+			}
+		}
+	
+		return $filteredCheckouts;
 	}
 
 	public function setFilterLinkedUser() : string {

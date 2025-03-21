@@ -5737,9 +5737,13 @@ AspenDiscovery.Account = (function () {
 			return false;
 		},
 
-		loadCheckouts: function (source, sort, showCovers) {
+		loadCheckouts: function (source, sort, showCovers, selectedUser) {
 			AspenDiscovery.Account.currentCheckoutsSource = source;
 			var url = Globals.path + "/MyAccount/AJAX?method=getCheckouts&source=" + source;
+			if (selectedUser || selectedUser == "") {
+				url += "&selectedUser=" + selectedUser;
+			}
+
 			if (sort !== undefined) {
 				url += "&sort=" + sort;
 			}
@@ -5750,7 +5754,8 @@ AspenDiscovery.Account = (function () {
 				page: 'Checkouts',
 				source: source,
 				sort: sort,
-				showCovers: showCovers
+				showCovers: showCovers,
+				selectedUser: selectedUser
 			};
 			var newUrl = AspenDiscovery.buildUrl(document.location.origin + document.location.pathname, 'source', source);
 			if (document.location.href) {
@@ -6881,13 +6886,20 @@ AspenDiscovery.Account = (function () {
 			return queryString;
 		},
 
-		filterOutLinkedUsers: function () {
+		filterOutLinkedUsers: function (filterType) {
 			var selectedUser = $('#linkedUsersDropdown').val();
 			sessionStorage.setItem('selectedUser', selectedUser);
-			var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
-			var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 			var showCovers = $('#showCovers').prop('checked');
-			AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedUser, []);
+			
+			if (filterType == "holds") {
+				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
+				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedUser, []);
+			} else if (filterType === "checkouts") {
+				var sort = $('accountSort_' + AspenDiscovery.Account.currentCheckoutsSource).val();
+				AspenDiscovery.Account.loadCheckouts(AspenDiscovery.Account.currentCheckoutsSource, sort, showCovers, selectedUser);
+			}
+			
 		},
 		
 
