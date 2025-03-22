@@ -25,22 +25,8 @@
 			<div class="alert alert-warning"><strong>{translate text=$offlineMessage isPublicFacing=true}</strong></div>
 		{else}
 			{if count($linkedUsers) > 0 && $allowFilteringOfLinkedAccountsInCheckouts}
-				<div class="row">
-					<div class="col-tn-12">
-						<div id="linkedUserOptions" class="form-group">
-							<label class="control-label" for="linkedUsersDropdown">{translate text="Linked Users" isPublicFacing=true}&nbsp;</label>
-							<select name="selectedUser" id="linkedUsersDropdown" class="form-control" onchange="AspenDiscovery.Account.filterOutLinkedUsers('checkouts');">
-								<option value="" {if $selectedUser == ""}selected{/if}>All</option>
-								<option value="{$currentUserId}" {if $selectedUser == $currentUserId} selected="selected"{/if}>
-									{$currentUserName}
-								</option>
-								{foreach from=$linkedUsers item=user}
-									<option value="{$user->id}"{if $selectedUser == $user->id} selected="selected"{/if}>{$user->displayName}</option>
-								{/foreach}
-							</select>
-						</div>
-					</div>
-				</div>
+				{assign var="filterType" value="checkouts"}
+				{include file="./linkedUsersDropdown.tpl"}
 			{/if}
 			<ul class="nav nav-tabs" role="tablist" id="checkoutsTab">
 				{if empty($offline)}
