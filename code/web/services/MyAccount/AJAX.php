@@ -2558,16 +2558,14 @@ class MyAccount_AJAX extends JSON_Action {
 				$ilsSummary->setMaterialsRequests($user->getNumMaterialsRequests());
 				if ($user->getLinkedUsers() != null) {
 					$selectedLinkedUser = $this->setFilterLinkedUser();
+					$selectedLinkedUserCheckouts = $this->setFilterLinkedUserCheckouts();
 					if ($selectedLinkedUser) {
 						$filterLinkedUser = new User();
 						$filterLinkedUser->id = $selectedLinkedUser;
 						if ($filterLinkedUser->find(true)) {
 							$filterLinkedUserSummary = $filterLinkedUser->getCatalogDriver()->getAccountSummary($filterLinkedUser);
-
 							$ilsSummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$ilsSummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
-							$ilsSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
-							$ilsSummary->numOverdue = $filterLinkedUserSummary->numOverdue;
 						}
 					} else {
 					/** @var User $user */
@@ -2575,16 +2573,28 @@ class MyAccount_AJAX extends JSON_Action {
 							$linkedUserSummary = $linkedUser->getCatalogDriver()->getAccountSummary($linkedUser);
 							$ilsSummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
 							$ilsSummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
+
+						}
+					}
+					if ($selectedLinkedUserCheckouts) {
+						$filterLinkedUserCheckouts = new User();
+						$filterLinkedUserCheckouts->id = $selectedLinkedUserCheckouts;
+						if ($filterLinkedUserCheckouts->find(true)) {
+							$filterLinkedUserCheckoutsSummary = $filterLinkedUserCheckouts->getCatalogDriver()->getAccountSummary($filterLinkedUserCheckouts);
+							$ilsSummary->numCheckedOut = $filterLinkedUserCheckoutsSummary->numCheckedOut;
+							$ilsSummary->numOverdue = $filterLinkedUserCheckoutsSummary->numOverdue;
+						}
+					} else {
+						foreach ($user->getLinkedUsers() as $linkedUser) {
+							$linkedUserSummary = $linkedUser->getCatalogDriver()->getAccountSummary($linkedUser);
 							$ilsSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 							$ilsSummary->numOverdue += $linkedUserSummary->numOverdue;
-
 						}
 					}
 					foreach ($user->getLinkedUsers() as $linkedUser) {
 						$linkedUserSummary = $linkedUser->getCatalogDriver()->getAccountSummary($linkedUser);
 						$ilsSummary->totalFines += $linkedUserSummary->totalFines;
 						$ilsSummary->setMaterialsRequests($ilsSummary->getMaterialsRequests() + $linkedUser->getNumMaterialsRequests());
-
 					}
 				}
 				$timer->logTime("Loaded ILS Summary for User and linked users");
@@ -2666,6 +2676,7 @@ class MyAccount_AJAX extends JSON_Action {
 					/** @var User $user */
 
 					$selectedLinkedUser = $this->setFilterLinkedUser();
+					$selectedLinkedUserCheckouts = $this->setFilterLinkedUserCheckouts();
 					if ($selectedLinkedUser) {
 						$filterLinkedUser = new User();
 						$filterLinkedUser->id = $selectedLinkedUser;
@@ -2673,13 +2684,24 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$cloudLibrarySummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$cloudLibrarySummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
-							$cloudLibrarySummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$cloudLibrarySummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
 							$cloudLibrarySummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
+						}
+					}
+					if ($selectedLinkedUserCheckouts) {
+						$filterLinkedUserCheckouts = new User();
+						$filterLinkedUserCheckouts->id = $selectedLinkedUserCheckouts;
+						if ($filterLinkedUserCheckouts->find(true)) {
+							$filterLinkedUserCheckoutsSummary = $driver->getAccountSummary($filterLinkedUserCheckouts);
+							$cloudLibrarySummary->numCheckedOut = $filterLinkedUserCheckoutsSummary->numCheckedOut;
+						}
+					} else {
+						foreach ($user->getLinkedUsers() as $linkedUser) {
+							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$cloudLibrarySummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
 					}
@@ -2720,6 +2742,7 @@ class MyAccount_AJAX extends JSON_Action {
 				if ($user->getLinkedUsers() != null) {
 					/** @var User $user */
 					$selectedLinkedUser = $this->setFilterLinkedUser();
+					$selectedLinkedUserCheckouts = $this->setFilterLinkedUserCheckouts();
 					if ($selectedLinkedUser) {
 						$filterLinkedUser = new User();
 						$filterLinkedUser->id = $selectedLinkedUser;
@@ -2727,14 +2750,26 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$axis360Summary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$axis360Summary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
-							$axis360Summary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$axis360Summary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
 							$axis360Summary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
+						}
+					}
+					if ($selectedLinkedUserCheckouts) {
+						$filterLinkedUserCheckouts = new User();
+						$filterLinkedUserCheckouts->id = $selectedLinkedUserCheckouts;
+						if ($filterLinkedUserCheckouts->find(true)) {
+							$filterLinkedUserCheckoutsSummary = $driver->getAccountSummary($filterLinkedUserCheckouts);
+							$axis360Summary->numCheckedOut = $filterLinkedUserCheckoutsSummary->numCheckedOut;
+						}
+					} else {
+						foreach ($user->getLinkedUsers() as $linkedUser) {
+							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$axis360Summary->numCheckedOut += $linkedUserSummary->numCheckedOut;
+
 						}
 					}
 				}
@@ -2774,14 +2809,14 @@ class MyAccount_AJAX extends JSON_Action {
 
 				if ($user->getLinkedUsers() != null) {
 					/** @var User $user */
-					$selectedLinkedUser = $this->setFilterLinkedUser();
-					if ($selectedLinkedUser) {
-						$filterLinkedUser = new User();
-						$filterLinkedUser->id = $selectedLinkedUser;
-						if ($filterLinkedUser->find(true)) {
-							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
-							$hooplaSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
-							$hooplaSummary->numCheckoutsRemaining = $filterLinkedUserSummary->numCheckoutsRemaining;
+					$selectedLinkedUserCheckouts = $this->setFilterLinkedUserCheckouts();
+					if ($selectedLinkedUserCheckouts) {
+						$filterLinkedUserCheckouts = new User();
+						$filterLinkedUserCheckouts->id = $selectedLinkedUserCheckouts;
+						if ($filterLinkedUserCheckouts->find(true)) {
+							$filterLinkedUserCheckoutsSummary = $driver->getAccountSummary($filterLinkedUserCheckouts);
+							$hooplaSummary->numCheckedOut = $filterLinkedUserCheckoutsSummary->numCheckedOut;
+							$hooplaSummary->numCheckoutsRemaining = $filterLinkedUserCheckoutsSummary->numCheckoutsRemaining;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
@@ -2828,6 +2863,7 @@ class MyAccount_AJAX extends JSON_Action {
 					/** @var User $user */
 
 					$selectedLinkedUser = $this->setFilterLinkedUser();
+					$selectedLinkedUserCheckouts = $this->setFilterLinkedUserCheckouts();
 					if ($selectedLinkedUser) {
 						$filterLinkedUser = new User();
 						$filterLinkedUser->id = $selectedLinkedUser;
@@ -2835,13 +2871,25 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$overDriveSummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$overDriveSummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
-							$overDriveSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$overDriveSummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
 							$overDriveSummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
+						}
+					}
+					if ($selectedLinkedUserCheckouts) {
+						$filterLinkedUserCheckouts = new User();
+						$filterLinkedUserCheckouts->id = $selectedLinkedUserCheckouts;
+						if ($filterLinkedUserCheckouts->find(true)) {
+							$filterLinkedUserCheckoutsSummary = $driver->getAccountSummary($filterLinkedUserCheckouts);
+							$overDriveSummary->numCheckedOut = $filterLinkedUserCheckoutsSummary->numCheckedOut;
+
+						}
+					} else {
+						foreach ($user->getLinkedUsers() as $linkedUser) {
+							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$overDriveSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
 					}
@@ -2879,6 +2927,7 @@ class MyAccount_AJAX extends JSON_Action {
 				if ($user->getLinkedUsers() != null) {
 					/** @var User $user */
 					$selectedLinkedUser = $this->setFilterLinkedUser();
+					$selectedLinkedUserCheckouts = $this->setFilterLinkedUserCheckouts();
 					if ($selectedLinkedUser) {
 						$filterLinkedUser = new User();
 						$filterLinkedUser->id = $selectedLinkedUser;
@@ -2886,13 +2935,24 @@ class MyAccount_AJAX extends JSON_Action {
 							$filterLinkedUserSummary = $driver->getAccountSummary($filterLinkedUser);
 							$palaceProjectSummary->numAvailableHolds = $filterLinkedUserSummary->numAvailableHolds;
 							$palaceProjectSummary->numUnavailableHolds = $filterLinkedUserSummary->numUnavailableHolds;
-							$palaceProjectSummary->numCheckedOut = $filterLinkedUserSummary->numCheckedOut;
 						}
 					} else {
 						foreach ($user->getLinkedUsers() as $linkedUser) {
 							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$palaceProjectSummary->numAvailableHolds += $linkedUserSummary->numAvailableHolds;
 							$palaceProjectSummary->numUnavailableHolds += $linkedUserSummary->numUnavailableHolds;
+						}
+					}
+					if ($selectedLinkedUserCheckouts) {
+						$filterLinkedUserCheckouts = new User();
+						$filterLinkedUserCheckouts->id = $selectedLinkedUserCheckouts;
+						if ($filterLinkedUserCheckouts->find(true)) {
+							$filterLinkedUserCheckoutsSummary = $driver->getAccountSummary($filterLinkedUserCheckouts);
+							$palaceProjectSummary->numCheckedOut = $filterLinkedUserCheckoutsSummary->numCheckedOut;
+						}
+					} else {
+						foreach ($user->getLinkedUsers() as $linkedUser) {
+							$linkedUserSummary = $driver->getAccountSummary($linkedUser);
 							$palaceProjectSummary->numCheckedOut += $linkedUserSummary->numCheckedOut;
 						}
 					}
@@ -3026,9 +3086,6 @@ class MyAccount_AJAX extends JSON_Action {
 			session_start();
 		}
 		
-		global $logger;
-		$logger->log("celled exportcheckouts", Logger::LOG_ERROR);
-
 		$source = $_REQUEST['source'];
 		$user = UserAccount::getActiveUserObj();
 		$allCheckedOut = $user->getCheckouts(true, $source);
@@ -3037,7 +3094,7 @@ class MyAccount_AJAX extends JSON_Action {
 			$selectedSortOption = 'dueDate';
 		}
 
-		$selectedUser = $this->setFilterLinkedUser();
+		$selectedUser = $this->setFilterLinkedUserCheckouts();
 
 		$selectedCheckouts = isset($_REQUEST['selectedCheckouts']) ? json_decode($_REQUEST['selectedCheckouts'], true) : [];
 		if (!empty($selectedCheckouts)) {
@@ -3629,7 +3686,7 @@ class MyAccount_AJAX extends JSON_Action {
 				$interface->assign('showNotInterested', false);
 
 				// Get My Transactions
-				$selectedUser = $this->setFilterLinkedUser();
+				$selectedUser = $this->setFilterLinkedUserCheckouts();
 
 				$allCheckedOut = $this->filterCheckoutsByUser($user->getCheckouts(true, $source), $selectedUser);
 
@@ -3827,6 +3884,24 @@ class MyAccount_AJAX extends JSON_Action {
 	
 		} elseif (isset($_SESSION['selectedUser'])) {
 			$selectedUser = $_SESSION['selectedUser'];
+		}
+		return (string)$selectedUser;
+	}
+
+	public function setFilterLinkedUserCheckouts() : string {	
+
+		$selectedUser = '';
+		if (isset($_REQUEST['selectedUserCheckouts'])) {
+			$selectedUser = $_REQUEST['selectedUserCheckouts'];
+			if ($selectedUser == "") {
+				$_SESSION['selectedUserCheckouts'] = '';
+			} else {
+				$_SESSION['selectedUserCheckouts'] = $selectedUser;
+			}
+	
+		} elseif (isset($_SESSION['selectedUserCheckouts'])) {
+
+			$selectedUser = $_SESSION['selectedUserCheckouts'];
 		}
 		return (string)$selectedUser;
 	}

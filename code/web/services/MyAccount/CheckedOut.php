@@ -37,7 +37,7 @@ class MyAccount_CheckedOut extends MyAccount {
 
 		$linkedUsers = $user->getLinkedUsers();
 		$myAccountAjax = new MyAccount_AJAX();
-		$selectedUser = $myAccountAjax->setFilterLinkedUser();
+		$selectedUser = $myAccountAjax->setFilterLinkedUserCheckouts();
 
 		$interface->assign('allowFilteringOfLinkedAccountsInCheckouts', $allowFilteringOfLinkedAccountsInCheckouts);
 		$interface->assign('linkedUsers', $linkedUsers);

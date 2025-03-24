@@ -5758,7 +5758,7 @@ AspenDiscovery.Account = (function () {
 			AspenDiscovery.Account.currentCheckoutsSource = source;
 			var url = Globals.path + "/MyAccount/AJAX?method=getCheckouts&source=" + source;
 			if (selectedUser || selectedUser == "") {
-				url += "&selectedUser=" + selectedUser;
+				url += "&selectedUserCheckouts=" + selectedUser;
 			}
 
 			if (sort !== undefined) {
@@ -5772,7 +5772,7 @@ AspenDiscovery.Account = (function () {
 				source: source,
 				sort: sort,
 				showCovers: showCovers,
-				selectedUser: selectedUser
+				selectedUserCheckouts: selectedUser
 			};
 			var newUrl = AspenDiscovery.buildUrl(document.location.origin + document.location.pathname, 'source', source);
 			if (document.location.href) {
@@ -6907,13 +6907,14 @@ AspenDiscovery.Account = (function () {
 		filterOutLinkedUsers: function (filterType) {
 
 			var selectedUser = $('#linkedUsersDropdown').val();
-			sessionStorage.setItem('selectedUser', selectedUser);
 			var showCovers = $('#showCovers').prop('checked');
 			if (filterType == "holds") {
+				sessionStorage.setItem('selectedUser', selectedUser);
 				var availableHoldSort = $('#availableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				var unavailableHoldSort = $('#unavailableHoldSort_' + AspenDiscovery.Account.currentHoldSource).val();
 				AspenDiscovery.Account.loadHolds(AspenDiscovery.Account.currentHoldSource, availableHoldSort, unavailableHoldSort, showCovers, selectedUser, []);
 			} else if (filterType === "checkouts") {
+				sessionStorage.setItem('selectedUserCheckouts', selectedUser);
 				var sort = $('#accountSort_' + AspenDiscovery.Account.currentCheckoutsSource).val();
 				AspenDiscovery.Account.loadCheckouts(AspenDiscovery.Account.currentCheckoutsSource, sort, showCovers, selectedUser);
 			}
