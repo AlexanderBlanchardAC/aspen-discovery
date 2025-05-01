@@ -11,6 +11,8 @@ class MyAccount_Home extends MyAccount {
 		if (UserAccount::isLoggedIn()) {
 			$user = UserAccount::getLoggedInUser();
 			$homeLibraryCommunityEngagementHighlight = $user->getHomeLibrary()->highlightCommunityEngagement;
+			// $homeLibrary = $user->getHomeLibrary();
+			// $homeLibraryCommunityEngagementHighlight = $homeLibrary ? $homeLibrary->highlightCommunityEngagement : null;
 			// Check to see if the user has rated any titles
 			$interface->assign('hasRatings', $user->hasRatings());
 			$interface->assign('highlightCommunityEngagement', $homeLibraryCommunityEngagementHighlight);
