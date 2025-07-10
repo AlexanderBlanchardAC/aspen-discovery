@@ -736,7 +736,7 @@ AspenDiscovery.CommunityEngagement = function() {
 			});
 		},
 		refreshCurrentUserStats: function(userId) {
-			  Promise.all([
+			Promise.all([
 				new Promise(resolve => AspenDiscovery.CommunityEngagement.loadCheckoutsForUser(userId, resolve)),
 				new Promise(resolve => AspenDiscovery.CommunityEngagement.loadHoldsForUser(userId, resolve))
 			]).then(() => {
