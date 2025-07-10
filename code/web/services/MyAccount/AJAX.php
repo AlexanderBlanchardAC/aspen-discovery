@@ -11,6 +11,11 @@ class MyAccount_AJAX extends JSON_Action {
 			case 'renewItem':
 				$method = 'renewCheckout';
 				break;
+			case 'getUserCheckouts':
+				$method = 'getUserCheckouts';
+				break;
+			case 'getUserHolds':
+				$method = 'getUserHolds';
 		}
 		if (method_exists($this, $method)) {
 			parent::launch($method);
@@ -9641,7 +9646,6 @@ class MyAccount_AJAX extends JSON_Action {
 		$campaignId = $_GET['campaignId'] ?? null;
 		$userId = $_GET['userId'] ?? null;
 
-
 		if (!$campaignId || !$userId) {
 			return[
 				'success' => false,
@@ -10119,4 +10123,85 @@ class MyAccount_AJAX extends JSON_Action {
 			'selectHtml' => $html
 		];
 	}
+
+	public function getUserCheckouts(): array {
+
+		$userId = $_REQUEST['userId'] ?? null;
+		if (empty($userId)) {
+			return ['success' => false,
+					'title' => translate([
+						'text' => 'Error',
+						'isPublicFacing' => true,
+					]),
+					'message' => translate([
+						'text' => 'No User Id',
+						'isPublicFacing' => true,
+					]),
+			];
+		}
+
+		$user = new User();
+		$user->id = $userId;
+		if (!$user->find(true)){
+			return ['success' => false,
+					'title' => translate([
+						'text' => 'Error',
+						'isPublicFacing' => true,
+					]),
+					'message' => translate([
+						'text' => 'User not found',
+						'isPublicFacing' => true,
+					]),
+			];
+		}
+
+		$user->checkoutInfoLastLoaded = 0;
+		$user->update();
+
+		$user->getCheckouts(true, 'all');
+
+		return [
+			'success' => true,
+		];
+	}
+
+	public function getUserHolds(): array {
+		$userId = $_REQUEST['userId'] ?? null;
+		if (empty($userId)) {
+			return ['success' => false,
+					'title' => translate([
+						'text' => 'Error',
+						'isPublicFacing' => true,
+					]),
+					'message' => translate([
+						'text' => 'No User Id',
+						'isPublicFacing' => true,
+					]),
+			];
+		}
+
+		$user = new User();
+		$user->id = $userId;
+		if (!$user->find(true)){
+			return ['success' => false,
+					'title' => translate([
+						'text' => 'Error',
+						'isPublicFacing' => true,
+					]),
+					'message' => translate([
+						'text' => 'User not found',
+						'isPublicFacing' => true,
+					]),
+			];
+		}
+
+		$user->holdInfoLastLoaded = 0;
+		$user->update();
+		$user->getHolds(true, 'sortTitle', 'expire', 'all');
+
+		return [
+			'success' => true,
+		];
+	}
+
 }
