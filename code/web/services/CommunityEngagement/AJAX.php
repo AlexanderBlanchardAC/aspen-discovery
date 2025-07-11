@@ -1165,7 +1165,17 @@ class CommunityEngagement_AJAX extends JSON_Action {
 		// Check if user already exists
 		$user->ils_barcode = $barcode;
 		if ($user->find(true)) {
-			return ['success' => false, 'title' => 'Error', 'message' => 'User already exists'];
+			return [
+				'success' => false,
+				'title' => translate([
+					'text' => 'Error',
+					'isPublicFacing' => true
+				]), 
+				'message' => translate([
+					'text' => 'User already exists',
+					'isPublicFacing' => true
+				])
+			];
 		}
 		
 		// Try to load from ILS
@@ -1173,16 +1183,46 @@ class CommunityEngagement_AJAX extends JSON_Action {
 		if (method_exists($catalog, 'findNewUser')) {
 			$newUser = $catalog->findNewUser($barcode, '');
 		} else {
-			return ['success' => false, 'title' => 'Error', 'message' => 'Your ILS does not currenlty support this function'];
+			return [
+				'success' => false, 
+				'title' => translate([
+					'text' => 'Error',
+					'isPublicFacing' => true
+				]), 
+				'message' => translate([
+					'text' => 'Your ILS does not currently support this function',
+					'isPublicFacing' => true
+				])
+			];
 		}
 		
 		if ($newUser && !($newUser instanceof AspenError)) {
 			$newUser->getDisplayName();
 			$newUser->update();
 			
-			return ['success' => true, 'title' => 'User Added', 'message' => 'User Added to Aspen'];
+			return [
+				'success' => true, 
+				'title' => translate([
+					'text' => 'User Added',
+					'isPublicFacing' => true
+				]), 
+				'message' => translate([
+					'text' => 'User Added to Aspen',
+					'isPublicFacing' => true
+				])
+			];
 		}
 		
-		return ['success' => false, 'title' => 'Error', 'message' => 'User not found in ILS or could not be loaded'];
+		return [
+			'success' => false,
+			'title' => translate([
+				'text' => 'Error',
+				'isPublicFacing' => true
+			]), 
+			'message' => translate([
+				'text' => 'User not found in ILS or could not be loaded',
+				'isPublicFacing' => true
+			])
+		];
 	}
 }
