@@ -1154,6 +1154,7 @@ class CommunityEngagement_AJAX extends JSON_Action {
 		}
 		
 		require_once ROOT_DIR . '/sys/Account/User.php';
+		require_once ROOT_DIR . '/CatalogFactory.php';
 		global $library;
 		global $logger;
 		$accountProfile = new AccountProfile();
@@ -1167,10 +1168,13 @@ class CommunityEngagement_AJAX extends JSON_Action {
 			return ['success' => false, 'title' => 'Error', 'message' => 'User already exists'];
 		}
 		
-		// Try to load from ILS (Koha)
-		require_once ROOT_DIR . '/Drivers/Koha.php';
-		$koha = new Koha($accountProfile);
-		$newUser = $koha->findNewUser($barcode, '');
+		// Try to load from ILS
+		$catalog = CatalogFactory::getCatalogConnectionInstance(null, null);
+		if (method_exists($catalog, 'findNewUser')) {
+			$newUser = $catalog->findNewUser($barcode, '');
+		} else {
+			return ['success' => false, 'title' => 'Error', 'message' => 'Your ILS does not currenlty support this function'];
+		}
 		
 		if ($newUser && !($newUser instanceof AspenError)) {
 			$newUser->getDisplayName();
