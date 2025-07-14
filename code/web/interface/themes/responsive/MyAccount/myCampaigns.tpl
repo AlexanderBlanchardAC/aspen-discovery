@@ -97,6 +97,12 @@
 									{assign var="showAddProgressColumn" value=true}
 								{/if}
 							{/foreach}
+							{assign var="showAddProgressExtraCreditColumn" value=false}
+							{foreach from=$campaign->extraCreditActivities item="extraCreditActivity"}
+								{if $extraCreditActivity.allowPatronProgressInput}
+									{assign var="showAddProgressExtraCreditColumn" value="true"}
+								{/if}
+							{/foreach}
 							<tr id="yourCampaigns_{$resultIndex}" class="campaign-dropdown" style="display:none;">
 								<td colspan="8">
 									{* <h4>{translate text="Milestones"}</h4> *}
@@ -172,6 +178,65 @@
 										{/foreach}
 										</tbody>
 									</table>
+									{if $campaign->extraCreditActivities|@count > 0}
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>{translate text="Extra Credit" isPublicFacing=true}</th>
+													<th>{translate text="Reward" isPublicFacing=true}</th>
+													<th>{translate text="Progress" isPublicFacing=true}</th>
+													<th>{translate text="Progress Percentage" isPublicFacing=true}</th>
+													{if $showAddProgressExtraCreditColumn}
+														<th>{translate text="Add Progress" isPublicFacing=true}</th>
+													{/if}
+												</tr>
+											</thead>
+											<tbody>
+												{foreach from=$campaign->extraCreditActivities item="extraCreditActivity"}
+													<tr>
+														<td>{$extraCreditActivity.name}</td>
+														<td>
+															{if $extraCreditActivity.displayName}
+																<div>{$extraCreditActivity.rewardName}</div>
+															{/if}
+															{if $extraCreditActivity.rewardType == 1 && $extraCreditActivity.rewardExists}
+																<div id="extraCrdeitRewardImageYourCampaigns">
+																	<img src="{$extraCreditActivity.rewardImage}" alt="{$extraCreditActivity.rewardName}" style="width:100px; height:100px;" />
+																</div>
+															{/if}
+															{if $extraCreditActivity.rewardType == 1 && $extraCreditActivity.rewardGiven || $extraCreditActivity.rewardType ==1 && $extraCreditActivity.isComplete && $extraCreditActivity.awardAutomatically}
+																<div id="extraCreditRewardShareLinkYourCampaigns">
+																	<a href="/Search/ShareCampaigns?rewardName={$extraCreditActivity.rewardName}&rewardImage={$extraCreditActivity.rewardImage}&rewardId={$extraCreditActivity.rewardId}">
+																		{translate text="Share on Social Media" isPublicFacing=true}
+																	</a>
+																</div>
+															{/if}
+														</td>
+														<td>
+															{if $extraCreditActivity.completedGoals <= $extraCreditActivity.totalGoals}
+																{$extraCreditActivity.completedGoals}/ {$extraCreditActivity.totalGoals}
+															{else}
+																{$extraCreditActivity.totalGoals} / {$extraCreditActivity.totalGoals}
+															{/if}
+														</td>
+														<td style="position: relative; text-align: center; vertical-align: middle;">
+															<div class="progress" style="width:100%; border:1px solid black; border-radius:4px; height:20px;">
+																<div class="progress-bar" role="progressbar" aria-valuenow="{$extraCreditActivity.progress}" aria-valuemin="0"
+																	aria-valuemax="100" style="width: {$extraCreditActivity.progress}%; line-height: 20px; text-align: center; color: #fff;">
+																	{$extraCreditActivity.progress}%
+																</div>
+															</div>
+														</td>
+														{if $extraCreditActivity.allowPatronProgressInput}
+														<td>
+														<button class="btn btn-primary btn-sm" onclick="AspenDiscovery.CommunityEngagement.addProgressToExtraCreditActivity({$extraCreditActivity.id}, {$userId}, {$campaign->id});" {if $extraCreditActivity.isComplete}disabled{/if}>{translate text="Add Progress" isPublicFacing=true}</button>
+														</td>
+														{/if}
+													</tr>
+												{/foreach}
+											</tbody>
+										</table>
+									{/if}
 								</td>
 						</tr>
 					{/if}
@@ -304,6 +369,61 @@
 											{/foreach}
 											</tbody>
 										</table>
+										{assign var="showLinkedUserAddProgressExtraCreditColumn" value=false}
+										{foreach from=$campaign.extraCreditActivities item="extraCreditActivity"}
+											{if $extraCreditActivity.allowPatronProgressInput && $campaign.isEnrolled}
+												{assign var="showLinkedUserAddProgressExtraCreditColumn" value=true}
+											{/if}
+										{/foreach}
+										{if $campaign.extraCreditActivities|@count > 0}
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th>{translate text="Extra Credit" isPublicFacing=true}</th>
+														<th>{translate text="Reward" isPublicFacing=true}</th>
+														<th>{translate text="Progress" isPublicFacing=true}</th>
+														<th>{translate text="Progress Percentage" isPublicFacing=true}</th>
+														{if $showLinkedUserAddProgressExtraCreditColumn}
+															<th>{translate text="Add Progress" isPublicFacing=true}</th>
+														{/if}
+													</tr>
+												</thead>
+												<tbody>
+												{foreach from=$campaign.extraCreditActivities item="extraCreditActivity"}
+													<tr>
+														<td>{$extraCreditActivity.name}</td>
+														<td>
+															{if $extraCreditActivity.displayName}
+																<div>{$extraCreditActivity.rewardName}</div>
+															{/if}
+															{if $extraCreditActivity.rewardType == 1 && $extraCreditActivity.rewardExists}
+																<div><img src="{$extraCreditActivity.rewardImage}" alt="{$extraCreditActivity.rewardName}" style="width:100px; height:100px;" /></div>
+															{/if}
+														</td>
+														<td>
+															{if $extraCreditActivity.completedGoals <= $extraCreditActivity.totalGoals}
+																{$extraCreditActivity.completedGoals} / {$extraCreditActivity.totalGoals}
+															{else}
+																{$extraCreditActivity.totalGoals} / {$extraCreditActivity.totalGoals}
+															{/if}
+														</td>
+														<td style="position: relative; text-align: center; vertical-align: middle;">
+															<div class="progress" style="width:100%; border:1px solid black; border-radius:4px; height:20px;">
+																<div class="progress-bar" role="progressbar" aria-valuenow="{$extraCreditActivity.progress}" aria-valuemin="0" aria-valuemax="100" style="width: {$extraCreditActivity.progress}%; line-height: 20px; text-align: center; color: #fff;">
+																	{$extraCreditActivity.progress}%
+																</div>
+															</div>
+														</td>
+														{if $extraCreditActivity.allowPatronProgressInput && $campaign.isEnrolled}
+															<td>
+														<button class="btn btn-primary btn-sm" onclick="AspenDiscovery.CommunityEngagement.addProgressToExtraCreditActivity({$extraCreditActivity.id}, {$linkedUser.linkedUserId}, {$campaign.campaignId});"{if $extraCreditActivity.isComplete}disabled{/if}>{translate text="Add Progress" isPublicFacing=true}</button>
+															</td>
+														{/if}
+													</tr>
+												{/foreach}
+												</tbody>
+											</table>
+										{/if}
 									</td>
 								</tr>
 							{/foreach}
@@ -417,6 +537,31 @@
 										{/foreach}
 										</tbody>
 									</table>
+									{if $campaign->extraCreditActivities|@count > 0}
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>{translate text="Extra Credit Activity" isPublicFacing=true}</th>
+													<th>{translate text="Reward" isPublicFacing=true}</th>
+												</tr>
+											</thead>
+											<tbody>
+											{foreach from=$campaign->extraCreditActivities item="extraCredit"}
+												<tr>
+													<td>{$extraCredit.name}</td>
+													<td>
+														{if $extraCredit.displayName}
+															<div>{$extraCredit.rewardName}</div>
+														{/if}
+														{if $extraCredit.rewardType == 1 && $extraCredit.rewardExists}
+															<div><img src="{$extraCredit.rewardImage}" alt="{$extraCredit.rewardName}" style="width:100px; height:100px;" /></div>
+														{/if}
+													</td>
+												</tr>
+											{/foreach}
+											</tbody>
+										</table>
+									{/if}
 								</td>
 						</tr>
 					{/if}
@@ -515,6 +660,31 @@
 										{/foreach}
 										</tbody>
 									</table>
+									{if $campaign->extraCreditActivities|@count > 0}
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>{translate text="Extra Credit" isPublicFacing=true}</th>
+													<th>{translate text="Reward" isPublicFacing=true}</th>
+												</tr>
+											</thead>
+											<tbody>
+											{foreach from=$campaign->extraCreditActivities item="extraCreditActivity"}
+												<tr>
+													<td>{$extraCreditActivity.name}</td>
+													<td>
+														{if $extraCreditActivity.displayName}
+															<div>{$extraCreditActivity.rewardName}</div>
+														{/if}
+														{if $extraCreditActivity.rewardType == 1 && $extraCreditActivity.rewardExists}
+															<div><img src="{$extraCreditActivity.rewardImage}" alt="{$extraCreditActivity.rewardName}" style="width:100px; height:100px;" /></div>
+														{/if}
+													</td>
+												</tr>
+											{/foreach}
+											</tbody>
+										</table>
+									{/if}
 								</td>
 						</tr>
 					{/if}
@@ -588,6 +758,33 @@
 									{/foreach}
 								</tbody>
 							</table>
+							{if $campaign->extraCreditActivities|@count > 0}
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>{translate text="Extra Credit" isPublicFacing=true}</th>
+											<th>{translate text="Reward" isPublicFacing=true}</th>
+										</tr>
+									</thead>
+									<tbody>
+										{foreach from=$campaign->extraCreditActivities item="extraCredit"}
+											<tr>
+												<td>
+													{$extraCredit.name}
+												</td>
+												<td>
+													{if $extraCredit.displayName}
+														<div>{$extraCredit.rewardName}</div>
+													{/if}
+													{if $extraCredit.rewardType == 1 && $extraCredit.rewardExists}
+														<div><img src="{$extraCredit.rewardImage}" alt="{$extraCredit.rewardName}" style="width:100px; height:100px;" /></div>
+													{/if}
+												</td>
+											</tr>
+										{/foreach}
+									</tbody>
+								</table>
+							{/if}
 						</td>
 					</tr>
 				{/foreach}
@@ -710,6 +907,61 @@
 									{/foreach}
 									</tbody>
 								</table>
+								{if $campaign->extraCreditActivities|@count > 0}
+									<table class="table table-bordered">
+										<thead>
+											<th>{translate text="Extra Credit" isPublicFacing=true}</th>
+											<th>{translate text="Progress" isPublicFacing=true}</th>
+											<th>{translate text="Reward" isPublicFacing=true}</th>
+											<th>{translate text="Reward Status" isPublicFacing=true}</th>
+										</thead>
+										<tbody>
+											{foreach from=$campaign->extraCreditActivities item="extraCreditActivity"}
+												<tr>
+													<td>{$extraCreditActivity.name}</td>
+													<td style="position: relative; text-align: center; vertical-align: middle;">
+														<div class="progress" style="width:100%; border:1px solid black; border-radius:4px;height:20px;">
+															<div class="progress-bar" role="progressbar" aria-valuenow="{$extraCreditActivity.progress}" aria-valuemin="0"
+															aria-valuemax="100" style="width: {$extraCreditActivity.progress}%; line-height: 20px; text-align: center; color: #fff;">
+																{$extraCreditActivity.progress}%
+															</div>
+														</div>
+													</td>
+													<td>
+														{if $extraCreditActivity.displayName}
+															<div>{$extraCreditActivity.rewardName}</div>
+														{/if}
+														{if $extraCreditActivity.rewardType == 1 && $extraCreditActivity.rewardExists}
+															<div><img src="{$extraCreditActivity.rewardImage}" alt="{$extraCreditActivity.rewardName}" style="width:100px; height:100px;" /></div>
+														{/if}
+													</td>
+													<td>
+														{if $extraCreditActivity.rewardType == 0 || $extraCreditActivity.rewardType == 1 && $extraCreditActivity.awardAutomatically == 0}
+														{if $extraCreditActivity.rewardGiven}
+															<a href="/Search/ShareCampaigns?rewardName={$extraCreditActivity.rewardName}&rewardImage={$extraCreditActivity.rewardImage}&rewardId={$extraCreditActivity.rewardId}">
+																{translate text="Share on Social Media" isPublicFacing=true}
+															</a>
+														{else}
+															{translate text="Not Yet Given" isPublicFacing=true}
+														{/if}
+													{/if}
+													{if $extraCreditActivity.rewardType == 1 && $extraCreditActivity.awardAutomatically}
+														{assign var="canShare" value=($extraCreditActivity.rewardGiven || $extraCreditActivity.isComplete)}
+
+														{if $canShare}
+															<a href="/Search/ShareCampaigns?rewardName={$extraCreditActivity.rewardName}&rewardImage={$extraCreditActivity.rewardImage}&rewardId={$extraCreditActivity.rewardId}">
+																{translate text="Share on Social Media" isPublicFacing=true}
+															</a>
+														{else}
+															{translate text="Not Yet Given" isPublicFacing=true}
+														{/if}
+													{/if}
+													</td>
+												</tr>
+											{/foreach}
+										</tbody>
+									</table>
+								{/if}
 							 </td>
 						</tr>
 				{/if}

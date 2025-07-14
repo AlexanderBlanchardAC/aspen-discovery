@@ -58,5 +58,5 @@ class ExtraCredit extends DataObject {
 			}
 		}
 		return $extraCreditList;
-	  }
+	}
 }

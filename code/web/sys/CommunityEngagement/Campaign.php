@@ -341,11 +341,11 @@ class Campaign extends DataObject {
 				$campaignExtraCredit = new CampaignExtraCredit();
 				$campaignExtraCredit->campaignId = $this->id;
 				$campaignExtraCredit->orderBy('weight');
-			   if ($campaignExtraCredit->find()) {
+				if ($campaignExtraCredit->find()) {
 					while ($campaignExtraCredit->fetch()) {
 						$this->_availableExtraCreditActivities[$campaignExtraCredit->id] = clone($campaignExtraCredit);
 					}
-			   }
+				}
 			}
 		}
 		return $this->_availableExtraCreditActivities;
@@ -624,6 +624,10 @@ class Campaign extends DataObject {
 				// Fetch campaign milestones and their rewards using mapping
 				$milestones = CampaignMilestone::getMilestoneByCampaign($campaign->id);
 				$pastCampaignList[$campaign->id]->milestones = $milestones;
+				$extraCreditActivities = $this->getFormattedExtraCreditActivities($campaign->id, $userId);
+				$pastCampaignList[$campaign->id]->extraCreditActivities = $extraCreditActivities;
+				$pastCampaignList[$campaign->id]->numExtraCreditActivities = count($extraCreditActivities);
+
 
 				usort($pastCampaignList[$campaign->id]->milestones, function($a, $b) {
 					return $a->weight <=> $b->weight;
@@ -1104,7 +1108,9 @@ class Campaign extends DataObject {
 				//Add completed milestones count to campaign object
 				// $campaign->numCompletedMilestones = $completedMilestonesCount;
 				$campaign->numCampaignMilestones = $numCampaignMilestones;
-				
+				$extraCreditActivities = $this->getFormattedExtraCreditActivities($campaign->id, $userId);
+
+				$campaign->numExtraCreditActivities = count($extraCreditActivities);
 
 				$currentDate = date('Y-m-d');
 				$canEnroll = (
@@ -1135,6 +1141,7 @@ class Campaign extends DataObject {
 
 				//Add milestones to campaign object
 				$campaign->milestones = $milestones;
+				$campaign->extraCreditActivities = $extraCreditActivities;
 
 				//Add the campaign to the list
 			$campaignList[] = clone $campaign;
@@ -1235,6 +1242,7 @@ class Campaign extends DataObject {
 						return $a['weight'] <=> $b['weight'];
 					});
 
+					$extraCreditActivities = $this->getFormattedExtraCreditActivities($campaign->id, $linkedUser->id);
 
 					$eligibleCampaigns[] = [
 						'campaignId' => $campaign->id,
@@ -1246,7 +1254,9 @@ class Campaign extends DataObject {
 						'numCampaignMilestones' => $numCampaignMilestones,
 						'startDate' => $startDate,
 						'endDate' => $endDate,
-						'canEnroll' => $canEnroll
+						'canEnroll' => $canEnroll,
+						'extraCreditActivities' => $extraCreditActivities,
+						'numExtraCreditActivities' => count($extraCreditActivities)
 					];
 				}
 			}
@@ -1313,6 +1323,46 @@ class Campaign extends DataObject {
 			)
 		)";
 		$this->whereAdd($ageCondition);
+	}
+
+	private function formatExtraCreditActivity($extraCreditActivity, int $userId, int $campaignId): array {
+		$progressData = CampaignExtraCredit::getExtraCreditActivityProgress($campaignId, $userId, $extraCreditActivity->id);
+		$totalGoals = CampaignExtraCredit::getExtraCreditGoalCountByCampaign($campaignId, $extraCreditActivity->id);
+		$completedGoals = $progressData['completed'] ?? 0;
+		$progress = $progressData['progress'] ?? 0;
+
+		return [
+			'id' => $extraCreditActivity->id,
+			'name' => $extraCreditActivity->name,
+			'displayName' => $extraCreditActivity->displayName,
+			'rewardName' => $extraCreditActivity->rewardName,
+			'rewardId' => $extraCreditActivity->rewardId,
+			'rewardType' => $extraCreditActivity->rewardType,
+			'rewardImage' => $extraCreditActivity->rewardImage,
+			'rewardExists' => $extraCreditActivity->rewardExists,
+			'awardAutomatically' => $extraCreditActivity->awardAutomatically,
+			'progress' => $progress,
+			'completedGoals' => $completedGoals,
+			'totalGoals' => $totalGoals,
+			'isComplete' => $progress >= 100,
+			'allowPatronProgressInput' => $extraCreditActivity->allowPatronProgressInput,
+			'rewardGiven' => CampaignExtraCreditActivityUsersProgress::getRewardGivenForExtraCreditActivity(
+				$extraCreditActivity->id,
+				$userId,
+				$campaignId
+			),
+		];
+	}
+
+	private function getFormattedExtraCreditActivities(int $campaignId, int $userId): array {
+		$rawExtraCreditActivities = CampaignExtraCredit::getExtraCreditByCampaign($campaignId);
+		$formatted = [];
+
+		foreach ($rawExtraCreditActivities as $extraCreditActivity) {
+			$formatted[] = $this->formatExtraCreditActivity($extraCreditActivity, $userId, $campaignId);
+		}
+
+		return $formatted;
 	}
 	
 }
