@@ -6,7 +6,10 @@ require_once ROOT_DIR . '/sys/CommunityEngagement/Reward.php';
 require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignPatronTypeAccess.php';
 require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignLibraryAccess.php';
 require_once ROOT_DIR . '/sys/Account/User.php';
+
 require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignExtraCredit.php';
+require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignLocationAccess.php';
+
 
 
 class Campaign extends DataObject {
@@ -35,6 +38,7 @@ class Campaign extends DataObject {
 
 	protected $_allowPatronTypeAccess;
 	protected $_allowLibraryAccess;
+	protected $_allowLocationAccess;
 
 	public static function getObjectStructure($context = ''): array {
 		$milestoneList = Milestone::getMilestoneList();
@@ -49,6 +53,7 @@ class Campaign extends DataObject {
 		$libraryList = Library::getLibraryList(false);
 		$patronTypeList = PType::getPatronTypeList();
 		$rewardList = Reward::getRewardList();
+		$locationList = Location::getLocationList(false);
 		return [
 			'id' => [
 				'property' => 'id',
@@ -166,6 +171,15 @@ class Campaign extends DataObject {
 				'values' => $libraryList,
 				'hideInLists' => false,
 			],
+			'allowLocationAccess' => [
+				'property' => 'allowLocationAccess',
+				'type' => 'multiSelect',
+				'listStyle' => 'checkboxSimple',
+				'label' => 'Location Access',
+				'description' => 'Define what locations should have access to this campaign',
+				'values' => $locationList,
+				'hideInLists' => false,
+			],
 			'userAgeRange' => [
 				'property' => 'userAgeRange',
 				'type' => 'text',
@@ -205,6 +219,19 @@ class Campaign extends DataObject {
 		return $this->_allowLibraryAccess;
 	}
 
+		public function getLocationAccess(): ?array {
+		if (!isset($this->_allowLocationAccess) && $this->id) {
+			$this->_allowLocationAccess = [];
+			$locationLink = new CampaignLocationAccess();
+			$locationLink->campaignId = $this->id;
+			$locationLink->find();
+			while ($locationLink->fetch()) {
+				$this->_allowLocationAccess[$locationLink->locationId] = $locationLink->locationId;
+			}
+		}
+		return $this->_allowLocationAccess;
+	}
+
 	public function savePatronTypeAccess() {
 		if (isset($this->_allowPatronTypeAccess) && is_array($this->_allowPatronTypeAccess)) {
 			$this->clearPatronTypeAccess();
@@ -233,6 +260,20 @@ class Campaign extends DataObject {
 		}
 	}
 
+	public function saveLocationAccess() {
+		if (isset($this->_allowLocationAccess) && is_array($this->_allowLocationAccess)) {
+			$this->clearLocationAccess();
+
+			foreach ($this->_allowLocationAccess as $locationId) {
+				$locationLink = new CampaignLocationAccess();
+				$locationLink->campaignId = $this->id;
+				$locationLink->locationId = $locationId;
+				$locationLink->insert();
+			}
+			unset($this->_allowLocationAccess);
+		}
+	}
+
 	private function clearPatronTypeAccess() {
 		//Delete links to the patron types
 		$link = new CampaignPatronTypeAccess();
@@ -245,6 +286,13 @@ class Campaign extends DataObject {
 		$libraryLink = new CampaignLibraryAccess();
 		$libraryLink->campaignId = $this->id;
 		return $libraryLink->delete(true);
+	}
+
+	private function clearLocationAccess() {
+		//Delete links to the libraries
+		$locationLink = new CampaignLocationAccess();
+		$locationLink->campaignId = $this->id;
+		return $locationLink->delete(true);
 	}
 
 	public function getUsers() {
@@ -297,6 +345,8 @@ class Campaign extends DataObject {
 			return $this->getMilestones();
 		} else if ($name == 'availableExtraCreditActivities') {
 			return $this->getExtraCreditActivities();
+		} else if ($name == 'allowLocationAccess') {
+			return $this->getLocationAccess();
 		} else {
 			return parent::__get($name);
 		}
@@ -311,6 +361,8 @@ class Campaign extends DataObject {
 			$this->_availableMilestones = $value;
 		} else if ($name == 'availableExtraCreditActivities') {
 			$this->_availableExtraCreditActivities = $value;
+		} else if ($name == 'allowLocationAccess') {
+			$this->_allowLocationAccess = $value;
 		} else {
 			parent::__set($name, $value);
 		}
@@ -384,6 +436,7 @@ class Campaign extends DataObject {
 			$this->saveMilestones();
 			$this->saveTextBlockTranslations('description');
 			$this->saveExtraCreditActivities();
+			$this->saveLocationAccess();
 		}
 		return $ret;
 	}
@@ -401,6 +454,7 @@ class Campaign extends DataObject {
 			$this->saveMilestones();
 			$this->saveTextBlockTranslations('description');
 			$this->saveExtraCreditActivities();
+			$this->saveLocationAccess();
 		}
 		return $ret;
 	}
@@ -410,6 +464,7 @@ class Campaign extends DataObject {
 		if ($ret && !empty($this->id)) {
 			$this->clearPatronTypeAccess();
 			$this->clearLibraryAccess();
+			$this->clearLocationAccess();
 		}
 		return $ret;
 	}
@@ -462,6 +517,7 @@ class Campaign extends DataObject {
 	public function find($fetchFirst = false, $requireOneMatchToReturn = true): bool {
 		if (!UserAccount::isLoggedIn() || UserAccount::getActiveUserObj()->isAspenAdminUser() || UserAccount::getActiveUserObj()->isUserAdmin())
 			 return parent::find($fetchFirst, $requireOneMatchToReturn);
+
 		$this->applyUserFiltering(UserAccount::getActiveUserObj());
 		return parent::find($fetchFirst, $requireOneMatchToReturn);
 	}
@@ -1321,6 +1377,12 @@ class Campaign extends DataObject {
 		
 		$this->joinAdd(new CampaignLibraryAccess(), 'LEFT', 'ce_campaign_library_access', 'id', 'campaignId');
 		$this->whereAdd("ce_campaign_library_access.libraryId = '" . $user->getHomeLibrary()->libraryId . "' OR NOT EXISTS (SELECT 1 FROM ce_campaign_library_access WHERE ce_campaign_library_access.campaignId = ce_campaign.id)");
+
+		$homeLocation = UserAccount::getActiveUserObj()->getHomeLocation();
+		if ($homeLocation != null) {
+			$this->joinAdd(new CampaignLocationAccess(), 'LEFT', 'ce_campaign_location_access', 'id', 'campaignId');
+			$this->whereAdd("ce_campaign_location_access.locationId = '{$homeLocation->locationId}' OR NOT EXISTS (SELECT 1 FROM ce_campaign_location_access WHERE ce_campaign_location_access.campaignId = ce_campaign.id)");
+		}
 		
 		$userAge = (int)$user->getAge();
 		$ageCondition = "(
