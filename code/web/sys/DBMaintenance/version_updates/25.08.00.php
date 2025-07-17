@@ -111,6 +111,13 @@ function getUpdates25_08_00(): array {
 				"ALTER TABLE library ADD COLUMN displayDigitalRewardOnlyWhenAwarded TINYINT(1) DEFAULT 0",
 			]
 		], //add_admin_control_over_digital_reward_display
+		'add_ability_to_upload_placeholder_image' => [
+			'title' => 'Add Ability to Upload Placeholder Image',
+			'description' => 'Add the ability to upload a placeholder image',
+			'sql' => [
+				"ALTER TABLE library ADD COLUMN digitalRewardPlaceholderImage VARCHAR(100) DEFAULT ''",
+			]
+		], //add_ability_to_upload_placeholder_image
 
 		//chloe - Open Fifth
 
