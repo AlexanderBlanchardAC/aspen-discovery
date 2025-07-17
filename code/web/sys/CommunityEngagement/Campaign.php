@@ -1142,6 +1142,8 @@ class Campaign extends DataObject {
 				//Add milestones to campaign object
 				$campaign->milestones = $milestones;
 				$campaign->extraCreditActivities = $extraCreditActivities;
+				$campaign->translatedDescription = $campaign->getTextBlockTranslation('description', $activeLanguage->code);
+
 
 				//Add the campaign to the list
 			$campaignList[] = clone $campaign;
@@ -1363,6 +1365,29 @@ class Campaign extends DataObject {
 		}
 
 		return $formatted;
+	}
+
+	public static function filterByCanEnroll(array $campaigns, int $userId): array {
+		$filteredCampaigns = [];
+		$currentDate = date('Y-m-d');
+
+		foreach ($campaigns as $campaign) {
+			if ($campaign->endDate && $campaign->endDate < $currentDate) {
+				continue;
+			}
+
+			if ($campaign->isUserEnrolled($userId)) {
+				continue;
+			}
+
+			$canEnroll = 
+				(!$campaign->enrollmentStartDate && !$campaign->enrollmentEndDate) || (!$campaign->enrollmentStartDate && $campaign->enrollmentEndDate >= $currentDate) || ($campaign->enrollmentStartDate <= $currentDate && !$campaign->enrollmentEndDate) || ($campaign->enrollmentStartDate <= $currentDate && $campaign->enrollmentEndDate >= $currentDate);
+
+				if ($canEnroll) {
+					$filteredCampaigns[] = $campaign;
+				}
+		}
+		return $filteredCampaigns;
 	}
 	
 }
