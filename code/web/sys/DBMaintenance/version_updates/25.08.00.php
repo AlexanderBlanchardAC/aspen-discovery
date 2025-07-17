@@ -97,6 +97,13 @@ function getUpdates25_08_00(): array {
 				)ENGINE = InnoDB",
 			],
 		],
+		'add_ability_to_highlight_campaigns_open_for_enrollment' => [
+			'title' => 'Add Ability to Highlight Campaigns Open For Enrollment',
+			'description' => 'Allow libraries to choose whether to display campaigns open for enrollment in the campaign highlights banner',
+			'sql' => [
+				"ALTER TABLE library ADD COLUMN highlightCommunityEngagementOpenToEnroll TINYINT(1) DEFAULT 0",
+			],
+		], //add_ability_to_highlight_campaigns_open_for_enrollment
 
 		//chloe - Open Fifth
 

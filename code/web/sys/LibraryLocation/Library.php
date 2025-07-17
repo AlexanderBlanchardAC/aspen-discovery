@@ -68,6 +68,7 @@ class Library extends DataObject {
 	public $footerText;
 	public $systemMessage;
 	public $highlightCommunityEngagement;
+	public $highlightCommunityEngagementOpenToEnroll;
 
 	//Explore More Bar Display
 	public $displayExploreMoreBarInSummon;
@@ -1085,6 +1086,16 @@ class Library extends DataObject {
 						'type' => 'checkbox',
 						'label' => 'Highlight Campaign in Account Page',
 						'description' => 'Whether or not to add a box highlighting campaigns to the top of the account page.',
+						'hideInLists' => true,
+						'default' => false,
+						'permissions' => ['Library Theme Configuration'],
+						'onchange' => 'return AspenDiscovery.Admin.highlightCampaignsOpenToEnroll();',
+					],
+					'highlightCommunityEngagementOpenToEnroll' => [
+						'property' => 'highlightCommunityEngagementOpenToEnroll',
+						'type' => 'checkbox',
+						'label' => 'Highlight Campaigns That Are Open For Enrollment in Campaign Highlight Box',
+						'description' => 'Whether or not to display all eligible campaigns that are open for enrollment in the campaign highlight banner.',
 						'hideInLists' => true,
 						'default' => false,
 						'permissions' => ['Library Theme Configuration'],
