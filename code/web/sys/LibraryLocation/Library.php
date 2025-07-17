@@ -465,6 +465,7 @@ class Library extends DataObject {
 	public $displayOnlyUsersForLocationInUserAdmin;
 	public $allowAdminToEnrollUsersInAdminView;
 	public $displayDigitalRewardOnlyWhenAwarded;
+	public $digitalRewardPlaceholderImage;
 
 	//SHAREit
 	public $repeatInShareIt;
@@ -3826,6 +3827,17 @@ class Library extends DataObject {
 						'description' => 'Whether to always display the reward or display only on competion of milestone or campaign',
 						'hideInLists' => true,
 						'default' => 0,
+						'onchange' => 'return AspenDiscovery.Admin.displayDigitalRewardPlaceholderUpload();',
+					],
+					'digitalRewardPlaceholderImage' => [
+						'property' => 'digitalRewardPlaceholderImage',
+						'type' => 'image',
+						'label' => 'Digital Reward Placeholder Image',
+						'descripton' => 'The image to show until the reward has been granted',
+						'hideInLists' => true,
+						'required' => false,
+						'maxWidth' => 300,
+						'maxHeight' => 300,
 					],
 					'allowAdminToEnrollUsersInAdminView' => [
 						'property' => 'allowAdminToEnrollUsersInAdminView',
