@@ -464,6 +464,7 @@ class Library extends DataObject {
 	public $communityEngagementAdminUserSelect;
 	public $displayOnlyUsersForLocationInUserAdmin;
 	public $allowAdminToEnrollUsersInAdminView;
+	public $displayDigitalRewardOnlyWhenAwarded;
 
 	//SHAREit
 	public $repeatInShareIt;
@@ -3817,6 +3818,14 @@ class Library extends DataObject {
 							'displayUser' => 'Display User',
 						],
 						'default' => 'displayBranch',
+					],
+					'displayDigitalRewardOnlyWhenAwarded' => [
+						'property' => 'displayDigitalRewardOnlyWhenAwarded',
+						'type' => 'checkbox',
+						'label' => 'Display Digital Reward Only When Awarded',
+						'description' => 'Whether to always display the reward or display only on competion of milestone or campaign',
+						'hideInLists' => true,
+						'default' => 0,
 					],
 					'allowAdminToEnrollUsersInAdminView' => [
 						'property' => 'allowAdminToEnrollUsersInAdminView',
