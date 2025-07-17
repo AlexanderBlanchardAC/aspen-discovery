@@ -456,7 +456,7 @@
 				{capture name="activeEnrollLabel"}{translate text="Enroll in {$campaign->name}" isPublicFacing=true inAttribute=true}{/capture}
 
 					{if $campaign->isActive && !$campaign->enrolled}
-						<tr>
+						<tr id="campaign_{$campaign->id}">
 							<td>
 								{$campaign->name}
 								{if $userCanAdvertise}
@@ -591,7 +591,7 @@
 				</tbody>
 				{foreach from=$campaignList item="campaign" key="resultIndex"}
 					{if $campaign->isUpcoming && !$campaign->enrolled}
-						<tr>
+						<tr id="campaign_{$campaign->id}">
 							<td>
 								{$campaign->name}
 								{if $userCanAdvertise}
@@ -1040,6 +1040,30 @@
 				toggleButton.setAttribute("aria-expanded", "false");
 			}
 		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const campaignId = urlParams.get('campaignId');
+
+			if (campaignId) {
+				const targetRow = document.getElementById('campaign_' + campaignId);
+				const referenceButton = document.querySelector('.btn-primary');
+				
+				if (targetRow) {
+					setTimeout(() => {
+						targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						const btnBgColor = getComputedStyle(referenceButton).backgroundColor;
+
+						targetRow.style.color = btnBgColor;
+
+						setTimeout(() => {
+							targetRow.style.color = '';
+						}, 2000);
+					}, 300)
+				}
+			}
+		})
 	</script>
 	<style>
 		.action-buttons {

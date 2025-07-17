@@ -37,7 +37,7 @@
 				</h3>
 				{foreach $campaignsToEnroll item="campaign"}
 					<div>
-						<div>{$campaign->name}</div>
+						<div><a href="/MyAccount/MyCampaigns?campaignId={$campaign->id}">{$campaign->name}</a></div>
 						<div>{$campaign->translatedDescription}</div>
 					</div>
 				{/foreach}
