@@ -104,6 +104,13 @@ function getUpdates25_08_00(): array {
 				"ALTER TABLE library ADD COLUMN highlightCommunityEngagementOpenToEnroll TINYINT(1) DEFAULT 0",
 			],
 		], //add_ability_to_highlight_campaigns_open_for_enrollment
+		'add_admin_control_over_digital_reward_display' => [
+			'title' => 'Add Admin Control Over Digital Reward Display',
+			'description' => 'Add the option for libraries to choose whether the digital reward displays all the time or only once awarded',
+			'sql' => [
+				"ALTER TABLE library ADD COLUMN displayDigitalRewardOnlyWhenAwarded TINYINT(1) DEFAULT 0",
+			]
+		], //add_admin_control_over_digital_reward_display
 
 		//chloe - Open Fifth
 
