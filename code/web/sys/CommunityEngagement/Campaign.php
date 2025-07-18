@@ -1180,6 +1180,7 @@ class Campaign extends DataObject {
 					$userCampaign->campaignId = $campaign->id;
 	
 					$isEnrolled = $userCampaign->find(true);
+					$rewardGiven = (int)$userCampaign->rewardGiven;
 					$campaignReward = null;
 					$rewardDetails = $campaign->getRewardDetails();
 					if ($rewardDetails != null) {
@@ -1190,6 +1191,8 @@ class Campaign extends DataObject {
 							'rewardExists' => $rewardDetails['rewardExists'],
 							'displayName' => $rewardDetails['displayName'],
 							'rewardDescription' => $rewardDetails['rewardDescription'],
+							'awardAutomatically' =>$rewardDetails['awardAutomatically'],
+
 						];
 					}
 
@@ -1211,7 +1214,7 @@ class Campaign extends DataObject {
 						$completedGoals = $milestoneProgress['completed'];
 						$totalGoals = CampaignMilestone::getMilestoneGoalCountByCampaign($campaign->id, $milestone->id);
 						$progressData = CampaignMilestoneProgressEntry::getUserProgressDataByMilestoneId($linkedUser->id, $milestone->id, $campaign->id);
-
+						$milestoneRewardGiven = CampaignMilestoneUsersProgress::getRewardGivenForMilestone($milestone->id, $linkedUser->id, $campaign->id);
 
 						if ($milestoneProgress['progress'] >= 100) {
 							$numCompletedMilestones++;
@@ -1238,6 +1241,7 @@ class Campaign extends DataObject {
 							'progressBeyondOneHundredPercent' => $milestone->progressBeyondOneHundredPercent,
 							'allowPatronProgressInput' => $milestone->allowPatronProgressInput,
 							'milestoneComplete' => ($completedGoals >= $totalGoals),
+							'rewardGiven' => $milestoneRewardGiven,
 						];
 					}
 					usort($milestoneRewards, function($a, $b) {
@@ -1258,7 +1262,9 @@ class Campaign extends DataObject {
 						'endDate' => $endDate,
 						'canEnroll' => $canEnroll,
 						'extraCreditActivities' => $extraCreditActivities,
-						'numExtraCreditActivities' => count($extraCreditActivities)
+						'numExtraCreditActivities' => count($extraCreditActivities),
+						'isComplete' => $numCompletedMilestones >= $numCampaignMilestones,
+						'rewardGiven' => $rewardGiven
 					];
 				}
 			}
