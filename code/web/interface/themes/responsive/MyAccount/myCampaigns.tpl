@@ -815,9 +815,6 @@
 										{if $campaign->displayName}
 											{$campaign->rewardName}<br>
 										{/if}
-										{if $campaign->rewardExists}
-											<img src="{$campaign->rewardImage}" alt="{$campaign->rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
-										{/if}<br>
 										{if $campaign->rewardType == 0 || $campaign->rewardType == 1 && $campaign->awardAutomatically == 0}
 											{if $campaign->campaignRewardGiven }
 												<strong>{translate text="Reward Received"}<br></strong>
@@ -825,9 +822,14 @@
 										{/if}
 										{if $campaign->rewardType == 1}
 											{if $campaign->campaignRewardGiven ||$campaign->awardAutomatically == 1 && $campaign->isComplete}
+												{if $campaign->rewardExists}
+													<img src="{$campaign->rewardImage}" alt="{$campaign->rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
+												{/if}<br>
 												<a href="/Search/ShareCampaigns?rewardName={$campaign->rewardName}&rewardImage={$campaign->rewardImage}&rewardId={$campaign->rewardId}">
 													{translate text="Share on Social Media" isPublicFacing=true}
 												</a>
+											{else}
+												{include file="MyAccount/rewardImage.tpl" imageProperty="rewardImage"}
 											{/if}
 										{/if}
 									</div>
@@ -872,9 +874,6 @@
 													{if $milestone->displayName}
 														{$milestone->rewardName}
 													{/if}
-													{if $milestone->rewardExists}
-														<img src="{$milestone->rewardImage}" alt="{$milestone->rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
-													{/if}
 												</div>
 											</td>
 											<td>
@@ -882,16 +881,19 @@
 													{if $milestone->rewardGiven}
 														{translate text="Reward Given" isPublicFacing=true}<br>
 													{else}
-														{translate text="Not Yet Given" isPublicFacing=true}
+														{translate text="Not Yet Given" isPublicFacing=true}<br>
 													{/if}
 												{/if}
 												{if $milestone->rewardType == 1}
 														{if $milestone->rewardGiven || $milestone->awardAutomatically && $milestone->isComplete}
+															{if $milestone->rewardExists}
+																<img src="{$milestone->rewardImage}" alt="{$milestone->rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
+															{/if}<br>
 															<a href="/Search/ShareCampaigns?rewardName={$milestone->rewardName}&rewardImage={$milestone->rewardImage}&rewardId={$milestone->rewardId}">
 																{translate text="Share on Social Media" isPublicFacing=true}
 															</a>
 														{else}
-															{translate text="Not Yet Given" isPublicFacing=true}
+															{include file="MyAccount/rewardImage.tpl" imageProperty="rewardImage" campaign=$milestone}
 														{/if}
 												{/if}
 											</td>
