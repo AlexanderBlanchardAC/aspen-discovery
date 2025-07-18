@@ -284,8 +284,14 @@
 											{if $campaign.campaignReward.displayName}
 												{$campaign.campaignReward.rewardName}
 											{/if}
-											{if $campaign.campaignReward.rewardExists}
-													<img src="{$campaign.campaignReward.badgeImage}" alt="{$campaign.campaignReward.rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
+											{if $campaign.campaignReward.rewardType == 1}
+												{if $campaign.rewardGiven || $campaign.campaignReward.awardAutomatically == 1 && $campaign.isComplete}
+													{if $campaign.campaignReward.rewardExists}
+														<img src="{$campaign.campaignReward.badgeImage}" alt="{$campaign.campaignReward.rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
+													{/if}
+												{else}
+													{include file="MyAccount/rewardImage.tpl" imageProperty="badgeImage" campaign=$campaign.campaignReward}
+												{/if}
 											{/if}
 											<div style="margin-top:20px;">
 												{$campaign.campaignReward.rewardDescription}
@@ -329,8 +335,14 @@
 															{if $milestone.displayName}
 																{$milestone.rewardName} 
 															{/if}
-															{if $milestone.rewardExists}
-																<img src="{$milestone.badgeImage}" alt="{$milestone.rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
+															{if $milestone.rewardType == 1}
+																{if $milestone.rewardGiven || $milestone.awardAutomatically == 1 && $milestone.milestoneComplete}
+																	{if $milestone.rewardExists}
+																		<img src="{$milestone.badgeImage}" alt="{$milestone.rewardName}" style="max-width:100px; max-height:100px; padding:10px;" />
+																	{/if}
+																{else}
+																	{include file="MyAccount/rewardImage.tpl" imageProperty="badgeImage" campaign=$milestone}
+																{/if}
 															{/if}
 															<div style="margin-top:10px;">
 																{$milestone.rewardDescription}
