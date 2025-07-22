@@ -17,6 +17,8 @@ class UserAPI extends AbstractAPI {
 		$output = '';
 		global $logger;
 		$logger->log("METHOD: " . $method, Logger::LOG_ERROR);
+		$logger->log("Method exists check: " . (method_exists($this, $method) ? "YES" : "NO"), Logger::LOG_ERROR);
+		$logger->log("Available methods: " . implode(", ", get_class_methods($this)), Logger::LOG_ERROR);
 
 		//Set Headers
 		header('Content-type: application/json');
