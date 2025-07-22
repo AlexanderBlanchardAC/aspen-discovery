@@ -102,9 +102,12 @@ class UserAPI extends AbstractAPI {
 					'getMaterialsRequestDetails',
 					'createMaterialsRequest',
 					'cancelMaterialsRequest',
-                    'deleteAspenUser',
+					'deleteAspenUser',
 					'updateSortPreferences',
-					'updateHoldPickupPreferences'
+					'updateHoldPickupPreferences',
+					'getuserCampaigns',
+					'enrollUserInCampaign',
+					'unenrollUserFromCampaign'
 				])) {
 					header("Cache-Control: max-age=10800");
 					require_once ROOT_DIR . '/sys/SystemLogging/APIUsage.php';
@@ -6883,4 +6886,321 @@ class UserAPI extends AbstractAPI {
 			];
 		}
 	}
-}
+
+	private function getPaginationParams() {
+		return [ 
+			'page' => (int)($_REQUEST['page'] ?? 1),
+			'pageSize' => (int)($_REQUEST['pageSize'] ?? 20),
+			'filter' => $_REQUEST['filter'] ?? 'enrolled'
+		];
+	}
+
+	private function paginateResults($items, $page, $pageSize) {
+		$total = count($items);
+		$offset = ($page - 1) * $pageSize;
+		$paginated = array_slice($items, $offset, $pageSize);
+		
+		return [
+			'items' => $paginated,
+			'total' => $total,
+			'page' => $page,
+			'pageSize' => $pageSize
+		];
+	}
+
+	 private function transformCampaignToArray($campaign, $isLinkedUser = false) {
+		if (is_object($campaign)) {
+			$base = get_object_vars($campaign);
+			$base['name'] = $campaign->campaignName ?? null;
+			$base['id'] = $campaign->campaignId ?? null;
+			$base['enrolled'] = $campaign->isEnrolled ?? ($campaign->enrolled ?? false);
+		} else {
+			$base = $campaign;
+			$base['name'] = $campaign['campaignName'] ?? null;
+			$base['id'] = $campaign['campaignId'] ?? null;
+			$base['enrolled'] = $campaign['isEnrolled'] ?? false;
+		}
+
+		$this->addRewardDetails($base, $campaign);
+		
+		$this->addMilestoneDetails($base, $campaign);
+		
+		return $base;
+	}
+
+	 private function addRewardDetails(&$base, $campaign) {
+		$rewardSource = is_object($campaign) 
+			? (isset($campaign->campaignReward) ? $campaign->campaignReward : $campaign)
+			: ($campaign['campaignReward'] ?? $campaign);
+
+		$rewardFields = ['rewardName', 'displayName', 'rewardType', 'rewardExists', 'badgeImage', 'rewardId', 'awardAutomatically'];
+		
+		foreach ($rewardFields as $field) {
+			if (is_object($rewardSource)) {
+				$base[$field] = $rewardSource->$field ?? null;
+			} else {
+				$base[$field] = $rewardSource[$field] ?? null;
+			}
+		}
+	}
+
+	private function addMilestoneDetails(&$base, $campaign) {
+		$milestones = is_object($campaign) ? ($campaign->milestones ?? null) : ($campaign['milestones'] ?? null);
+		
+		if (!empty($milestones) && is_array($milestones)) {
+			$base['milestones'] = array_map(function ($milestone) {
+				$milestoneFields = [
+					'id', 'milestoneName' => 'name', 'completedGoals', 'totalGoals', 
+					'rewardName', 'rewardId', 'rewardType', 'rewardExists', 
+					'displayName', 'awardAutomatically', 'badgeImage' => 'rewardImage'
+				];
+
+				$result = [];
+				foreach ($milestoneFields as $key => $value) {
+					$sourceKey = is_numeric($key) ? $value : $key;
+					$targetKey = is_numeric($key) ? $value : $value;
+					
+					if (is_object($milestone)) {
+						$result[$targetKey] = $milestone->$sourceKey ?? null;
+					} else {
+						$result[$targetKey] = $milestone[$sourceKey] ?? null;
+					}
+				}
+				
+				return $result;
+			}, $milestones);
+		}
+	}
+
+	private function getLinkedUserCampaigns($user, $pagination) {
+		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
+		$campaign = new Campaign();
+		
+		try {
+			$linkedUserCampaigns = $campaign->getLinkedUserCampaigns($user->id);
+			$flatCampaigns = [];
+			
+			foreach ($linkedUserCampaigns as $linkedUser) {
+				foreach ($linkedUser['campaigns'] as $campaignData) {
+					$campaignData['linkedUserId'] = $linkedUser['linkedUserId'];
+					$campaignData['linkedUserName'] = $linkedUser['linkedUserName'];
+					$flatCampaigns[] = $this->transformCampaignToArray($campaignData, true);
+				}
+			}
+			
+			$paginationResult = $this->paginateResults($flatCampaigns, $pagination['page'], $pagination['pageSize']);
+			
+			return [
+				'success' => true,
+				'campaigns' => $paginationResult['items'],
+				'total' => $paginationResult['total'],
+				'page' => $paginationResult['page'],
+				'pageSize' => $paginationResult['pageSize'],
+			];
+			
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'message' => translate([
+					'Error fetching linked user campaigns: ' . $e->getMessage(),
+				]),
+			];
+		}
+	}
+
+	private function filterCampaigns($campaigns, $filter) {
+		return array_filter($campaigns, function($campaign) use ($filter) {
+			switch ($filter) {
+				case 'enrolled':
+					return $campaign->enrolled;
+				case 'active':
+					return $campaign->isActive;
+				case 'upcoming': 
+					return $campaign->isUpcoming;
+				case 'past':
+					return $campaign->isPast;
+				case 'pastEnrolled':
+					return $campaign->isPast && $campaign->enrolled;
+				default: 
+					return true;
+			}
+		});
+	}
+
+	private function getRegularCampaigns($user, $pagination) {
+		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
+		$campaign = new Campaign();
+		
+		$campaigns = $campaign->getCampaigns();
+		$today = date('Y-m-d');
+		
+		foreach ($campaigns as $campaignObj) {
+			$campaignObj->enrolled = $campaignObj->isUserEnrolled($user->id);
+			$campaignObj->isPast = ($campaignObj->endDate && $campaignObj->endDate < $today);
+		}
+		
+		$filteredCampaigns = $this->filterCampaigns($campaigns, $pagination['filter']);
+		$paginationResult = $this->paginateResults($filteredCampaigns, $pagination['page'], $pagination['pageSize']);
+		
+		$transformedCampaigns = array_map([$this, 'transformCampaignToArray'], $paginationResult['items']);
+		
+		return [
+			'success' => true,
+			'campaigns' => $transformedCampaigns,
+			'total' => $paginationResult['total'],
+			'page' => $paginationResult['page'],
+			'pageSize' => $paginationResult['pageSize'],
+		];
+	}
+
+	private function getUserIdForEnrollment($filter) {
+		if ($filter === 'linkedUserCampaigns') {
+			return $_REQUEST['linkedUserId'] ?? null;
+		}
+		
+		$user = $this->getUserForApiCall();
+		return $user ? $user->id : null;
+	}
+
+	private function executeEnrollmentAction($campaignId, $userId, $action) {
+		require_once ROOT_DIR . '/services/MyAccount/AJAX.php';
+		
+		$originalGet = $_GET;
+		$_GET['campaignId'] = $campaignId;
+		$_GET['userId'] = $userId;
+		
+		$ajaxHandler = new MyAccount_AJAX();
+		$response = $ajaxHandler->$action();
+		
+		$_GET = $originalGet;
+		
+		return $response;
+	}
+
+	 function getUserCampaigns() {
+		global $offlineMode;
+		global $logger;
+		if ($offlineMode) {
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'System is offline',
+				]),
+			];
+		}
+		$user = $this->getUserForApiCall();
+
+		if (!$user || $user instanceof AspenError) {
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'Invalid user.'
+				]),
+			];
+		}
+
+		$pagination = $this->getPaginationParams();
+		
+		if ($pagination['filter'] === 'linkedUserCampaigns') {
+			return $this->getLinkedUserCampaigns($user, $pagination);
+		}
+		
+		return $this->getRegularCampaigns($user, $pagination);
+	}
+
+	function enrollUserInCampaign() {
+		require_once ROOT_DIR . '/services/MyAccount/AJAX.php';
+
+		global $logger;
+		global $offlineMode;
+
+		if ($offlineMode) {
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'System is offline',
+				]),
+			];
+		}
+		$filter = $_REQUEST['filter'] ?? 'enrolled';
+		$campaignId = $_REQUEST['campaignId'] ?? null;
+
+		if (empty($campaignId)) {
+			$logger->log("No Campaign ID", Logger::LOG_ERROR);
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'Campaign ID is missing.',
+				]),
+			];
+		}
+
+		if ($filter == 'linkedUserCampaigns') {
+			$userId = $_REQUEST['linkedUserId'];
+		} else {
+			$user = $this->getUserForApiCall();
+			$userId = $user->id;
+		}
+
+		if (!$userId) {
+			$logger->log("User ID is Missing", Logger::LOG_ERROR);
+
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'User ID is missing.',
+				]),
+			];
+		}
+
+		return $this->executeEnrollmentAction($campaignId, $userId, 'enrollCampaign');
+	}
+
+	 function unenrollUserFromCampaign() {
+		require_once ROOT_DIR . '/services/MyAccount/AJAX.php';
+		global $logger;
+
+		global $offlineMode;
+		global $logger;
+		if ($offlineMode) {
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'System is offline',
+				]),
+			];
+		}
+		$filter = $_REQUEST['filter'] ?? 'enrolled';
+		$campaignId = $_REQUEST['campaignId'] ?? null;
+
+		if (empty($campaignId)) {
+			$logger->log("No Campaign ID", Logger::LOG_ERROR);
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'Campaign ID is missing.',
+				]),
+			];
+		}
+
+		if ($filter == 'linkedUserCampaigns') {
+			$userId = $_REQUEST['linkedUserId'];
+		} else {
+			$user = $this->getUserForApiCall();
+			$userId = $user->id;
+		}
+
+		if (!$userId) {
+			$logger->log("No User ID", Logger::LOG_ERROR);
+
+			return [
+				'success' => false,
+				'message' => translate([
+					'text' => 'User ID is Missing.',
+				]),
+			];
+		}
+
+		return $this->executeEnrollmentAction($campaignId, $userId, 'unenrollCampaign');
+	}
+ }
