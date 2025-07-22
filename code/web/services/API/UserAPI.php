@@ -15,6 +15,8 @@ class UserAPI extends AbstractAPI {
 	function launch() : void {
 		$method = (isset($_GET['method']) && !is_array($_GET['method'])) ? $_GET['method'] : '';
 		$output = '';
+		global $logger;
+		$logger->log("METHOD: " . $method, Logger::LOG_ERROR);
 
 		//Set Headers
 		header('Content-type: application/json');
