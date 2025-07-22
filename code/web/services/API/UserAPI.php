@@ -6892,6 +6892,7 @@ class UserAPI extends AbstractAPI {
 	function getUserCampaigns() {
 		global $offlineMode;
 		global $logger;
+		$logger->log("We knoew it was called", Logger::LOG_ERROR);
 		if ($offlineMode) {
 			return [
 				'success' => false,
