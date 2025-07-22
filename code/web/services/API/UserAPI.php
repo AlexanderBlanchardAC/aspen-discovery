@@ -109,7 +109,7 @@ class UserAPI extends AbstractAPI {
 					'deleteAspenUser',
 					'updateSortPreferences',
 					'updateHoldPickupPreferences',
-					'getuserCampaigns',
+					'getUserCampaigns',
 					'enrollUserInCampaign',
 					'unenrollUserFromCampaign'
 				])) {
