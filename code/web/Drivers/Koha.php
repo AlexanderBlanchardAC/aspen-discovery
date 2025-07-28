@@ -1141,8 +1141,13 @@ class Koha extends AbstractIlsDriver {
 		global $logger;
 		global $library;
 
+		$preferredName = '';
+		if ($this->getKohaVersion() >= 24.11) {
+			$preferredName = 'preferred_name, ';
+		}
+
 		/** @noinspection SqlResolve */
-		$sql = "SELECT *, borrowernumber, cardnumber, surname, firstname, preferred_name, streetnumber, streettype, address, address2, city, state, zipcode, country, email, phone, mobile, categorycode, dateexpiry, password, userid, branchcode, opacnote, privacy, dateofbirth from borrowers where borrowernumber = '" . mysqli_escape_string($this->dbConnection, $patronId) . "';";
+		$sql = "SELECT *, borrowernumber, cardnumber, surname, firstname, {$preferredName}streetnumber, streettype, address, address2, city, state, zipcode, country, email, phone, mobile, categorycode, dateexpiry, password, userid, branchcode, opacnote, privacy, dateofbirth from borrowers where borrowernumber = '" . mysqli_escape_string($this->dbConnection, $patronId) . "';";
 
 		$userExistsInDB = false;
 		$lookupUserResult = mysqli_query($this->dbConnection, $sql, MYSQLI_USE_RESULT);
