@@ -411,15 +411,15 @@ class CommunityEngagement_AJAX extends JSON_Action {
 		}
 	}
 
-	public function manuallyProgressUserMilestone() {
+	public function manuallyProgressUserMilestone($milestoneId = null, $userId = null, $campaignId = null) {
 		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
 		require_once ROOT_DIR . '/sys/CommunityEngagement/Milestone.php';
 		require_once ROOT_DIR . '/sys/CommunityEngagement/UserCampaign.php';
 		require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignMilestoneUsersProgress.php';
 
-		$milestoneId = $_GET['milestoneId'] ?? null;
-		$userId = $_GET['userId'] ?? null;
-		$campaignId = $_GET['campaignId'] ?? null;
+		$milestoneId = $milestoneId ?? $_GET['milestoneId'] ?? null;
+		$userId = $userId ?? $_GET['userId'] ?? null;
+		$campaignId = $campaignId ?? $_GET['campaignId'] ?? null;
 
 		if (!isset($milestoneId) || $milestoneId <=0) {
 			echo json_encode([
@@ -1246,15 +1246,15 @@ class CommunityEngagement_AJAX extends JSON_Action {
 		];
 	}
 
-	public function addProgressToExtraCreditActivities() {
+	public function addProgressToExtraCreditActivities($extraCreditActivityId = null, $userId = null, $campaignId = null) {
 		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
 		require_once ROOT_DIR . '/sys/CommunityEngagement/ExtraCredit.php';
 		require_once ROOT_DIR . '/sys/CommunityEngagement/UserCampaign.php';
 		require_once ROOT_DIR . '/sys/CommunityEngagement/CampaignExtraCreditActivityUsersProgress.php';
 
-		$extraCreditActivityId = $_GET['extraCreditActivityId'] ?? null;
-		$userId = $_GET['userId'] ?? null;
-		$campaignId = $_GET['campaignId'] ?? null;
+		$extraCreditActivityId = $extraCreditActivityId ?? $_GET['extraCreditActivityId'] ?? null;
+		$userId = $userId ?? $_GET['userId'] ?? null;
+		$campaignId = $campaignId ?? $_GET['campaignId'] ?? null;
 
 
 		if (!isset($extraCreditActivityId) || $extraCreditActivityId <= 0) {
