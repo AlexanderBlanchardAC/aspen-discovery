@@ -1173,7 +1173,8 @@ class Campaign extends DataObject {
 				$currentDate = date('Y-m-d');
 				$canEnroll = (
 					(!$campaign->enrollmentStartDate || $currentDate >= $campaign->enrollmentStartDate) &&
-					(!$campaign->enrollmentEndDate || $currentDate <= $campaign->enrollmentEndDate)
+					(!$campaign->enrollmentEndDate || $currentDate <= $campaign->enrollmentEndDate) &&
+					($currentDate <= $campaign->endDate)
 				);
 				$campaign->canEnroll = $canEnroll;
 				$userCampaign = new UserCampaign();
@@ -1407,6 +1408,7 @@ class Campaign extends DataObject {
 		$progress = $progressData['progress'] ?? 0;
 
 		return [
+			'type' => 'activity',
 			'id' => $extraCreditActivity->id,
 			'name' => $extraCreditActivity->name,
 			'displayName' => $extraCreditActivity->displayName,
@@ -1465,6 +1467,48 @@ class Campaign extends DataObject {
 				}
 		}
 		return $filteredCampaigns;
+	}
+
+	public static function getImageDisplaySettings($user) {
+		global $library;
+		$homeLibrary = $user->getHomeLibrary();
+		if (!empty($homeLibrary)) {
+			return [
+				'displayPlaceholderImage' => $homeLibrary->displayDigitalRewardOnlyWhenAwarded,
+				'placeholderImage' => $homeLibrary->digitalRewardPlaceholderImage
+			];
+		} else {
+			return [
+				'displayPlaceholderImage' => $library->displayDigitalRewardOnlyWhenAwarded,
+				'placeholderImage' => $library->digitalRewardPlaceholderImage
+			];
+		}
+	}
+
+	public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, $awardAutomatically, $isComplete) {
+		$itemType = isset($item['campaignId']) ? 'CAMPAIGN' : (isset($item['id']) ? 'MILESTONE' : 'UNKNOWN');
+		$itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
+
+		$rewardGivenBool = (bool)$rewardGiven;
+		$campaignRewardGivenBool = (bool)$campaignRewardGiven;
+		$awardAutomaticallyBool = (bool)$awardAutomatically;
+		$isCompleteBool = (bool)$isComplete;
+
+		$condition1 = !$settings['displayPlaceholderImage'];
+		$condition2 = $rewardGivenBool;
+		$condition3 = $campaignRewardGivenBool;
+		$condition4 = ($awardAutomaticallyBool && $isCompleteBool);
+
+
+		$shouldShowActual = $condition1 || $condition2 || $condition3 || $condition4;
+
+
+		if (!$shouldShowActual) {
+			$item['badgeImage'] = $settings['placeholderImage'];
+			$item['isPlaceholderImage'] = true;
+		} else {
+			$item['isPlaceholderImage'] = false;
+		}
 	}
 	
 }
