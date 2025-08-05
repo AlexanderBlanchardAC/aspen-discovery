@@ -1490,17 +1490,15 @@ class Campaign extends DataObject {
 		$itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
 
 		$rewardGivenBool = (bool)$rewardGiven;
-		$campaignRewardGivenBool = (bool)$campaignRewardGiven;
 		$awardAutomaticallyBool = (bool)$awardAutomatically;
 		$isCompleteBool = (bool)$isComplete;
 
 		$condition1 = !$settings['displayPlaceholderImage'];
 		$condition2 = $rewardGivenBool;
-		$condition3 = $campaignRewardGivenBool;
-		$condition4 = ($awardAutomaticallyBool && $isCompleteBool);
+		$condition3 = ($awardAutomaticallyBool && $isCompleteBool);
 
 
-		$shouldShowActual = $condition1 || $condition2 || $condition3 || $condition4;
+		$shouldShowActual = $condition1 || $condition2 || $condition3;
 
 
 		if (!$shouldShowActual) {
