@@ -1469,112 +1469,48 @@ class Campaign extends DataObject {
 		return $filteredCampaigns;
 	}
 
-	// public static function getImageDisplaySettings($user) {
-	// 	global $library;
-	// 	global $logger;
-	// 	$homeLibrary = $user->getHomeLibrary();
-	// 	$logger->log("home library: ", print_r($homeLibrary, true), Logger::LOG_ERROR);
-	// 	$logger->log("library: ", print_r($library, true), Logger::LOG_ERROR);
-	// 	$logger->log("user: ", print_r($user, true), Logger::LOG_ERROR);
-	// 	if (!empty($homeLibrary)) {
+	public static function getImageDisplaySettings($user, $library) {
+		global $logger;
+		$homeLibrary = $user->getHomeLibrary();
+		$logger->log("home library: ", print_r($homeLibrary, true), Logger::LOG_ERROR);
+		$logger->log("library: ", print_r($library, true), Logger::LOG_ERROR);
+		$logger->log("user: ", print_r($user, true), Logger::LOG_ERROR);
+		if (!empty($homeLibrary)) {
 
-	// 		return [
-	// 			'displayPlaceholderImage' => $homeLibrary->displayDigitalRewardOnlyWhenAwarded,
-	// 			'placeholderImage' => $homeLibrary->digitalRewardPlaceholderImage
-	// 		];
-	// 	} else {
-	// 		return [
-	// 			'displayPlaceholderImage' => $library->displayDigitalRewardOnlyWhenAwarded,
-	// 			'placeholderImage' => $library->digitalRewardPlaceholderImage
-	// 		];
-	// 	}
-	// }
+			return [
+				'displayPlaceholderImage' => $homeLibrary->displayDigitalRewardOnlyWhenAwarded,
+				'placeholderImage' => $homeLibrary->digitalRewardPlaceholderImage
+			];
+		} else {
+			return [
+				'displayPlaceholderImage' => $library->displayDigitalRewardOnlyWhenAwarded,
+				'placeholderImage' => $library->digitalRewardPlaceholderImage
+			];
+		}
+	}
 
-	// public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, $awardAutomatically, $isComplete) {
-	// 	$itemType = isset($item['campaignId']) ? 'CAMPAIGN' : (isset($item['id']) ? 'MILESTONE' : 'UNKNOWN');
-	// 	$itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
+	public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, $awardAutomatically, $isComplete) {
+		$itemType = isset($item['campaignId']) ? 'CAMPAIGN' : (isset($item['id']) ? 'MILESTONE' : 'UNKNOWN');
+		$itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
 
-	// 	$rewardGivenBool = (bool)$rewardGiven;
-	// 	$awardAutomaticallyBool = (bool)$awardAutomatically;
-	// 	$isCompleteBool = (bool)$isComplete;
+		$rewardGivenBool = (bool)$rewardGiven;
+		$awardAutomaticallyBool = (bool)$awardAutomatically;
+		$isCompleteBool = (bool)$isComplete;
 
-	// 	$condition1 = !$settings['displayPlaceholderImage'];
-	// 	$condition2 = $rewardGivenBool;
-	// 	$condition3 = ($awardAutomaticallyBool && $isCompleteBool);
-
-
-	// 	$shouldShowActual = $condition1 || $condition2 || $condition3;
+		$condition1 = !$settings['displayPlaceholderImage'];
+		$condition2 = $rewardGivenBool;
+		$condition3 = ($awardAutomaticallyBool && $isCompleteBool);
 
 
-	// 	if (!$shouldShowActual) {
-	// 		$item['badgeImage'] = $settings['placeholderImage'];
-	// 		$item['isPlaceholderImage'] = true;
-	// 	} else {
-	// 		$item['isPlaceholderImage'] = false;
-	// 	}
-	// }
-
-	public static function getImageDisplaySettings($user) {
-    global $library, $logger;
-    
-    $logger->log("=== DEBUG START ===", "", Logger::LOG_ERROR);
-    $logger->log("USER TYPE: ", gettype($user), Logger::LOG_ERROR);
-    
-    if (is_array($user)) {
-        $logger->log("USER IS ARRAY - KEYS: ", array_keys($user), Logger::LOG_ERROR);
-        $logger->log("USER ID: ", $user['id'] ?? 'NO ID', Logger::LOG_ERROR);
-        $logger->log("USER HOME LOCATION: ", $user['homeLocationId'] ?? 'NO HOME LOCATION', Logger::LOG_ERROR);
-    } elseif (is_object($user)) {
-        $logger->log("USER IS OBJECT - CLASS: ", get_class($user), Logger::LOG_ERROR);
-        $logger->log("USER ID: ", isset($user->id) ? $user->id : 'NO ID', Logger::LOG_ERROR);
-        $logger->log("USER HOME LOCATION: ", isset($user->homeLocationId) ? $user->homeLocationId : 'NO HOME LOCATION', Logger::LOG_ERROR);
-    } else {
-        $logger->log("USER IS NEITHER ARRAY NOR OBJECT", "", Logger::LOG_ERROR);
-    }
-    
-    $logger->log("GLOBAL LIBRARY EXISTS: ", isset($library) ? 'YES' : 'NO', Logger::LOG_ERROR);
-    
-    // For now, return working defaults
-    $defaultPlaceholder = '/interface/themes/responsive/images/default_placeholder.png';
-    
-    return [
-        'displayPlaceholderImage' => true, // This will make placeholders show when conditions are not met
-        'placeholderImage' => $defaultPlaceholder
-    ];
-}
-
-public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, $awardAutomatically, $isComplete) {
-    $itemType = isset($item['campaignId']) ? 'CAMPAIGN' : (isset($item['id']) ? 'MILESTONE' : 'UNKNOWN');
-    $itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
-
-    $rewardGivenBool = (bool)$rewardGiven;
-    $awardAutomaticallyBool = (bool)$awardAutomatically;
-    $isCompleteBool = (bool)$isComplete;
-
-    $condition1 = !$settings['displayPlaceholderImage'];
-    $condition2 = $rewardGivenBool;
-    $condition3 = ($awardAutomaticallyBool && $isCompleteBool);
-
-    $shouldShowActual = $condition1 || $condition2 || $condition3;
-
-    if (!$shouldShowActual) {
-        // Use placeholder image - check for user uploaded or default
-        $placeholderToUse = !empty($settings['placeholderImage']) ? 
-            $settings['placeholderImage'] : 
-            '/path/to/default/placeholder.png'; // Set your default path here
-            
-        $item['badgeImage'] = $placeholderToUse;
-        $item['isPlaceholderImage'] = true;
-        
-        // Debug logging
-        error_log("Using placeholder image: " . $placeholderToUse);
-    } else {
-        $item['isPlaceholderImage'] = false;
-        // Don't modify badgeImage here - let it keep the original value
-        error_log("Using actual image: " . ($item['badgeImage'] ?? 'not set'));
-    }
-}
+		$shouldShowActual = $condition1 || $condition2 || $condition3;
 
 
+		if (!$shouldShowActual) {
+			$item['badgeImage'] = $settings['placeholderImage'];
+			$item['isPlaceholderImage'] = true;
+		} else {
+			$item['isPlaceholderImage'] = false;
+		}
+	}
 	
 }
