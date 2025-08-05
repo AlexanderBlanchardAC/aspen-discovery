@@ -1474,6 +1474,8 @@ class Campaign extends DataObject {
 		global $logger;
 		$homeLibrary = $user->getHomeLibrary();
 		$logger->log("home library: ", print_r($homeLibrary, true), Logger::LOG_ERROR);
+		$logger->log("library: ", print_r($library, true), Logger::LOG_ERROR);
+		$logger->log("user: ", print_r($user, true), Logger::LOG_ERROR);
 		if (!empty($homeLibrary)) {
 
 			return [
