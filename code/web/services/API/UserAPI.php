@@ -6918,8 +6918,8 @@ class UserAPI extends AbstractAPI {
 		$imageSettings = Campaign::getImageDisplaySettings($user, $library);
 		global $logger;
 		$logger->log("IMAGE SETTINGS: ", json_encode($imageSettings), Logger::LOG_ERROR);
-		$logger->log("USER: ", json_encode($user), Logger::LOG_ERROR);
-		$logger->log("Library: ", json_encode($library), Logger::LOG_ERROR);
+		$logger->log("USER: " . print_r($user, true), Logger::LOG_ERROR);
+		$logger->log("USER: " . print_r($library, true), Logger::LOG_ERROR);
 
 
 
