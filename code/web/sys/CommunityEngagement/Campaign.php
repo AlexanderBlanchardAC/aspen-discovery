@@ -1483,8 +1483,8 @@ class Campaign extends DataObject {
 				'placeholderImage' => $homeLibrary->digitalRewardPlaceholderImage
 			];
 		} else {
-			$logger->log("LIBRARY DISPALYPLACEHOLDERIMAGE: ", $homeLibrary->displayDigitalRewardOnlyWhenAwarded, Logger::LOG_ERROR);
-			$logger->log("LIBRARY PLACEHOLDERIMAGE: ", $homeLibrary->digitalRewardPlaceholderImage, Logger::LOG_ERROR);
+			$logger->log("LIBRARY DISPALYPLACEHOLDERIMAGE: ", $library->displayDigitalRewardOnlyWhenAwarded, Logger::LOG_ERROR);
+			$logger->log("LIBRARY PLACEHOLDERIMAGE: ", $library->digitalRewardPlaceholderImage, Logger::LOG_ERROR);
 			return [
 				'displayPlaceholderImage' => $library->displayDigitalRewardOnlyWhenAwarded,
 				'placeholderImage' => $library->digitalRewardPlaceholderImage
