@@ -1471,20 +1471,14 @@ class Campaign extends DataObject {
 
 	public static function getImageDisplaySettings($user) {
 		global $library;
-		global $logger;
 		$homeLibrary = $user->getHomeLibrary();
-		$logger->log("HOME LIBRARY: ", $homeLibrary, Logger::LOG_ERROR);
 		if (!empty($homeLibrary)) {
-			$logger->log("HOME LIBRARY DISPALYPLACEHOLDERIMAGE: ", $homeLibrary->displayDigitalRewardOnlyWhenAwarded, Logger::LOG_ERROR);
-			$logger->log("HOME LIBRARY PLACEHOLDERIMAGE: ", $homeLibrary->digitalRewardPlaceholderImage, Logger::LOG_ERROR);
 
 			return [
 				'displayPlaceholderImage' => $homeLibrary->displayDigitalRewardOnlyWhenAwarded,
 				'placeholderImage' => $homeLibrary->digitalRewardPlaceholderImage
 			];
 		} else {
-			$logger->log("LIBRARY DISPALYPLACEHOLDERIMAGE: ", $library->displayDigitalRewardOnlyWhenAwarded, Logger::LOG_ERROR);
-			$logger->log("LIBRARY PLACEHOLDERIMAGE: ", $library->digitalRewardPlaceholderImage, Logger::LOG_ERROR);
 			return [
 				'displayPlaceholderImage' => $library->displayDigitalRewardOnlyWhenAwarded,
 				'placeholderImage' => $library->digitalRewardPlaceholderImage
@@ -1493,6 +1487,8 @@ class Campaign extends DataObject {
 	}
 
 	public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, $awardAutomatically, $isComplete) {
+		global $logger;
+		$logger->log("ACTUAL FUNCITON CALL - SETTNGS: ", json_encode($settings), Logger::LOG_ERROR);
 		$itemType = isset($item['campaignId']) ? 'CAMPAIGN' : (isset($item['id']) ? 'MILESTONE' : 'UNKNOWN');
 		$itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
 
