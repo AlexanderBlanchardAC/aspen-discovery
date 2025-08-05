@@ -1506,7 +1506,7 @@ class Campaign extends DataObject {
 
 
 		if (!$shouldShowActual) {
-			$item['badgeImage'] = $settings['placeholderImage'];
+			$item['badgeImage'] = '/files/original/' . $settings['placeholderImage'];
 			$item['isPlaceholderImage'] = true;
 		} else {
 			$item['isPlaceholderImage'] = false;
