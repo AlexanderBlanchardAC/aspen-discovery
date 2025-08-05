@@ -1471,7 +1471,9 @@ class Campaign extends DataObject {
 
 	public static function getImageDisplaySettings($user) {
 		global $library;
+		global $logger;
 		$homeLibrary = $user->getHomeLibrary();
+		$logger->log("home library: ", print_r($homeLibrary, true), Logger::LOG_ERROR);
 		if (!empty($homeLibrary)) {
 
 			return [
@@ -1487,8 +1489,6 @@ class Campaign extends DataObject {
 	}
 
 	public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, $awardAutomatically, $isComplete) {
-		global $logger;
-		$logger->log("ACTUAL FUNCITON CALL - SETTNGS: ", json_encode($settings), Logger::LOG_ERROR);
 		$itemType = isset($item['campaignId']) ? 'CAMPAIGN' : (isset($item['id']) ? 'MILESTONE' : 'UNKNOWN');
 		$itemId = $item['campaignId'] ?? $item['id'] ?? 'NO_ID';
 
