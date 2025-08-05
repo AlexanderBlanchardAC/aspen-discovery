@@ -6915,6 +6915,8 @@ class UserAPI extends AbstractAPI {
 		require_once ROOT_DIR . '/sys/CommunityEngagement/Campaign.php';
 		$campaign = new Campaign();
 		$imageSettings = Campaign::getImageDisplaySettings($user);
+		global $logger;
+		$logger->log("IMAGE SETTINGS: ", json_encode($imageSettings), Logger::LOG_ERROR);
 
 
 		$filter = $_REQUEST['filter'] ?? 'enrolled';
