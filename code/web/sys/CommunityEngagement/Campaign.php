@@ -1518,45 +1518,27 @@ class Campaign extends DataObject {
     global $library, $logger;
     
     $logger->log("=== DEBUG START ===", "", Logger::LOG_ERROR);
-    $logger->log("USER OBJECT: ", is_object($user) ? get_class($user) : gettype($user), Logger::LOG_ERROR);
-    $logger->log("USER EXISTS: ", isset($user) ? 'YES' : 'NO', Logger::LOG_ERROR);
-    $logger->log("USER ID: ", isset($user->id) ? $user->id : 'NO ID', Logger::LOG_ERROR);
+    $logger->log("USER TYPE: ", gettype($user), Logger::LOG_ERROR);
     
-    if (is_object($user)) {
-        $logger->log("USER METHODS: ", get_class_methods($user), Logger::LOG_ERROR);
+    if (is_array($user)) {
+        $logger->log("USER IS ARRAY - KEYS: ", array_keys($user), Logger::LOG_ERROR);
+        $logger->log("USER ID: ", $user['id'] ?? 'NO ID', Logger::LOG_ERROR);
+        $logger->log("USER HOME LOCATION: ", $user['homeLocationId'] ?? 'NO HOME LOCATION', Logger::LOG_ERROR);
+    } elseif (is_object($user)) {
+        $logger->log("USER IS OBJECT - CLASS: ", get_class($user), Logger::LOG_ERROR);
+        $logger->log("USER ID: ", isset($user->id) ? $user->id : 'NO ID', Logger::LOG_ERROR);
+        $logger->log("USER HOME LOCATION: ", isset($user->homeLocationId) ? $user->homeLocationId : 'NO HOME LOCATION', Logger::LOG_ERROR);
+    } else {
+        $logger->log("USER IS NEITHER ARRAY NOR OBJECT", "", Logger::LOG_ERROR);
     }
     
     $logger->log("GLOBAL LIBRARY EXISTS: ", isset($library) ? 'YES' : 'NO', Logger::LOG_ERROR);
-    $logger->log("GLOBAL LIBRARY TYPE: ", isset($library) ? (is_object($library) ? get_class($library) : gettype($library)) : 'NOT SET', Logger::LOG_ERROR);
     
-    // Try to get home library
-    $homeLibrary = null;
-    if (is_object($user) && method_exists($user, 'getHomeLibrary')) {
-        $homeLibrary = $user->getHomeLibrary();
-        $logger->log("HOME LIBRARY RETURNED: ", is_object($homeLibrary) ? get_class($homeLibrary) : gettype($homeLibrary), Logger::LOG_ERROR);
-    } else {
-        $logger->log("USER MISSING OR NO getHomeLibrary METHOD", "", Logger::LOG_ERROR);
-    }
-    
-    // Fallback - try to load library directly
-    if (empty($homeLibrary) && empty($library)) {
-        $logger->log("TRYING TO LOAD LIBRARY DIRECTLY", "", Logger::LOG_ERROR);
-        require_once ROOT_DIR . '/sys/LibraryLocation/Library.php';
-        $libraryObj = new Library();
-        if (is_object($user) && isset($user->homeLocationId)) {
-            $libraryObj->libraryId = $user->homeLocationId;
-            if ($libraryObj->find(true)) {
-                $homeLibrary = $libraryObj;
-                $logger->log("LOADED LIBRARY DIRECTLY", get_class($homeLibrary), Logger::LOG_ERROR);
-            }
-        }
-    }
-    
+    // For now, return working defaults
     $defaultPlaceholder = '/interface/themes/responsive/images/default_placeholder.png';
     
-    // Return default settings if nothing works
     return [
-        'displayPlaceholderImage' => true, // Default to showing placeholders
+        'displayPlaceholderImage' => true, // This will make placeholders show when conditions are not met
         'placeholderImage' => $defaultPlaceholder
     ];
 }
@@ -1592,5 +1574,7 @@ public static function setDisplayImageForArray(&$item, $settings, $rewardGiven, 
         error_log("Using actual image: " . ($item['badgeImage'] ?? 'not set'));
     }
 }
+
+
 	
 }
