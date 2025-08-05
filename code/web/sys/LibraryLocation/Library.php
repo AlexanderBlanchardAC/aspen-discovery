@@ -4508,6 +4508,17 @@ class Library extends DataObject {
 		return false;
 	}
 
+	static function hasCommunityEngagementEnabled(): bool {
+		global $enabledModules;
+		global $library;
+
+		if (array_key_exists('Community Engagement', $enabledModules)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public function getMasqueradeStatus(): int {
 		return $this->allowMasqueradeMode;
 	}
@@ -5926,6 +5937,7 @@ class Library extends DataObject {
 		}
 
 		$apiInfo['hasEventSettings'] = $this->hasEventSettings();
+		$apiInfo['hasCommunityEngagementEnabled'] = $this->hasCommunityEngagementEnabled();
 
 		$apiInfo['palaceProjectInstructions'] = null;
 		if ($this->palaceProjectScopeId > 0) {
