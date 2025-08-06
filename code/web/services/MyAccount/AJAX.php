@@ -4013,11 +4013,14 @@ class MyAccount_AJAX extends JSON_Action {
 
 				if ($user->getHomeLibrary() != null) {
 					$allowSelectingHoldsToExport = $user->getHomeLibrary()->allowSelectingHoldsToExport;
+					$canGroupHolds = $user->getHomeLibrary()->allowHoldsToBeGrouped;
 				} else {
 					$allowSelectingHoldsToExport = $library->allowSelectingHoldsToExport;
+					$canGroupHolds = $library->allowHoldsToBeGrouped;
 				}
 
 				$interface->assign('allowSelectingHoldsToExport', $allowSelectingHoldsToExport);
+				$interface->assign('canGroupHolds', $canGroupHolds);
 
 
 				if ($source != 'interlibrary_loan') {
