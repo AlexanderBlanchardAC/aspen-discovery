@@ -157,6 +157,16 @@ class Hold extends CircEntry {
 		}
 	}
 
+	public function getGroupedHoldId($record) {
+		$recordDriver = $this->getRecordDriver();
+		if ($recordDriver != false) {
+			return $recordDriver->getGroupedHoldId($record);
+		} else {
+			return [];
+		}
+		
+	}
+
 	private function performPreSaveChecks() {
 		require_once ROOT_DIR . '/sys/Utils/StringUtils.php';
 		if (strlen($this->title) > 500) {

@@ -4005,10 +4005,10 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]);
 			} else {
-				global $logger;
-				$catalogDriver = $user->getCatalogDriver();
-				$patronId = $user->unique_ils_id;
-				$groupedHolds = $catalogDriver->getPatronHoldGroups($patronId);
+			
+
+
+
 				$selectedUser = $this->setFilterLinkedUser();
 
 				if ($user->getHomeLibrary() != null) {
@@ -4127,6 +4127,7 @@ class MyAccount_AJAX extends JSON_Action {
 				if (!$offlineMode) {
 					if ($user) {
 						$allHolds = $this->filterHolds($user->getHolds(true, $selectedUnavailableSortOption, $selectedAvailableSortOption, $source), $selectedUser);
+						// $logger->log("all holds: " . print_r($allHolds, true), Logger::LOG_ERROR);
 						$interface->assign('recordList', $allHolds);
 					}
 				}

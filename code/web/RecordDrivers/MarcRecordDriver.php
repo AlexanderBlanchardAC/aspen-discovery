@@ -1235,6 +1235,31 @@ class MarcRecordDriver extends GroupedWorkSubDriver {
 		}
 	}
 
+	function getGroupedHoldId($record): ?int {
+		$userId = $record->userId;
+		$user = new User();
+		$user->id = $userId;
+		if (!$user->find(true)) {
+			return null;
+		}
+		$catalogDriver = $user->getCatalogDriver();
+
+		$patronId = $user->unique_ils_id;
+
+		$holdGroups = $catalogDriver->getPatronHoldGroups($patronId);
+		if (!isset($holdGroups['content']) || !is_array($holdGroups['content'])) {
+			return null;
+		}
+		foreach ($holdGroups['content'] as $group) {
+			foreach ($group['holds'] as $hold) {
+				if ((string)$hold['biblio_id'] === (string)$record->sourceId) {
+					return $group['hold_group_id'];
+				}
+			}
+		}
+		return null;
+	}
+
 	function isClosedCaptioned() {
 		$relatedRecord = $this->getGroupedWorkDriver()->getRelatedRecord($this->getIdWithSource());
 		if ($relatedRecord != null) {

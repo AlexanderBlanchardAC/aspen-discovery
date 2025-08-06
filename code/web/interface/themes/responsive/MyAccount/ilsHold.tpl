@@ -217,6 +217,20 @@
 							</div>
 						{/if}
 					{/if}
+					{assign var=holdGroupId value=$record->getGroupedHoldId($record)}
+					<div class="row">
+						<div class="result-label col-tn-4">{translate text='Hold Group' isPublicFacing=true}</div>
+						<div class="col-tn-8 result-value">
+							{if $holdGroupId !== null}
+								<stong>{$holdGroupId}</strong>
+							{else}
+								<strong>{translate text="This hold has not been grouped" isPublicFacing=true}</strong>
+							{/if}
+						</div>
+					</div>
+
+
+
 				</div>
 
 				{* Actions for Title *}
