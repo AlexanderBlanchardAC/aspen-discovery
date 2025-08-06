@@ -325,6 +325,13 @@ function getUpdates25_08_00(): array {
 				) ENGINE = InnoDB",
 			],
 		], //create_campaign_location_access
+		'add_ability_for_admin_to_control_whether_holds_can_be_grouped' => [
+			'title' => 'Add Ability for Admin to Control Whether Holds Can Be Grouped',
+			'description' => 'Allow admin to control whether holds can be grouped',
+			'sql' => [
+				"ALTER TABLE library ADD COLUMN allowHoldsToBeGrouped TINYINT(1) DEFAULT 0",
+			],
+		], //add_ability_for_admin_to_control_whether_holds_can_be_grouped
 
 		//chloe - Open Fifth
 
