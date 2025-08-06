@@ -553,4 +553,9 @@ class KohaApiUserAgent {
 			return $jsonDecodedResponse;
 		}
 	}
+
+	public function getLastResponseCode(): int {
+		return $this->apiCurlWrapper->getResponseCode();
+	}
+
 }
