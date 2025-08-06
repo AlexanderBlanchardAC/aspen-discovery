@@ -6075,7 +6075,7 @@ AspenDiscovery.Account = (function () {
 			return false;
 		},
 
-		loadHolds: function (source, availableHoldSort, unavailableHoldSort, showCovers, selectedUser) {
+		loadHolds: function (source, availableHoldSort, unavailableHoldSort, showCovers, selectedUser, showGroupedHolds) {
 			AspenDiscovery.Account.currentHoldSource = source;
 			var url = Globals.path + "/MyAccount/AJAX?method=getHolds&source=" + source;
 
@@ -6093,13 +6093,18 @@ AspenDiscovery.Account = (function () {
 			if (showCovers !== undefined) {
 				url += "&showCovers=" + showCovers;
 			}
+
+			if (showGroupedHolds !== undefined) {
+				url += "&showGroupedHolds=" + showGroupedHolds;
+			}
 			var stateObj = {
 				page: 'Holds',
 				source: source,
 				availableHoldSort: availableHoldSort,
 				unavailableHoldSort: unavailableHoldSort,
 				showCovers: showCovers,
-				selectedUser: selectedUser
+				selectedUser: selectedUser,
+				showGroupedHolds: showGroupedHolds
 			};
 			var newUrl = AspenDiscovery.buildUrl(document.location.origin + document.location.pathname, 'source', source);
 			if (document.location.href) {

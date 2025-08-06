@@ -3997,6 +3997,7 @@ class MyAccount_AJAX extends JSON_Action {
 			$source = $_REQUEST['source'];
 			$interface->assign('source', $source);
 			$this->setShowCovers();
+			$this->setShowGroupedHolds();
 
 			$user = UserAccount::getActiveUserObj();
 			if (UserAccount::isLoggedIn() == false || empty($user)) {
@@ -4411,6 +4412,22 @@ class MyAccount_AJAX extends JSON_Action {
 		}
 		$interface->assign('showCovers', $showCovers);
 		return $showCovers;
+	}
+
+	function setShowGroupedHolds() {
+		global $interface;
+
+		$showGroupedHolds = true;
+		if (isset($_REQUEST['showGroupedHolds'])) {
+			$showGroupedHolds = ($_REQUEST['showGroupedHolds'] == 'on' || $_REQUEST['showGroupedHolds'] == 'true');
+			if (isset($_SESSION)) {
+				$_SESSION['showGroupedHolds'] = $showGroupedHolds;
+			}
+		} elseif (isset($_SESSION['showGroupedHolds'])) {
+			$showGroupedHolds = $_SESSION['showGroupedHolds'];
+		}
+		$interface->assign('showGroupedHolds', $showGroupedHolds);
+		return $showGroupedHolds;
 	}
 
 	function setSort($requestParameter, $sortType) {

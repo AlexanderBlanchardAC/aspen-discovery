@@ -217,7 +217,7 @@
 							</div>
 						{/if}
 					{/if}
-					{if $canGroupHolds}
+					{if $canGroupHolds && $showGroupedHolds}
 						{assign var=holdGroupId value=$record->getGroupedHoldId($record)}
 						<div class="row">
 							<div class="result-label col-tn-4">{translate text='Hold Group' isPublicFacing=true}</div>

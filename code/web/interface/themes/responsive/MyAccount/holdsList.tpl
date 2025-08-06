@@ -1,4 +1,6 @@
 {assign var="hideCoversFormDisplayed" value=false}
+{assign var="showGroupedHoldsFormDisplayed" value=false}
+
 {foreach from=$recordList item=sectionData key=sectionKey}
 	<h2>{if $sectionKey == 'available'}{translate text="Holds Ready For Pickup" isPublicFacing=true}{else}{if $source=='interlibrary_loan'}{translate text="Pending Requests" isPublicFacing=true}{else}{translate text="Pending Holds" isPublicFacing=true}{/if}{/if}</h2>
 	<p class="alert alert-info">
@@ -34,8 +36,12 @@
 
 			{if empty($hideCoversFormDisplayed)}
 				{* Display the Hide Covers switch above the first section that has holds; and only display it once *}
-				<label for="hideCovers_{$source}" class="control-label checkbox pull-right"> {translate text="Hide Covers" isPublicFacing=true} <input id="hideCovers_{$source}" type="checkbox" onclick="AspenDiscovery.Account.loadHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort option:selected').val(), !$('#hideCovers_{$source}').is(':checked'));" {if $showCovers == false}checked="checked"{/if}></label>
+				<label for="hideCovers_{$source}" class="control-label checkbox" style="display: block; text-align: right; margin-bottom: 8px;"> {translate text="Hide Covers" isPublicFacing=true} <input id="hideCovers_{$source}" type="checkbox" onclick="AspenDiscovery.Account.loadHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort option:selected').val(), !$('#hideCovers_{$source}').is(':checked'));" {if $showCovers == false}checked="checked"{/if}></label>
 				{assign var="hideCoversFormDisplayed" value=true}
+			{/if}
+			{if empty($showGroupedHoldsFormDisplayed)}
+				<label for="showGroupedHolds_{$source}" class="control-label checkbox" style="display: block;text-align: right;  margin-bottom: 8px;">{translate text="Show Grouped Holds Info" isPublicFacing=true} <input id="showGroupedHolds_{$source}" type="checkbox" onclick="AspenDiscovery.Account.loadHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort option:selected').val(), !$('#hideCovers_{$source}').is(':checked'), '', $('#showGroupedHolds_{$source}').is(':checked'));" {if $showGroupedHolds}checked="checked"{/if}></label>
+				{assign var="showGroupedHoldsFormDisplayed" value=true}
 			{/if}
 		</div>
 		{if empty($offline) && $sectionKey != 'available'  && count($recordList.$sectionKey) > 0}
