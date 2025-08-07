@@ -88,3 +88,6 @@
 	{include file="./holdsListActions.tpl" sectionKey=$sectionKey source=$source showCovers=$showCovers}
 {/if}
 <a href="#" onclick="return AspenDiscovery.Account.exportHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#interlibrary_loanHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort_{$source} option:selected').val());" class="btn btn-sm btn-default" aria-description="{translate text="Click here to export all holds from all sections to CSV"}">{translate text="Export All Holds to CSV" isPublicFacing=true}</a>
+{if $source == 'ils'}
+	<a href="#" onclick="return AspenDiscovery.Account.groupHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#interlibrary_loanHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort_{$source} option:selected').val());" class="btn btn-sm btn-default" aria-description="{translate text="Click here to group selected holds"}">{translate text="Group Selected Holds" isPublicFacing=true}</a>
+{/if}
