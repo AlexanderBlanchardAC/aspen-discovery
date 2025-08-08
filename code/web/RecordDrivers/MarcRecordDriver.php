@@ -1253,6 +1253,12 @@ class MarcRecordDriver extends GroupedWorkSubDriver {
 		foreach ($holdGroups['content'] as $group) {
 			foreach ($group['holds'] as $hold) {
 				if ((string)$hold['biblio_id'] === (string)$record->sourceId) {
+					$holdRecord = new Hold();
+					$holdRecord->recordId = $record->sourceId;
+					if ($holdRecord->find(true)) {
+						$holdRecord->holdGroupId = $group['hold_group_id'];
+						$holdRecord->update();
+					}
 					return $group['hold_group_id'];
 				}
 			}
