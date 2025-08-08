@@ -9307,6 +9307,7 @@ class Koha extends AbstractIlsDriver {
 			}
 
 			if (!$result['success']) {
+				global $logger;
 				$logger->log("HOLD GROUPING RESULT: " . print_r($result, true), Logger::LOG_ERROR);
 			}
 		} catch (Exception $e) {
