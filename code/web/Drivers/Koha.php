@@ -9239,6 +9239,8 @@ class Koha extends AbstractIlsDriver {
 	}
 
 	public function groupHolds($patronId, $holdIds, $forceGrouped = false) {
+		global $logger;
+
 		$endpoint = "/api/v1/patrons/{$patronId}/hold_groups";
 				$extraHeaders = ['x-koha-embed: holds'];
 
@@ -9295,6 +9297,16 @@ class Koha extends AbstractIlsDriver {
 					$result['hold_group'] = $responseData;
 					break;
 				case 400:
+					  if (isset($responseData['error_code']) && $responseData['error_code'] === 'HoldAlreadyBelongsToHoldGroup') {
+						$result = [
+							'success' => false,
+							'error_code' => 'HoldAlreadyBelongsToHoldGroup',
+							'hold_ids' => $responseData['hold_ids'],
+							'message' => 'Some holds are already in a group'
+						];
+						break;
+					}
+
 					$result['message'] = translate(['text' => 'Invalid request data', 'isPublicFacing' => true]);
 					if (isset($responseData['error'])) {
 						$result['message'] .= ': ' . $responseData['error'];
@@ -9303,11 +9315,6 @@ class Koha extends AbstractIlsDriver {
 				default:
 					$result['message'] = translate(['text' => 'Unexpected error occurred', 'isPublicFacing' => true]) . " (HTTP $httpCode)";
 					break;
-			}
-
-			if (!$result['success']) {
-				global $logger;
-				$logger->log("HOLD GROUPING RESULT: " . print_r($result, true), Logger::LOG_ERROR);
 			}
 		} catch (Exception $e) {
 			global $logger;

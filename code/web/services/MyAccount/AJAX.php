@@ -10402,6 +10402,7 @@ class MyAccount_AJAX extends JSON_Action {
 	}
 
 	public function groupPatronHolds() {
+		global $interface;
 
 		if (!UserAccount::isLoggedIn()) {
 			return [
@@ -10423,6 +10424,7 @@ class MyAccount_AJAX extends JSON_Action {
 		$availableSort = $_REQUEST['availableSort'] ?? '';
 		$interlibrarySort = $_REQUEST['interlibrarySort'] ?? '';
 		$unavailableSort = $_REQUEST['unavailableSort'] ?? '';
+		$forceGrouped = $_REQUEST['forceGrouped'] ?? false;
 
 		if (!is_array($holdIds) || count($holdIds) === 0) {
 
@@ -10444,8 +10446,25 @@ class MyAccount_AJAX extends JSON_Action {
 
 			$catalogDriver = $user->getCatalogDriver();
 			if ($catalogDriver->driver instanceof Koha) {
+				if ($forceGrouped) {
+					$groupedHolds = $catalogDriver->groupHolds($patronId, $holdIds, true);
+				} else {
+					$groupedHolds = $catalogDriver->groupHolds($patronId, $holdIds);
+				}
+				global $logger;
+				if (isset($groupedHolds['error_code']) && $groupedHolds['error_code'] === 'HoldAlreadyBelongsToHoldGroup') {
+					$logger->log("SHOULD SHOW MODAL IN AJAX", Logger::LOG_ERROR);
+					return [
+						'success' => false,
+						'specialError' => 'holdAlreadyGrouped',
+						'holdIds' => $groupedHolds['hold_ids'],
+						'title' => translate(['text' => 'Grouped Holds', 'isPublicFacing' => true]),
+						'modalBody' => $interface->fetch('HoldGroups/forceGroupedHoldsModal.tpl'),
+						'modalButtons' => "<button class='tool btn btn-danger' id='forcegroupHoldsGroupBtn' onclick='AspenDiscovery.Account.forceGroupHolds(); return false;'>"  
+							. translate(['text' => 'Continue to Group Holds', 'isPublicFacing' => true]) . "</button>",
+					];
+				}
 
-				$groupedHolds = $catalogDriver->groupHolds($patronId, $holdIds);
 
 				if ($groupedHolds['success']) {
 					return [
@@ -10470,8 +10489,9 @@ class MyAccount_AJAX extends JSON_Action {
 							'text' => 'Failed to group holds',
 							'isPublicFacing' => true
 						])
-						];
+					];
 				}
+				
 			} else {
 				return [
 					'succcess' => false,
@@ -10548,7 +10568,7 @@ class MyAccount_AJAX extends JSON_Action {
 
 		return [
 			'title' => translate([
-				'text' => 'Grouped Holds',
+				'text' => 'Group Holds',
 				'isPublicFacing' => true,
 			]),
 			'modalBody' => $interface->fetch('HoldGroups/controlGroupedHoldsModal.tpl'),
