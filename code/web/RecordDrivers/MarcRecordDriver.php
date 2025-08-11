@@ -1235,7 +1235,8 @@ class MarcRecordDriver extends GroupedWorkSubDriver {
 		}
 	}
 
-	function getGroupedHoldId($record): ?int {
+	function getGroupedHoldId($record): ?array {
+		global $interface;
 		$userId = $record->userId;
 		$user = new User();
 		$user->id = $userId;
@@ -1243,11 +1244,17 @@ class MarcRecordDriver extends GroupedWorkSubDriver {
 			return null;
 		}
 		$catalogDriver = $user->getCatalogDriver();
-
 		$patronId = $user->unique_ils_id;
-
 		$holdGroups = $catalogDriver->getPatronHoldGroups($patronId);
-		if (!isset($holdGroups['content']) || !is_array($holdGroups['content'])) {
+
+		if (!isset($holdGroups['content']) || !is_array($holdGroups['content']) || empty($holdGroups['content'])) {
+			$holdRecord = new Hold();
+			$holdRecord->recordId = $record->sourceId;
+			if ($holdRecord->find(true)) {
+				$holdRecord->holdGroupId = '';
+				$holdRecord->visualHoldGroupId = '';
+				$holdRecord->update();
+			}
 			return null;
 		}
 		foreach ($holdGroups['content'] as $group) {
@@ -1257,9 +1264,13 @@ class MarcRecordDriver extends GroupedWorkSubDriver {
 					$holdRecord->recordId = $record->sourceId;
 					if ($holdRecord->find(true)) {
 						$holdRecord->holdGroupId = $group['hold_group_id'];
+						$holdRecord->visualHoldGroupId = $group['visual_hold_group_id'];
 						$holdRecord->update();
 					}
-					return $group['hold_group_id'];
+					return [
+						'hold_group_id' => $group['hold_group_id'],
+						'visual_hold_group_id' => $group['visual_hold_group_id'],
+					];
 				}
 			}
 		}

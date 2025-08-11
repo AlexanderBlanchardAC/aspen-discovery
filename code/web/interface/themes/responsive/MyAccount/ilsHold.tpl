@@ -218,12 +218,12 @@
 						{/if}
 					{/if}
 					{if $canGroupHolds && $showGroupedHolds}
-						{assign var=holdGroupId value=$record->getGroupedHoldId($record)}
+						{assign var=holdGroupData value=$record->getGroupedHoldId($record)}
 						<div class="row">
 							<div class="result-label col-tn-4">{translate text='Hold Group' isPublicFacing=true}</div>
 							<div class="col-tn-8 result-value">
-								{if $holdGroupId !== null}
-									<stong>{$holdGroupId}</strong>
+								{if $holdGroupData !== null}
+									<stong>{$holdGroupData.visual_hold_group_id}</strong>
 								{else}
 									<strong>{translate text="This hold has not been grouped" isPublicFacing=true}</strong>
 								{/if}

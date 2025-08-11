@@ -9225,7 +9225,6 @@ class Koha extends AbstractIlsDriver {
 		$extraHeaders = ['x-koha-embed: holds'];
 
 		$response = $this->kohaApiUserAgent->get($endpoint, 'koha.getPatronHoldGroups', [], $extraHeaders);
-
 		if ($this->kohaApiUserAgent->getLastResponseCode() === 200) {
 			if (is_array($response)) {
 				return $response;
@@ -9321,4 +9320,17 @@ class Koha extends AbstractIlsDriver {
 
 		return $result;
 	}
+
+	public function deletePatronHoldGroup($patronId, $holdGroupId): bool {
+		$endpoint = "/api/v1/patrons/{$patronId}/hold_groups/{$holdGroupId}";
+
+		$response = $this->kohaApiUserAgent->delete($endpoint, 'koha.deletePatronHoldGroups');
+		$lastCode = $this->kohaApiUserAgent->getLastResponseCode();
+
+		if ($this->kohaApiUserAgent->getLastResponseCode() === 204) {
+			return true;
+		}
+
+		return false;
+	}	
 }

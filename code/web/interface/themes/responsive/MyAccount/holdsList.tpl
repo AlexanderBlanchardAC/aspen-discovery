@@ -91,3 +91,6 @@
 {if $source == 'ils'}
 	<a href="#" onclick="return AspenDiscovery.Account.groupHolds('{$source}', $('#availableHoldSort_{$source} option:selected').val(), $('#interlibrary_loanHoldSort_{$source} option:selected').val(), $('#unavailableHoldSort_{$source} option:selected').val());" class="btn btn-sm btn-default" aria-description="{translate text="Click here to group selected holds"}">{translate text="Group Selected Holds" isPublicFacing=true}</a>
 {/if}
+{if $source == 'ils'}
+	<a href="#" onclick="return AspenDiscovery.Account.controlGroupedHolds();" class="btn btn-sm btn-default" aria-description="{translate text="Click here to control grouped holds"}">{translate text="Control Grouped Holds" isPublicFacing=true}</a>
+{/if}
