@@ -339,6 +339,13 @@ function getUpdates25_08_00(): array {
 				"ALTER TABLE user_hold ADD COLUMN holdGroupId int(11) DEFAULT NULL",
 			],
 		], //add_grouped_hol_id_to_user_hold
+		'add_visual_hold_group_id_to_user_hold' => [
+			'title' => 'Add Visual Hold Group Id to User Hold',
+			'description' => 'Add visual hold group id to user hold',
+			'sql' => [
+				"ALTER TABLE user_hold ADD COLUMN visualHoldGroupId int(11) DEFAULT NULL",
+			],
+		], //add_visual_grouped_hold_id
 
 		//chloe - Open Fifth
 
