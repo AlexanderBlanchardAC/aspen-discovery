@@ -10453,14 +10453,14 @@ class MyAccount_AJAX extends JSON_Action {
 				}
 				global $logger;
 				if (isset($groupedHolds['error_code']) && $groupedHolds['error_code'] === 'HoldAlreadyBelongsToHoldGroup') {
-					$logger->log("SHOULD SHOW MODAL IN AJAX", Logger::LOG_ERROR);
 					return [
 						'success' => false,
 						'specialError' => 'holdAlreadyGrouped',
-						'holdIds' => $groupedHolds['hold_ids'],
+						'holdIds' => $holdIds,
+						'conflictIds' => $groupedHolds['hold_ids'],
 						'title' => translate(['text' => 'Grouped Holds', 'isPublicFacing' => true]),
 						'modalBody' => $interface->fetch('HoldGroups/forceGroupedHoldsModal.tpl'),
-						'modalButtons' => "<button class='tool btn btn-danger' id='forcegroupHoldsGroupBtn' onclick='AspenDiscovery.Account.forceGroupHolds(); return false;'>"  
+						'modalButtons' => "<button class='tool btn btn-danger' id='forcegroupHoldsGroupBtn' onclick='AspenDiscovery.Account.forceGroupHolds(" . json_encode($holdIds) . "); return false;'>"  
 							. translate(['text' => 'Continue to Group Holds', 'isPublicFacing' => true]) . "</button>",
 					];
 				}

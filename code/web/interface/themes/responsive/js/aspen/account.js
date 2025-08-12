@@ -2989,7 +2989,7 @@ AspenDiscovery.Account = (function () {
 						window.location.reload();
 					}, 1500);
 				} else if (data.specialError === 'holdAlreadyGrouped') {
-					AspenDiscovery.showMessageWithButtons(data.title, data.modalBidy, data.modalButtons);
+					AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons);
 				} else {
 					AspenDiscovery.showMessage(data.title, data.message);
 				}
@@ -3031,21 +3031,18 @@ AspenDiscovery.Account = (function () {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
 			})
 		},
-		forceGroupedHolds: function () {
-			const url = Globals.path + '/MyAccount/AJAX?method=getHoldGroupsModal';
+		forceGroupHolds: function (holdIds) {
+			const url = Globals.path + '/MyAccount/AJAX?method=groupPatronHolds';
 			params = {
 				holdIds: holdIds,
 				forceGrouped: true,
 			}
+			console.log("Force grouping holds with IDs:", holdIds);
+
 
 			$.getJSON(url, params, function(data) {
 				if (data.success) {
 					AspenDiscovery.showMessage(data.title, data.message, false, true, false, false);
-					setTimeout(function() {
-						window.location.reload();
-					}, 1500);
-				} else if (data.specialError === 'holdAlreadyGrouped') {
-					console.log("force hold");
 				} else {
 					AspenDiscovery.showMessage(data.title, data.message);
 				}

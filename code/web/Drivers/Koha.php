@@ -9240,6 +9240,8 @@ class Koha extends AbstractIlsDriver {
 
 	public function groupHolds($patronId, $holdIds, $forceGrouped = false) {
 		global $logger;
+		$logger->log("Attempting to group holds. PatronId={$patronId}, HoldIds=" . json_encode($holdIds) . ", ForceGrouped=" . var_export($forceGrouped, true), Logger::LOG_ERROR);
+
 
 		$endpoint = "/api/v1/patrons/{$patronId}/hold_groups";
 				$extraHeaders = ['x-koha-embed: holds'];
@@ -9271,12 +9273,17 @@ class Koha extends AbstractIlsDriver {
 				'force_grouped' => $forceGrouped
 			];
 
+			$logger->log("groupHolds request data: " . json_encode($requestData), Logger::LOG_ERROR);
 
 			$apiResult = $this->kohaApiUserAgent->post($endpoint, $requestData, 'koha.addPatronHoldGroups', [], $extraHeaders);
 
 			$httpCode = $apiResult['code'] ?? 0;
 			$responseData = $apiResult['content'] ?? null;
 			$success = $httpCode == 201 ? true : false;
+
+			$logger->log("groupHolds HTTP code: {$httpCode}", Logger::LOG_ERROR);
+			$logger->log("groupHolds API response: " . print_r($responseData, true), Logger::LOG_ERROR);
+
 
 			if (!$success) {
 				$curlError = $apiResult['curl_error'] ?? null;
@@ -9298,13 +9305,15 @@ class Koha extends AbstractIlsDriver {
 					break;
 				case 400:
 					  if (isset($responseData['error_code']) && $responseData['error_code'] === 'HoldAlreadyBelongsToHoldGroup') {
-						$result = [
-							'success' => false,
-							'error_code' => 'HoldAlreadyBelongsToHoldGroup',
-							'hold_ids' => $responseData['hold_ids'],
-							'message' => 'Some holds are already in a group'
-						];
-						break;
+						// $result = [
+						// 	'success' => false,
+						// 	'error_code' => 'HoldAlreadyBelongsToHoldGroup',
+						// 	'hold_ids' => $responseData['hold_ids'],
+						// 	'message' => 'Some holds are already in a group'
+						// ];
+						// break;
+						$responseData['success'] = false;
+						return $responseData;
 					}
 
 					$result['message'] = translate(['text' => 'Invalid request data', 'isPublicFacing' => true]);
@@ -9329,10 +9338,13 @@ class Koha extends AbstractIlsDriver {
 	}
 
 	public function deletePatronHoldGroup($patronId, $holdGroupId): bool {
+		$logger->log("Deleting hold group. PatronId={$patronId}, HoldGroupId={$holdGroupId}", Logger::LOG_ERROR);
+
 		$endpoint = "/api/v1/patrons/{$patronId}/hold_groups/{$holdGroupId}";
 
 		$response = $this->kohaApiUserAgent->delete($endpoint, 'koha.deletePatronHoldGroups');
 		$lastCode = $this->kohaApiUserAgent->getLastResponseCode();
+		$logger->log("Delete result HTTP code: {$lastCode}", Logger::LOG_ERROR);
 
 		if ($this->kohaApiUserAgent->getLastResponseCode() === 204) {
 			return true;
