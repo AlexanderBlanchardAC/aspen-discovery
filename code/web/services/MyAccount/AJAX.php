@@ -10425,8 +10425,21 @@ class MyAccount_AJAX extends JSON_Action {
 		$interlibrarySort = $_REQUEST['interlibrarySort'] ?? '';
 		$unavailableSort = $_REQUEST['unavailableSort'] ?? '';
 		$forceGrouped = $_REQUEST['forceGrouped'] ?? false;
+		$userIds = $_REQUEST['userIds'] ?? null;
 
-		if (!is_array($holdIds) || count($holdIds) === 0) {
+		if (!is_array($userIds)) {
+			$userIds = [$userIds];
+		}
+
+		if (count(array_unique($userIds)) > 1) {
+			return [
+				'success' => false,
+				'title' => translate(['text' => 'Error', 'isPublicFacing' => true]),
+				'message' => translate(['text' => 'You cannot group holds from different users.', 'isPublicFacing' => true])
+			];
+		}
+
+		if (!is_array($holdIds) || count($holdIds) <= 1) {
 
 			return [
 				'success' => false,
@@ -10435,16 +10448,48 @@ class MyAccount_AJAX extends JSON_Action {
 					'isPublicFacing' => true,
 				]),
 				'message' => translate([
-					'text' => 'Please select at least one hold to group',
+					'text' => 'Please select at least two holds to group',
 					'isPublicFacing' => true
 				])
 			];
 		}
 		try {
-			$user = UserAccount::getLoggedInUser();
-			$patronId = $user->unique_ils_id;
+			$userId = $userIds[0];
 
-			$catalogDriver = $user->getCatalogDriver();
+			$currentUser = UserAccount::getLoggedInUser();
+			$targetUser = new User();
+			$targetUser->id = $userId;
+			if (!$targetUser->find(true)) {
+				return [
+					'success' => false,
+					'title' => translate(['text' => 'Error', 'isPublicFacing' => true]),
+					'message' => translate(['text' => 'Invalid user specified', 'isPublicFacing' => true])
+				];
+			}
+
+			$canManage = false;
+			 if ($currentUser == $userId) {
+				$canManage = true;
+			} else {
+				$linkedUsers = $currentUser->getLinkedUsers();
+				foreach ($linkedUsers as $linkedUser) {
+					if ($linkedUser->id == $userId) {
+						$canManage = true;
+						break;
+					}
+				}
+			}
+
+			if (!$canManage) {
+				return [
+					'success' => false,
+					'title' => translate(['text' => 'Error', 'isPublicFacing' => true]),
+					'message' => translate(['text' => 'You do not have permission to manage this user\'s holds', 'isPublicFacing' => true])
+				];
+			}
+			
+			$patronId = $targetUser->unique_ils_id;
+			$catalogDriver = $targetUser->getCatalogDriver();
 			if ($catalogDriver->driver instanceof Koha) {
 				if ($forceGrouped) {
 					$groupedHolds = $catalogDriver->groupHolds($patronId, $holdIds, true);
@@ -10457,10 +10502,11 @@ class MyAccount_AJAX extends JSON_Action {
 						'success' => false,
 						'specialError' => 'holdAlreadyGrouped',
 						'holdIds' => $holdIds,
+						'userId' => $userId,
 						'conflictIds' => $groupedHolds['hold_ids'],
 						'title' => translate(['text' => 'Grouped Holds', 'isPublicFacing' => true]),
 						'modalBody' => $interface->fetch('HoldGroups/forceGroupedHoldsModal.tpl'),
-						'modalButtons' => "<button class='tool btn btn-danger' id='forcegroupHoldsGroupBtn' onclick='AspenDiscovery.Account.forceGroupHolds(" . json_encode($holdIds) . "); return false;'>"  
+						'modalButtons' => "<button class='tool btn btn-danger' id='forcegroupHoldsGroupBtn' onclick='AspenDiscovery.Account.forceGroupHolds(" . json_encode($holdIds) . ", " . json_encode($userId) . "); return false;'>"  
 							. translate(['text' => 'Continue to Group Holds', 'isPublicFacing' => true]) . "</button>",
 					];
 				}

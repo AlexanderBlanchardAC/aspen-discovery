@@ -2919,7 +2919,9 @@ AspenDiscovery.Account = (function () {
 			return false;
 		},
 		groupHolds:  function (source, availableSort, interlibrarySort, unavailableSort) {
-			var selectedHolds = [];
+			let selectedHolds = [];
+			let userIds = [];
+
 
 			$("input[name*='select']:checked").each(function() {
 				console.log("Checkbox found:", {
@@ -2933,7 +2935,7 @@ AspenDiscovery.Account = (function () {
 					closest_row: $(this).closest('tr').attr('id') || $(this).closest('.hold-item').attr('id')
 				});
 				
-				var holdId = $(this).val();
+				let holdId = $(this).val();
 				
 				if (holdId === 'on' || !holdId) {
 					holdId = $(this).data('hold-id') || 
@@ -2950,27 +2952,19 @@ AspenDiscovery.Account = (function () {
 						var idMatches = nameAttr.match(/\d+/g);
 						if (idMatches && idMatches.length >= 3) {
 							holdId = idMatches[2];
-						}
 
-					}
-				}
-				
-				if (holdId === 'on' || !holdId) {
-					var row = $(this).closest('tr');
-					if (row.length && row.attr('id')) {
-						var rowIdMatch = row.attr('id').match(/\d+/);
-						if (rowIdMatch) {
-							holdId = rowIdMatch[0];
+							const userIdFromName = idMatches[0];
+							if (!userIds.includes(userIdFromName)) {
+								userIds.push(userIdFromName);
+							}
 						}
 					}
 				}
-				
 				
 				if (holdId && holdId !== 'on') {
 					if (!selectedHolds.includes(holdId)) {
 						selectedHolds.push(holdId);
 					}
-
 				}
 			});
 			var url = Globals.path + "/MyAccount/AJAX?method=groupPatronHolds";
@@ -2979,7 +2973,8 @@ AspenDiscovery.Account = (function () {
 				holdIds: selectedHolds,
 				availableSort: availableSort,
 				interlibrarySort: interlibrarySort,
-				unavailableSort: unavailableSort
+				unavailableSort: unavailableSort,
+				userIds: userIds
 			};
 
 			$.getJSON(url, params, function(data) {
@@ -3031,11 +3026,12 @@ AspenDiscovery.Account = (function () {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
 			})
 		},
-		forceGroupHolds: function (holdIds) {
+		forceGroupHolds: function (holdIds, userId) {
 			const url = Globals.path + '/MyAccount/AJAX?method=groupPatronHolds';
 			params = {
 				holdIds: holdIds,
 				forceGrouped: true,
+				userIds: userId
 			}
 			console.log("Force grouping holds with IDs:", holdIds);
 
@@ -3049,9 +3045,6 @@ AspenDiscovery.Account = (function () {
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
 			});
-
-
-
 		}
 	};
 }(AspenDiscovery.Account || {}));
