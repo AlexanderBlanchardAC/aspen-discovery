@@ -10639,8 +10639,6 @@ class MyAccount_AJAX extends JSON_Action {
 	public function deleteHoldGroup() {
 		require_once ROOT_DIR . '/sys/User/Hold.php';
 		global $interface;
-		global $logger;
-		$logger->log("in deleteHolGroup", Logger::LOG_ERROR);
 		$currentUser = UserAccount::getLoggedInUser();
 
 		if (!$currentUser) {
@@ -10653,7 +10651,6 @@ class MyAccount_AJAX extends JSON_Action {
 
 		$holdGroupId = $_REQUEST['holdGroupId'] ?? null;
 		$userId = $_REQUEST['userId'] ?? null;
-		$logger->log("Hold groupid: " . $holdGroupId, Logger::LOG_ERROR);
 
 		if (empty($holdGroupId)) {
 			return [
@@ -10718,14 +10715,10 @@ class MyAccount_AJAX extends JSON_Action {
 
 		$catalogDriver = $targetUser->getCatalogDriver();
 		if ($catalogDriver->driver instanceof Koha) {
-		$logger->log("catalog driver is koha", Logger::LOG_ERROR);
 
 			try {
 				$patronId = $targetUser->unique_ils_id;
-				global $logger;
-				$logger->log("PATRON ID: " . $patronId, Logger::LOG_ERROR);
 				$result = $catalogDriver->deletepatronHoldGroup($patronId, $holdGroupId);
-				$logger->log("RESULT: " . $result, Logger::LOG_ERROR);
 				if ($result === true) {
 					$holdRecord = new Hold();
 					$holdRecord->userId = $userId;
@@ -10778,8 +10771,17 @@ class MyAccount_AJAX extends JSON_Action {
 				];
 			}
 		} else {
-		$logger->log("not koha", Logger::LOG_ERROR);
-
+			return [
+					'succcess' => false,
+					'title' => translate([
+						'text' => 'Error',
+						'isPublicFacing' => true,
+					]),
+					'message' => translate([
+						'text' => 'Your catalog driver does not support this feature at the present time',
+						'isPublicFacing' => true,
+					])
+				];
 		}
 	}
 }
