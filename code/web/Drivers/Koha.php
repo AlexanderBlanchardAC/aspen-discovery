@@ -9338,13 +9338,11 @@ class Koha extends AbstractIlsDriver {
 	}
 
 	public function deletePatronHoldGroup($patronId, $holdGroupId): bool {
-		$logger->log("Deleting hold group. PatronId={$patronId}, HoldGroupId={$holdGroupId}", Logger::LOG_ERROR);
 
 		$endpoint = "/api/v1/patrons/{$patronId}/hold_groups/{$holdGroupId}";
 
 		$response = $this->kohaApiUserAgent->delete($endpoint, 'koha.deletePatronHoldGroups');
 		$lastCode = $this->kohaApiUserAgent->getLastResponseCode();
-		$logger->log("Delete result HTTP code: {$lastCode}", Logger::LOG_ERROR);
 
 		if ($this->kohaApiUserAgent->getLastResponseCode() === 204) {
 			return true;

@@ -10590,14 +10590,25 @@ class MyAccount_AJAX extends JSON_Action {
 		$userHold = new Hold();
 		$userHold->userId =  $user;
 		$holdGroupMap = [];
+		$allUsers = array_merge([$user], $user->getLinkedUsers());
 
+		foreach ($allUsers as $account) {
+		$userHold = new Hold();
+		$userHold->userId = $account->id;
 		if ($userHold->find()) {
 			do {
 				if (!empty($userHold->visualHoldGroupId)) {
-					$holdGroupMap[$userHold->visualHoldGroupId] = $userHold->holdGroupId;
+					$uniqueKey = $userHold->visualHoldGroupId . '_' . $account->id;
+					$holdGroupMap[$uniqueKey] = [
+						'holdGroupId'	=> $userHold->holdGroupId,
+						'visualHoldGroupId'	=> $userHold->visualHoldGroupId,
+						'userId' => $account->id,
+						'userName' => $account->displayName,
+					];
 				}
 			} while ($userHold->fetch());
 		}
+	}
 
 		if (empty($holdGroupMap)) {
 			return [
@@ -10630,9 +10641,18 @@ class MyAccount_AJAX extends JSON_Action {
 		global $interface;
 		global $logger;
 		$logger->log("in deleteHolGroup", Logger::LOG_ERROR);
-		$user = UserAccount::getLoggedInUser();
+		$currentUser = UserAccount::getLoggedInUser();
+
+		if (!$currentUser) {
+			return [
+				'success' => false,
+				'title' => translate(['text' => 'Error', 'isPublicFacing' => true]),
+				'message' => translate(['text' => 'You must be logged in to delete hold groups.', 'isPublicFacing' => true]),
+			];
+		}
 
 		$holdGroupId = $_REQUEST['holdGroupId'] ?? null;
+		$userId = $_REQUEST['userId'] ?? null;
 		$logger->log("Hold groupid: " . $holdGroupId, Logger::LOG_ERROR);
 
 		if (empty($holdGroupId)) {
@@ -10649,19 +10669,66 @@ class MyAccount_AJAX extends JSON_Action {
 			];
 		}
 
-		$catalogDriver = $user->getCatalogDriver();
+		if (empty($userId)) {
+			return [
+				'success' => false,
+				'title' => translate([
+					'text' => 'Error',
+					'isPublicFacing' => true,
+				]),
+				'message' => translate([
+					'text' => 'No hold user specified',
+					'isPublicFacing' => true,
+				])
+			];
+		}
+
+		$targetUser = new User();
+		$targetUser->id = $userId;
+			if (!$targetUser->find(true)) {
+				return [
+				'success' => false,
+				'title' => translate(['text' => 'Error', 'isPublicFacing' => true]),
+				'message' => translate(['text' => 'Invalid user specified.', 'isPublicFacing' => true]),
+			];
+		}
+
+		$canManage = false;
+		if ($currentUser == $userId) {
+			$canManage = true;
+		} else {
+			$linkedUsers = $currentUser->getLinkedUsers();
+
+			foreach ($linkedUsers as $linkedUser) {
+
+				if ($linkedUser->id == $userId) {
+					$canManage = true;
+					break;
+				}
+			}
+		}
+
+		if (!$canManage) {
+			return [
+				'success' => false,
+				'title' => translate(['text' => 'Error', 'isPublicFacing' => true]),
+				'message' => translate(['text' => 'You do not have permission to manage this user\'s hold groups.', 'isPublicFacing' => true]),
+			];
+		}
+
+		$catalogDriver = $targetUser->getCatalogDriver();
 		if ($catalogDriver->driver instanceof Koha) {
 		$logger->log("catalog driver is koha", Logger::LOG_ERROR);
 
 			try {
-				$patronId = $user->unique_ils_id;
+				$patronId = $targetUser->unique_ils_id;
 				global $logger;
 				$logger->log("PATRON ID: " . $patronId, Logger::LOG_ERROR);
 				$result = $catalogDriver->deletepatronHoldGroup($patronId, $holdGroupId);
 				$logger->log("RESULT: " . $result, Logger::LOG_ERROR);
 				if ($result === true) {
 					$holdRecord = new Hold();
-					$holdRecord->userId = $user;
+					$holdRecord->userId = $userId;
 					$holdRecord->holdGroupId = $holdGroupId;
 					if ($holdRecord->find()) {
 						do {

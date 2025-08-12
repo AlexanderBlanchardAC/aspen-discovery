@@ -24,8 +24,10 @@
 				</label>
 				<select id="holdGroupSelect" name="holdGroupId" class="form-control required">
 					<option value="">{translate text="-- Select Hold Group --" isAdminFacing=true}</option>
-					{foreach from=$holdGroupMap key=visualHoldGroupId item=holdGroupId}
-						<option value="{$holdGroupId}">{translate text="Hold Group %1%" 1=$visualHoldGroupId isAdminFacing=true}</option>
+					{foreach from=$holdGroupMap item=holdGroup}
+						<option value="{$holdGroup.holdGroupId}" data-userid="{$holdGroup.userId}">
+							{translate text="Hold Group %1% (%2%)" 1=$holdGroup.visualHoldGroupId 2=$holdGroup.userName isAdminFacing=true}
+						</option>
 					{/foreach}
 				</select>
 			</div>

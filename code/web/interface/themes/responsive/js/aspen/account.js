@@ -3006,9 +3006,12 @@ AspenDiscovery.Account = (function () {
 			})
 		},
 		deleteHoldsGroup: function(holdGroupId) {
+			const selectedOption = $('#holdGroupSelect option:selected');
+			const userId = selectedOption.data('userid');
 			const url = Globals.path + '/MyAccount/AJAX?method=deleteHoldGroup';
 			const params = {
-				holdGroupId: holdGroupId
+				holdGroupId: holdGroupId,
+				userId: userId,
 			};
 
 			$.getJSON(url, params, function(data) {
