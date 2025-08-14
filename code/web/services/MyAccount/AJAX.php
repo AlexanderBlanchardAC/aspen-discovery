@@ -10632,7 +10632,12 @@ class MyAccount_AJAX extends JSON_Action {
 			'modalButtons' => "<button class='tool btn btn-danger' id='deleteHoldGroupBtn' onclick='AspenDiscovery.Account.deleteHoldsGroup($(\"#holdGroupSelect\").val()); return false;'>" . translate([
 				'text' => 'Delete Hold Group',
 				'isPublicFacing' => true,
-			]) . "</button>",
+			]) . "</button>
+			<button class='tool btn btn-danger' id='selectHoldGroupBtn' onclick='AspenDiscovery.Account.selectHoldsGroup($(\"#holdGroupSelect\").val()); return false;'>" . translate([
+				'text' => 'Select Group',
+				'isPublicFacing' => true,
+			]) .
+			"</button>",
 		];
 	}
 
@@ -10783,5 +10788,54 @@ class MyAccount_AJAX extends JSON_Action {
 					])
 				];
 		}
+	}
+
+	public function getHoldsForGroup() {
+		require_once ROOT_DIR . '/sys/User/Hold.php';
+
+		$holdGroupId = $_REQUEST['holdGroupId'];
+		$userId = $_REQUEST['userId'];
+
+		$userHold = new Hold();
+		$userHold->userId = $userId;
+		$userHold->holdGroupId = $holdGroupId;
+
+
+		$recordIds = [];
+		if ($userHold->find()) {
+			while ($userHold->fetch()) {
+				$recordIds[] = $userHold->recordId;
+			}
+		}
+
+		if (empty($recordIds)) {
+			$result = [
+				'success' => false,
+				'title' => translate([
+					'text' => 'Error',
+					'isPublicFacing' => true,
+				]),
+				'message' => translate([
+					'text' => 'No holds were found for the selected groups',
+					'isPublicFacing' => true,
+				])
+				];
+		} else {
+			$result = [
+				'success' => true,
+				'recordIds' => $recordIds,
+				'title' => translate([
+					'text' => 'Holds Checked',
+					'isPublicFacing' => true,
+				]),
+				'message' => translate([
+					'text' => 'Your holds have been checked',
+					'isPublicFacing' => true,
+				])
+			];
+		}
+		header('Content-Type: application/json');
+		echo json_encode($result);
+		exit;
 	}
 }

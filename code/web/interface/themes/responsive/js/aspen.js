@@ -8778,7 +8778,7 @@ AspenDiscovery.Account = (function () {
 				holdGroupId: holdGroupId,
 				userId: userId,
 			};
-
+			//TO DO use modal reload not set timeout
 			$.getJSON(url, params, function(data) {
 				if (data.success) {
 					AspenDiscovery.showMessage(data.title, data.message);
@@ -8813,7 +8813,45 @@ AspenDiscovery.Account = (function () {
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
 			});
-		}
+		},
+		selectHoldsGroup: function(holdGroupId) {
+			if (!holdGroupId) {
+				AspenDiscovery.showMessage('Error', 'Please select a hold group first.');
+				return;
+			}
+
+			const selectedOption = $('#holdGroupSelect option:selected');
+			const userId = selectedOption.data('userid');
+
+			const url = Globals.path + '/MyAccount/AJAX?method=getHoldsForGroup';
+			const params = {
+				holdGroupId: holdGroupId,
+				userId: userId
+			};
+
+			$.getJSON(url, params, function(data) {
+
+				if (data.success && Array.isArray(data.recordIds)) {
+					$("input[type='checkbox'][name^='selected']").each(function() {
+						const name = $(this).attr('name'); 
+						const match = name.match(/\[(\d+)\|(\d+)\|(\d+)\]/);
+						if (match) {
+							const recordId = parseInt(match[2]);
+
+							if (data.recordIds.includes(recordId.toString())) {
+								$(this).prop('checked', true);
+							}
+						}
+					});
+					AspenDiscovery.showMessage(data.title, data.message, true, false)
+
+				} else {
+					AspenDiscovery.showMessage(data.title, data.message);
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			});
+		},
 	};
 }(AspenDiscovery.Account || {}));
 AspenDiscovery.Admin = (function () {
