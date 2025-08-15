@@ -10403,6 +10403,7 @@ class MyAccount_AJAX extends JSON_Action {
 
 	public function groupPatronHolds() {
 		global $interface;
+		global $logger;
 
 		if (!UserAccount::isLoggedIn()) {
 			return [
@@ -10426,6 +10427,7 @@ class MyAccount_AJAX extends JSON_Action {
 		$unavailableSort = $_REQUEST['unavailableSort'] ?? '';
 		$forceGrouped = $_REQUEST['forceGrouped'] ?? false;
 		$userIds = $_REQUEST['userIds'] ?? null;
+		$logger->log("hold ids: " . print_r($holdIds, true), Logger::LOG_ERROR);
 
 		if (!is_array($userIds)) {
 			$userIds = [$userIds];
@@ -10837,5 +10839,66 @@ class MyAccount_AJAX extends JSON_Action {
 		header('Content-Type: application/json');
 		echo json_encode($result);
 		exit;
+	}
+
+	public function showCancelHoldGroupModal() {
+		global $interface;
+
+		$holdGroupId = $_REQUEST['holdGroupId'] ?? '';
+
+		if (empty($holdGroupId)) {
+			echo json_encode([
+				'success' => false,
+				'title' => ([
+					'text' => 'Error',
+					'isPublicFacing' => true,
+				]),
+				'message' => translate([
+					'text' => 'No hold group ID provided',
+					'isPublicFacing' => true,
+				])
+			]);
+			exit;
+		}
+		require_once ROOT_DIR . '/sys/User/Hold.php';
+		$userHold = new Hold();
+		$userHold->holdGroupId = $holdGroupId;
+		$holdsInGroup = [];
+		if ($userHold->find()) {
+			while ($userHold->fetch()) {
+				$holdsInGroup[] = clone $userHold;
+			}
+		}
+
+		if (empty($holdsInGroup)) {
+			echo json_encode([
+				'success' => false,
+					'title' => ([
+					'text' => 'Error',
+					'isPublicFacing' => true,
+				]),
+				'message' => translate([
+					'text' => 'No holds found for this group.',
+					'isPublicFacing' => true,
+				])
+			]);
+			exit;
+		}
+
+		$interface->assign('holdGroupId', $holdGroupId);
+		$interface->assign('holdsInGroup', $holdsInGroup);
+		return [
+			'success' => true,
+			'title' => translate([
+				'text' => 'Grouped Holds',
+				'isPublicFacing' => true,
+			]),
+			'modalBody' => $interface->fetch('HoldGroups/confirmActOnHolds.tpl'),
+			'modalButtons' => "<button class='tool btn btn-danger' id='confirmActOnHoldGroupBtn' onclick='AspenDiscovery.Account.confirmActOnHoldGroup($\"#holdGroupSelect\").val()); return false;'>" . translate([
+				'text' => 'Confirm',
+				'isPublicFacing' => true,
+			])
+		];
+
 	}
 }

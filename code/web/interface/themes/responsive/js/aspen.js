@@ -6716,14 +6716,31 @@ AspenDiscovery.Account = (function () {
 			return false;
 		},
 
-		confirmCancelHold: function (patronId, recordId, holdIdToCancel, isIll) {
-			AspenDiscovery.loadingMessage();
-			// noinspection JSUnresolvedFunction
-			$.getJSON(Globals.path + "/MyAccount/AJAX?method=confirmCancelHold&patronId=" + patronId + "&recordId=" + recordId + "&cancelId=" + holdIdToCancel + "&isIll=" + isIll, function (data) {
-				AspenDiscovery.showMessageWithButtons(data.title, data.body, data.buttons); // automatically close when successful
-			}).fail(AspenDiscovery.ajaxFail);
+		confirmCancelHold: function (patronId, recordId, holdIdToCancel, isIll, holdGroupId) {
+			if (holdGroupId) {
+				const url = Globals.path + '/MyAccount/AJAX?method=showCancelHoldGroupModal';
+				const params = {
+					holdGroupId: holdGroupId
+				};
 
-			return false
+				$.getJSON(url, params, function (data) {
+					if (data.success) {
+						AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons)
+					} else {
+						AspenDiscovery.showMessage(data.title, data.message)
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+				})
+			} else {
+				AspenDiscovery.loadingMessage();
+				// noinspection JSUnresolvedFunction
+				$.getJSON(Globals.path + "/MyAccount/AJAX?method=confirmCancelHold&patronId=" + patronId + "&recordId=" + recordId + "&cancelId=" + holdIdToCancel + "&isIll=" + isIll, function (data) {
+					AspenDiscovery.showMessageWithButtons(data.title, data.body, data.buttons); // automatically close when successful
+				}).fail(AspenDiscovery.ajaxFail);
+
+				return false
+			}
 		},
 
 		cancelHold: function (patronId, recordId, holdIdToCancel, isIll) {

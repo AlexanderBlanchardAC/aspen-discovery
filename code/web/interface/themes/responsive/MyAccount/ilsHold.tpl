@@ -271,7 +271,7 @@
 						{else}
 							{if $record->cancelable}
 								{* First step in cancelling a hold is now fetching confirmation message, with better labeled buttons. *}
-								<button onclick="return AspenDiscovery.Account.confirmCancelHold('{$record->userId}', '{$record->sourceId}', '{$record->cancelId}', {if $record->isIll}1{else}0{/if});"
+								<button onclick="return AspenDiscovery.Account.confirmCancelHold('{$record->userId}', '{$record->sourceId}', '{$record->cancelId}', {if $record->isIll}1{else}0{/if},{if $record->holdGroupId}{$record->holdGroupId}{else}null{/if});"
 										class="btn btn-sm btn-warning cancelButton">{translate text="Cancel Hold" isPublicFacing=true}</button>
 							{/if}
 							{if $record->canFreeze}
