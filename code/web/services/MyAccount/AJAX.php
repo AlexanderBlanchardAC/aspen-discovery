@@ -10632,11 +10632,11 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch('HoldGroups/controlGroupedHoldsModal.tpl'),
 			'modalButtons' => "<button class='tool btn btn-danger' id='deleteHoldGroupBtn' onclick='AspenDiscovery.Account.deleteHoldsGroup($(\"#holdGroupSelect\").val()); return false;'>" . translate([
-				'text' => 'Delete Hold Group',
+				'text' => 'Ungroup Holds',
 				'isPublicFacing' => true,
 			]) . "</button>
 			<button class='tool btn btn-danger' id='selectHoldGroupBtn' onclick='AspenDiscovery.Account.selectHoldsGroup($(\"#holdGroupSelect\").val()); return false;'>" . translate([
-				'text' => 'Select Group',
+				'text' => 'Select Grouped Holds',
 				'isPublicFacing' => true,
 			]) .
 			"</button>",
