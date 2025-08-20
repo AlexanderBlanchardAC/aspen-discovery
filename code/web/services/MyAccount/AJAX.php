@@ -10841,10 +10841,11 @@ class MyAccount_AJAX extends JSON_Action {
 		exit;
 	}
 
-	public function showCancelHoldGroupModal() {
+	public function showActOnHoldGroupModal() {
 		global $interface;
 
 		$holdGroupId = $_REQUEST['holdGroupId'] ?? '';
+		$holdAction = $_REQUEST['holdAction'] ?? null;
 
 		if (empty($holdGroupId)) {
 			echo json_encode([
@@ -10860,6 +10861,22 @@ class MyAccount_AJAX extends JSON_Action {
 			]);
 			exit;
 		}
+
+		if (empty($holdAction)) {
+			echo json_encode([
+				'success' => false,
+				'title' => ([
+					'text' => 'Error',
+					'isPublicFacing' => true,
+				]),
+				'message' => translate([
+					'text' => 'No action specified',
+					'isPublicFacing' => true,
+				])
+			]);
+			exit;
+		}
+
 		require_once ROOT_DIR . '/sys/User/Hold.php';
 		$userHold = new Hold();
 		$userHold->holdGroupId = $holdGroupId;
@@ -10867,6 +10884,7 @@ class MyAccount_AJAX extends JSON_Action {
 		if ($userHold->find()) {
 			while ($userHold->fetch()) {
 				$holdsInGroup[] = clone $userHold;
+				$holdIds[] = $userHold->userId . '|' . $userHold->recordId . '|' . $userHold->cancelId;
 			}
 		}
 
@@ -10885,8 +10903,22 @@ class MyAccount_AJAX extends JSON_Action {
 			exit;
 		}
 
+		$actionText = '';
+		switch($holdAction) {
+			case 'cancel':
+				$actionText = 'cancelled';
+				break;
+			case 'freeze':
+				$actionText = 'frozen';
+			default:
+				$actionText = 'affected';
+		}
+
+		$holdIdsJson = json_encode($holdIds);
+
 		$interface->assign('holdGroupId', $holdGroupId);
 		$interface->assign('holdsInGroup', $holdsInGroup);
+		$interface->assign('actionText', $actionText);
 		return [
 			'success' => true,
 			'title' => translate([
@@ -10894,7 +10926,7 @@ class MyAccount_AJAX extends JSON_Action {
 				'isPublicFacing' => true,
 			]),
 			'modalBody' => $interface->fetch('HoldGroups/confirmActOnHolds.tpl'),
-			'modalButtons' => "<button class='tool btn btn-danger' id='confirmActOnHoldGroupBtn' onclick='AspenDiscovery.Account.confirmActOnHoldGroup($\"#holdGroupSelect\").val()); return false;'>" . translate([
+			'modalButtons' => "<button class='tool btn btn-danger' id='confirmActOnHoldGroupBtn' onclick='AspenDiscovery.Account.confirmActOnHoldGroup($holdIdsJson, \"$holdAction\"); return false;'>" . translate([
 				'text' => 'Confirm',
 				'isPublicFacing' => true,
 			])

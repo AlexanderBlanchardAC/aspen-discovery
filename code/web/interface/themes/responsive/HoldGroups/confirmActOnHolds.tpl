@@ -1,6 +1,6 @@
 {strip}
 	<div class="hold-group-modal">
-		<p>{translate text="The following holds are in this group and will be affected:"}</p>
+		<p>{translate text="The following holds are in this group and will be %1%:" 1=$actionText}</p>
 		
 		{if $holdsInGroup|@count > 0}
 			<ul>
