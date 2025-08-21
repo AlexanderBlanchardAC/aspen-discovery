@@ -10846,6 +10846,9 @@ class MyAccount_AJAX extends JSON_Action {
 
 		$holdGroupId = $_REQUEST['holdGroupId'] ?? '';
 		$holdAction = $_REQUEST['holdAction'] ?? null;
+		$patronId = $_REQUEST['patronId'] ?? '';
+		$recordId = $_REQUEST['recordId'] ?? '';
+		$cancelId = $_REQUEST['holdIdToCancel'] ?? '';
 
 		if (empty($holdGroupId)) {
 			echo json_encode([
@@ -10926,10 +10929,13 @@ class MyAccount_AJAX extends JSON_Action {
 				'isPublicFacing' => true,
 			]),
 			'modalBody' => $interface->fetch('HoldGroups/confirmActOnHolds.tpl'),
-			'modalButtons' => "<button class='tool btn btn-danger' id='confirmActOnHoldGroupBtn' onclick='AspenDiscovery.Account.confirmActOnHoldGroup($holdIdsJson, \"$holdAction\"); return false;'>" . translate([
-				'text' => 'Confirm',
-				'isPublicFacing' => true,
-			])
+			'modalButtons' => "
+			<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.cancelSingleHoldFromGroup(\"$patronId\", \"$recordId\", \"$cancelId\"); return false;'>" . 
+			translate(['text' => 'Cancel Just This Hold', 'isPublicFacing' => true]) . 
+			"</button>
+			<button class='tool btn btn-danger' onclick='AspenDiscovery.Account.confirmActOnHoldGroup($holdIdsJson, \"$holdAction\"); return false;'>" . 
+			translate(['text' => 'Cancel All Holds in Group', 'isPublicFacing' => true]) . 
+			"</button>"
 		];
 
 	}

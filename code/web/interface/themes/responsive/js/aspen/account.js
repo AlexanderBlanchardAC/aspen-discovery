@@ -956,7 +956,10 @@ AspenDiscovery.Account = (function () {
 				const url = Globals.path + '/MyAccount/AJAX?method=showActOnHoldGroupModal';
 				const params = {
 					holdGroupId: holdGroupId,
-					holdAction: 'cancel'
+					holdAction: 'cancel',
+					patronId: patronId,
+					recordId: recordId,
+					holdIdToCancel: holdIdToCancel
 				};
 
 				$.getJSON(url, params, function (data) {
@@ -980,6 +983,7 @@ AspenDiscovery.Account = (function () {
 		},
 
 		cancelHold: function (patronId, recordId, holdIdToCancel, isIll) {
+			console.log("called cancel hold");
 			if (Globals.loggedIn) {
 				AspenDiscovery.loadingMessage();
 				// noinspection JSUnresolvedFunction
@@ -3131,6 +3135,15 @@ AspenDiscovery.Account = (function () {
 				AspenDiscovery.Account.cancelHoldGroup(holdIds);
 			}
 
+		},
+		cancelSingleHoldFromGroup: function(patronId, recordId, cancelId) {
+			$.getJSON(Globals.path + "/MyAccount/AJAX?method=cancelHold&patronId=" + patronId + "&recordId=" + recordId + "&cancelId=" + cancelId + "&isIll=0", function (data) {
+				AspenDiscovery.showMessage(data.title, data.body, data.success);
+				location.reload();
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			})
+			return false;
 		}
 	};
 }(AspenDiscovery.Account || {}));
