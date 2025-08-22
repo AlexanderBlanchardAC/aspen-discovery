@@ -8947,8 +8947,13 @@ AspenDiscovery.Account = (function () {
 		},
 		cancelSingleHoldFromGroup: function(patronId, recordId, cancelId) {
 			$.getJSON(Globals.path + "/MyAccount/AJAX?method=cancelHold&patronId=" + patronId + "&recordId=" + recordId + "&cancelId=" + cancelId + "&isIll=0", function (data) {
-				AspenDiscovery.showMessage(data.title, data.body, data.success);
-				location.reload();
+				if (data.success) {
+					AspenDiscovery.showMessage(data.title, data.message);
+					location.reload();
+				} else {
+					AspenDiscovery.showMessage(data.title, data.message);
+				}
+			
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
 			})
