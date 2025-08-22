@@ -6934,36 +6934,58 @@ AspenDiscovery.Account = (function () {
 			}).fail(AspenDiscovery.ajaxFail);
 		},
 
-		freezeHold: function (patronId, recordId, holdId, promptForReactivationDate, caller) {
-			AspenDiscovery.loadingMessage();
-			var url = Globals.path + '/MyAccount/AJAX';
-			var params = {
-				patronId: patronId
-				, recordId: recordId
-				, holdId: holdId
-			};
-			if (promptForReactivationDate) {
-				//Prompt the user for the date they want to reactivate the hold
-				params['method'] = 'getReactivationDateForm'; // set method for this form
-				// noinspection JSUnresolvedFunction
-				$.getJSON(url, params, function (data) {
-					AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons)
-				}).fail(AspenDiscovery.ajaxFail);
+		freezeHold: function (patronId, recordId, holdId, promptForReactivationDate, caller, holdGroupId) {
+			if (holdGroupId) {
+				const url = Globals.path + '/MyAccount/AJAX?method=showActOnHoldGroupModal';
+				const params = {
+					holdGroupId: holdGroupId,
+					holdAction: 'freeze',
+					patronId: patronId,
+					recordId: recordId,
+					holdId: holdId
+				};
 
-			} else {
-				var popUpBoxTitle = $(caller).text() || "Freezing Hold"; // freezing terminology can be customized, so grab text from click button: caller
-				AspenDiscovery.showMessage(popUpBoxTitle, "Updating your hold.  This may take a minute.");
-				params['method'] = 'freezeHold'; //set method for this ajax call
-				// noinspection JSUnresolvedFunction
 				$.getJSON(url, params, function (data) {
 					if (data.success) {
-						AspenDiscovery.Account.reloadHolds();
-						AspenDiscovery.showMessage(data.title, data.message, true, true);
+						AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons)
 					} else {
-						AspenDiscovery.showMessage(data.title, data.message);
+						AspenDiscovery.showMessage(data.title, data.message)
 					}
-				}).fail(AspenDiscovery.ajaxFail);
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+				})
+			} else {
+				AspenDiscovery.loadingMessage();
+				var url = Globals.path + '/MyAccount/AJAX';
+				var params = {
+					patronId: patronId
+					, recordId: recordId
+					, holdId: holdId
+				};
+				if (promptForReactivationDate) {
+					//Prompt the user for the date they want to reactivate the hold
+					params['method'] = 'getReactivationDateForm'; // set method for this form
+					// noinspection JSUnresolvedFunction
+					$.getJSON(url, params, function (data) {
+						AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons)
+					}).fail(AspenDiscovery.ajaxFail);
+
+				} else {
+					var popUpBoxTitle = $(caller).text() || "Freezing Hold"; // freezing terminology can be customized, so grab text from click button: caller
+					AspenDiscovery.showMessage(popUpBoxTitle, "Updating your hold.  This may take a minute.");
+					params['method'] = 'freezeHold'; //set method for this ajax call
+					// noinspection JSUnresolvedFunction
+					$.getJSON(url, params, function (data) {
+						if (data.success) {
+							AspenDiscovery.Account.reloadHolds();
+							AspenDiscovery.showMessage(data.title, data.message, true, true);
+						} else {
+							AspenDiscovery.showMessage(data.title, data.message);
+						}
+					}).fail(AspenDiscovery.ajaxFail);
+				}
 			}
+			
 		},
 
 		// called by ReactivationDateForm when fn freezeHold above has promptForReactivationDate is set
@@ -8894,10 +8916,32 @@ AspenDiscovery.Account = (function () {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown)
 			});
 		},
+		freezeHoldGroup: function (holdIds) {
+			const selectedTitles = holdIds.map(function(holdId) {
+				return 'selected[' + encodeURIComponent(holdId) + ']=on';
+			}).join('&');
+
+			const url = "/MyAccount/AJAX?method=freezeHoldSelectedItems&" + selectedTitles;
+
+			$.getJSON(url, function(data) {
+				if (data.success) {
+					AspenDiscovery.Account.reloadHolds();
+					AspenDiscovery.Account.loadMenuData();
+					AspenDiscovery.showMessage(data.title, data.message, true, false);
+				} else {
+					AspenDiscovery.showMessage(data.title, data.message);
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			})
+
+		},
 		confirmActOnHoldGroup: function(holdIds, holdAction) {
 
 			if (holdAction === 'cancel') {
 				AspenDiscovery.Account.cancelHoldGroup(holdIds);
+			} else if (holdAction === 'freeze') {
+				AspenDiscovery.Account.freezeHoldGroup(holdIds);
 			}
 
 		},
@@ -8909,6 +8953,27 @@ AspenDiscovery.Account = (function () {
 				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
 			})
 			return false;
+		},
+		freezeSingleHoldFromGroup: function(patronId, recordId, holdId) {
+			const params = {
+				holdId: holdId,
+				patronId: patronId,
+				recordId: recordId
+			};
+			const url = Globals.path + "/MyAccount/AJAX?method=freezeHold";
+			$.getJSON(url, params, function (data) {
+				if (data.success) {
+					AspenDiscovery.Account.reloadHolds();
+					AspenDiscovery.showMessage(data.title, data.message, true, true);
+				} else {
+					AspenDiscovery.showMessage(data.title, data.message);
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			})
+		},
+		confirmFreezeHoldGroup:  function () {
+
 		}
 	};
 }(AspenDiscovery.Account || {}));

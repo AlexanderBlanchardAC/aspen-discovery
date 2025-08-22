@@ -280,7 +280,7 @@
 										<button onclick="return AspenDiscovery.Account.thawHold('{$record->userId}', '{$record->sourceId}', '{$record->cancelId}', this);"
 												class="btn btn-sm btn-default thawButton">{translate text="Thaw Hold" isPublicFacing=true}</button>
 									{else}
-										<button onclick="return AspenDiscovery.Account.freezeHold('{$record->userId}', '{$record->sourceId}', '{$record->cancelId}', {if !empty($suspendRequiresReactivationDate)}true{else}false{/if}, this);"
+										<button onclick="return AspenDiscovery.Account.freezeHold('{$record->userId}', '{$record->sourceId}', '{$record->cancelId}', {if !empty($suspendRequiresReactivationDate)}true{else}false{/if}, this, {if $record->holdGroupId}{$record->holdGroupId}{else}null{/if});"
 												class="btn btn-sm btn-default freezeButton">{translate text="Freeze Hold" isPublicFacing=true}</button>
 									{/if}
 								{/if}

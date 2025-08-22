@@ -10849,6 +10849,7 @@ class MyAccount_AJAX extends JSON_Action {
 		$patronId = $_REQUEST['patronId'] ?? '';
 		$recordId = $_REQUEST['recordId'] ?? '';
 		$cancelId = $_REQUEST['holdIdToCancel'] ?? '';
+		$holdId = $_REQUEST['holdId'] ?? '';
 
 		if (empty($holdGroupId)) {
 			echo json_encode([
@@ -10906,15 +10907,29 @@ class MyAccount_AJAX extends JSON_Action {
 			exit;
 		}
 
+		global $logger;
+		$logger->log("HOLD ACTION: " . $holdAction, Logger::LOG_ERROR);
+
 		$actionText = '';
+		$buttonActionText = '';
 		switch($holdAction) {
 			case 'cancel':
 				$actionText = 'cancelled';
+				$buttonActionText = 'Cancel';
+				$singleFunction = 'cancelSingleHoldFromGroup';
+				$singleArgument = $cancelId;
+				// $groupFunction = 'confirmActOnHoldGroup';
 				break;
 			case 'freeze':
 				$actionText = 'frozen';
+				$buttonActionText = 'Freeze';
+				$singleFunction	= 'freezeSingleHoldFromGroup';
+				$singleArgument = $holdId;
+				// $groupFunction	= 'confirmFreezeHoldGroup';
+				break;
 			default:
 				$actionText = 'affected';
+				$buttonActionText = 'Affect';
 		}
 
 		$holdIdsJson = json_encode($holdIds);
@@ -10930,11 +10945,11 @@ class MyAccount_AJAX extends JSON_Action {
 			]),
 			'modalBody' => $interface->fetch('HoldGroups/confirmActOnHolds.tpl'),
 			'modalButtons' => "
-			<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.cancelSingleHoldFromGroup(\"$patronId\", \"$recordId\", \"$cancelId\"); return false;'>" . 
-			translate(['text' => 'Cancel Just This Hold', 'isPublicFacing' => true]) . 
+			<button class='tool btn btn-primary' onclick='AspenDiscovery.Account.$singleFunction(\"$patronId\", \"$recordId\", \"$singleArgument\"); return false;'>" . 
+			translate(['text' => $buttonActionText . ' Just This Hold', 'isPublicFacing' => true]) . 
 			"</button>
 			<button class='tool btn btn-danger' onclick='AspenDiscovery.Account.confirmActOnHoldGroup($holdIdsJson, \"$holdAction\"); return false;'>" . 
-			translate(['text' => 'Cancel All Holds in Group', 'isPublicFacing' => true]) . 
+			translate(['text' => $buttonActionText . ' All Holds in Group', 'isPublicFacing' => true]) . 
 			"</button>"
 		];
 
