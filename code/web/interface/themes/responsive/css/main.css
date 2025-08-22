@@ -10724,6 +10724,14 @@ a.browse-thumbnail.active {
   background-color: #FFEDD4;
   color: #883E23;
 }
+.groupedWorkHoldSection {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid #c3c3c3;
+  border-radius: 8px;
+  margin-top: 1em;
+  padding-left: 15px;
+}
 .graph-bar {
   background-color: #088ec6;
 }
@@ -11719,4 +11727,3 @@ input[type="radio"][name="colorScheme"]:checked + label::after {
     overflow: visible !important;
   }
 }
-/*# sourceMappingURL=main.css.map */

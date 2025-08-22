@@ -8979,6 +8979,18 @@ AspenDiscovery.Account = (function () {
 		},
 		confirmFreezeHoldGroup:  function () {
 
+		},
+		placeGroupedHold: function() {
+			const url = Globals.path + "/MyAccount/AJAX?method=placeGroupedHoldModal";
+			$.getJSON(url, function(data) {
+				if (data.success) {
+					AspenDiscovery.showMessageWithButtons(data.title, data.modalBody, data.modalButtons);
+				} else {
+					AspenDiscovery.showMessage(data.title, data.message);
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				AspenDiscovery.ajaxFail(jqXHR, textStatus, errorThrown);
+			})
 		}
 	};
 }(AspenDiscovery.Account || {}));

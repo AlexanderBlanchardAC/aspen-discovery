@@ -10954,4 +10954,21 @@ class MyAccount_AJAX extends JSON_Action {
 		];
 
 	}
+
+	public function placeGroupedHoldModal() {
+		global $interface;
+
+		$interface->assign('placeholdertext', 'Placeholder text');
+		$modalBody = $interface->fetch('HoldGroups/placeGroupedHoldModal.tpl');
+
+		return [
+			'success' => true,
+			'title' => translate([
+				'text' => 'place Grouped Hold',
+				'isPublicFacing' => true,
+			]),
+			'modalBody' => $modalBody,
+			'modalButtons' => "<button class='btn btn-primary' onclick='AspenDiscovery.Account.confirmPlaceGroupedHold(); return false;'>" . translate(['text' => 'Confirm', 'isPublicFacing' => true]) . "</button>"
+		];
+	}
 }

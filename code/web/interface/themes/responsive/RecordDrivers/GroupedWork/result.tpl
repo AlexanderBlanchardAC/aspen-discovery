@@ -260,13 +260,14 @@
 					{/if}
 
 				</div>
+					<div class="col-xs-12">
+						{include file="GroupedWork/groupedWorkHoldSection.tpl"}
+					</div>
 
 				{* Formats Section *}
-
 					<div class="{if empty($hasHiddenFormats) && count($relatedManifestations) != 1}hidden-xs {/if}col-xs-12" id="relatedManifestationsValue{$summId|escape}">
 						{* Hide Formats section on mobile view, unless there is a single format or a format has been selected by the user *}
 						{* relatedManifestationsValue ID is used by the Formats button *}
-
 						{include file="GroupedWork/relatedManifestations.tpl" id=$summId workId=$summId}
 					</div>
 
