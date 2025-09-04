@@ -132,6 +132,13 @@ function getUpdates25_09_00(): array {
 				"ALTER TABLE user_work_review ADD COLUMN title VARCHAR(512) DEFAULT ''",
 			]
 		], //add_title_to_user_work_review
+		'add_use_library_name_for_maps' => [
+			'title' => 'Add Use Library Name For Maps',
+			'description' => 'Allow libraries to use library name for google maps',
+			'sql' => [
+				"ALTER TABLE location ADD COLUMN useLocationNameForMaps TINYINT(1) DEFAULT 0",
+			]
+		], //add_use_library_name_for_maps
 
 		//chloe - Open Fifth
 
