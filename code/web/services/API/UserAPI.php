@@ -7532,6 +7532,8 @@ class UserAPI extends AbstractAPI {
 	}
 
 	function trackAppLaunches(){
+		global $logger;
+		$logger->log("Called trackAppLaunches In PHP", Logger::LOG_ERROR);
 		global $library;
 		return [
 			'success' => true,
