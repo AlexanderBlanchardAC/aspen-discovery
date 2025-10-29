@@ -10,6 +10,7 @@ class APIUsage extends DataObject {
 	public $module;
 	public $method;
 	public $numCalls;
+	public $libraryId;
 
 	public function getUniquenessFields(): array {
 		return [
@@ -18,10 +19,11 @@ class APIUsage extends DataObject {
 			'month',
 			'module',
 			'method',
+			'libraryId',
 		];
 	}
 
-	static function incrementStat($module, $method) : void {
+	static function incrementStat($module, $method, $libraryId = null) : void {
 		try {
 			$apiUsage = new APIUsage();
 			$apiUsage->year = date('Y');
@@ -30,6 +32,7 @@ class APIUsage extends DataObject {
 			$apiUsage->instance = $aspenUsage->getInstance();
 			$apiUsage->module = $module;
 			$apiUsage->method = $method;
+			$apiUsage->libraryId = $libraryId;
 			if ($apiUsage->find(true)) {
 				$apiUsage->numCalls++;
 				$apiUsage->update();

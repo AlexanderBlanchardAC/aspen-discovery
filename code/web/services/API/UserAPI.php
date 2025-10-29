@@ -112,11 +112,15 @@ class UserAPI extends AbstractAPI {
 					'addActivityProgress',
 					'optUserIntoCampaignEmails',
 					'enrollUserInCampaignLeaderboard',
-					'unenrollUserFromCampaignLeaderboard'
+					'unenrollUserFromCampaignLeaderboard',
+					'trackAppLaunches', 
+					'trackLibrarySession'
 				])) {
 					header("Cache-Control: max-age=10800");
 					require_once ROOT_DIR . '/sys/SystemLogging/APIUsage.php';
-					APIUsage::incrementStat('UserAPI', $method);
+					global $library;
+					$libraryId = $library->libraryId ?? null;
+					APIUsage::incrementStat('UserAPI', $method, $libraryId);
 					$output = json_encode(['result' => $this->$method()]);
 				} else {
 					header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
@@ -7525,5 +7529,20 @@ class UserAPI extends AbstractAPI {
 		$_GET = $originalGet;
 
 		return $response;
+	}
+
+	function trackAppLaunches(){
+		global $library;
+		return [
+			'success' => true,
+		];
+	}
+
+	function trackLibrarySession() {
+		global $library;
+		return [
+			'success' => true,
+			'libraryId' => $library->libraryId ?? null,
+		];
 	}
  }

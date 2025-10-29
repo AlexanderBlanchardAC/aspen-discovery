@@ -51,6 +51,14 @@ function getUpdates25_11_00(): array {
 		// Leo Stoyanov - BWS
 
 		//alexander - Open Fifth
+		'add_library_id_to_api_usage' => [
+			'title' => 'Add Library ID To API Usage',
+			'description' => 'Add library ID to API usage',
+			'continueOnError' => false,
+			'sql' => [
+				'ALTER TABLE api_usage ADD COLUMN libraryId INT(11)',
+			]
+		], // add_library_id_to_api_usage
 
 		//chloe - Open Fifth
 

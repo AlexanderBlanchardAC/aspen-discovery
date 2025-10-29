@@ -36,6 +36,8 @@ class API_UsageDashboard extends Admin_Dashboard {
 	 * @return void
 	 */
 	function getStats($instanceName, $month, $year, &$statsByModule, $statsPeriodName) {
+		global $logger;
+		$logger->log("INSTANCE NAME: " . $instanceName, Logger::LOG_ERROR);
 		$usage = new APIUsage();
 		if (!empty($instanceName)) {
 			$usage->instance = $instanceName;
@@ -46,6 +48,13 @@ class API_UsageDashboard extends Admin_Dashboard {
 		if ($year != null) {
 			$usage->year = $year;
 		}
+
+		global $library;
+		if (!empty($library->libraryId)) {
+			$usage->libraryId = $library->libraryId;
+			$logger->log("usage: " . print_r($usage, true), Logger::LOG_ERROR);
+		}
+		$logger->log("library: " . $library->libraryId, Logger::LOG_ERROR);
 		$usage->selectAdd();
 		$usage->selectAdd('module');
 		$usage->selectAdd('method');
