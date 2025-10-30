@@ -1899,12 +1899,14 @@ class BookCoverProcessor {
 				$props = [
 					'eventDate' => $startDate,
 					'isPastEvent' => true,
+					'location' => 'here',
 				];
 				$title = $userEntry->title;
 			} else{
 				$props = [
 					'eventDate' => $driver->getStartDateFromDB($id),
 					'isPastEvent' => true,
+					'location' => 'here'
 				];
 				$title = $driver->getTitleFromDB($id);
 			}
@@ -1920,6 +1922,7 @@ class BookCoverProcessor {
 			$props = [
 				'eventDate' => $driver->getStartDate(),
 				'isPastEvent' => $isPast,
+				'location' => 'here',
 			];
 			$coverBuilder->getCover($driver->getTitle(), $this->cacheFile, $props);
 			return $this->processImageURL('default_event', $this->cacheFile, false);

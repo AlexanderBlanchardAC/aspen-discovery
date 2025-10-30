@@ -133,7 +133,9 @@ class AspenEventRecordDriver extends IndexRecordDriver {
 		} else {
 			$bookCoverUrl = '';
 		}
-		$bookCoverUrl .= "/bookcover.php?id={$this->getUniqueID()}&size={$size}&type={$type}";
+		$bookCoverUrl .= "/bookcover.php?id={$this->getUniqueID()}&size={$size}&type={$type}&v=" . time(); // ADD THIS
+
+		// $bookCoverUrl .= "/bookcover.php?id={$this->getUniqueID()}&size={$size}&type={$type}";
 
 		return $bookCoverUrl;
 	}
