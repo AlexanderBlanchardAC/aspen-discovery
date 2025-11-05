@@ -283,6 +283,8 @@ class UserAPI extends AbstractAPI {
 	 * @noinspection PhpUnused
 	 **/
 	function loginToLiDA(): array {
+		global $logger;
+		$logger->log("Login to lida seesion: " . session_id(), Logger::LOG_DEBUG);
 		[
 			$username,
 			$password,
@@ -3592,6 +3594,8 @@ class UserAPI extends AbstractAPI {
 	 * @noinspection PhpUnused
 	 */
 	function cancelHold(): array {
+		global $logger;
+		$logger->log("CENCEL HOLD CALLED", Logger::LOG_ERROR);
 
 		// Cancel Hold requires one of these, which one depends on the ILS
 		$recordId = $_REQUEST['recordId'] ?? null;
