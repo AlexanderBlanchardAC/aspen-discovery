@@ -114,7 +114,7 @@ class UserAPI extends AbstractAPI {
 					'enrollUserInCampaignLeaderboard',
 					'unenrollUserFromCampaignLeaderboard',
 					'trackAppLaunches', 
-					'trackLibrarySession'
+					'trackAppResume',
 				])) {
 					global $logger;
 					$logger->log("Method matched: " . $method, Logger::LOG_ERROR);
@@ -7543,17 +7543,15 @@ class UserAPI extends AbstractAPI {
 	function trackAppLaunches(){
 		// global $logger;
 		// $logger->log("Called trackAppLaunches In PHP", Logger::LOG_ERROR);
-		global $library;
+		// global $library;
 		return [
 			'success' => true,
 		];
 	}
 
-	function trackLibrarySession() {
-		// global $library;
+	function trackAppResume() {
 		return [
 			'success' => true,
-			// 'libraryId' => $library->libraryId ?? null,
 		];
 	}
  }
