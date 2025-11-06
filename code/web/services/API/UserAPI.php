@@ -125,8 +125,8 @@ class UserAPI extends AbstractAPI {
 					APIUsage::incrementStat('UserAPI', $method);
 					$logger->log("About to call method: " . $method, Logger::LOG_ERROR);
 					$output = json_encode(['result' => $this->$method()]);
-					$logger->log("Method called successfully", Logger::LOG_ERROR);
-					$output = json_encode(['result' => $this->$method()]);
+					$logger->log("Method called successfully " . $method, Logger::LOG_ERROR);
+					// $output = json_encode(['result' => $this->$method()]);
 				} else {
 					header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
 					$output = json_encode(['error' => 'invalid_method']);
