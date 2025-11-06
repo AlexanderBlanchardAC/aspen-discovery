@@ -7550,6 +7550,8 @@ class UserAPI extends AbstractAPI {
 	}
 
 	function trackAppResume() {
+		global $logger;
+		$logger->log("CALLED TRACKAPP RESUME", Logger::LOG_ERROR);
 		return [
 			'success' => true,
 		];
