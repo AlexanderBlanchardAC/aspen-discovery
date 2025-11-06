@@ -59,6 +59,14 @@ function getUpdates25_11_00(): array {
 				'ALTER TABLE api_usage ADD COLUMN libraryId INT(11)',
 			]
 		], // add_library_id_to_api_usage
+		'drop_library_id_from_api_usage' => [
+			'title' => 'Drop Library ID From API Usage',
+			'decsrption' => 'Removes the libraryId column from the api_usage table',
+			'continueOnError' => false,
+			'sql' => [
+				'ALTER TABLE api_usage DROP COLUMN libraryId',
+			]
+		], //drop_library_id_from_api_usage
 
 		//chloe - Open Fifth
 
