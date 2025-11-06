@@ -23,6 +23,9 @@ class API_UsageDashboard extends Admin_Dashboard {
 		$this->getStats($instanceName, null, null, $statsByModule, 'usageAllTime');
 
 		$interface->assign('statsByModule', $statsByModule);
+		global $logger;
+		$logger->log("Admin dashbord lanuched", Logger::LOG_ERROR);
+		$logger->log("Stats: " . print_r($statsByModule, true), Logger::LOG_ERROR);
 
 		$this->display('dashboard.tpl', 'Aspen Usage Dashboard');
 	}
