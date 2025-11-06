@@ -65,10 +65,15 @@ class API_UsageDashboard extends Admin_Dashboard {
 		$usage->find();
 
 		while ($usage->fetch()) {
+			global $logger;
+			$logger->log("===USAGE===: " . print_r($usage, true), Logger::LOG_ERROR);
 			if (!array_key_exists($usage->module, $statsByModule)) {
+				$logger->log("Array key missing one", Logger::LOG_ERROR);
+
 				$statsByModule[$usage->module] = [];
 			}
 			if (!array_key_exists($usage->method, $statsByModule[$usage->module])) {
+				$logger->log("Array key missing two ", Logger::LOG_ERROR);
 				$statsByModule[$usage->module][$usage->method] = [
 					'usageThisMonth' => 0,
 					'usageLastMonth' => 0,
