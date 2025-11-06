@@ -53,10 +53,10 @@ class API_UsageDashboard extends Admin_Dashboard {
 		}
 
 		global $library;
-		if (!empty($library->libraryId)) {
-			$usage->libraryId = $library->libraryId;
-			$logger->log("usage: " . print_r($usage, true), Logger::LOG_ERROR);
-		}
+		// if (!empty($library->libraryId)) {
+		// 	$usage->libraryId = $library->libraryId;
+		// 	$logger->log("usage: " . print_r($usage, true), Logger::LOG_ERROR);
+		// }
 		$logger->log("library: " . $library->libraryId, Logger::LOG_ERROR);
 		$usage->selectAdd();
 		$usage->selectAdd('module');
