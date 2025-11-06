@@ -25,7 +25,7 @@ class APIUsage extends DataObject {
 
 	static function incrementStat($module, $method, /*$libraryId = null*/) : void {
 		global $logger; 
-		$logger->log("incrementStat called - Module:  and method: " . $module, $method, Logger::LOG_ERROR);
+		$logger->log("incrementStat called - method: " . $method, Logger::LOG_ERROR);
 		try {
 			$apiUsage = new APIUsage();
 			$apiUsage->year = date('Y');
