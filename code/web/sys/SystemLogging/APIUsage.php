@@ -19,11 +19,11 @@ class APIUsage extends DataObject {
 			'month',
 			'module',
 			'method',
-			'libraryId',
+			// 'libraryId',
 		];
 	}
 
-	static function incrementStat($module, $method, $libraryId = null) : void {
+	static function incrementStat($module, $method, /*$libraryId = null*/) : void {
 		try {
 			$apiUsage = new APIUsage();
 			$apiUsage->year = date('Y');
@@ -32,7 +32,7 @@ class APIUsage extends DataObject {
 			$apiUsage->instance = $aspenUsage->getInstance();
 			$apiUsage->module = $module;
 			$apiUsage->method = $method;
-			$apiUsage->libraryId = $libraryId;
+			// $apiUsage->libraryId = $libraryId;
 			if ($apiUsage->find(true)) {
 				$apiUsage->numCalls++;
 				$apiUsage->update();

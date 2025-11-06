@@ -120,8 +120,8 @@ class UserAPI extends AbstractAPI {
 					$logger->log("Method matched: " . $method, Logger::LOG_ERROR);
 					header("Cache-Control: max-age=10800");
 					require_once ROOT_DIR . '/sys/SystemLogging/APIUsage.php';
-					global $library;
-					$libraryId = $library->libraryId ?? null;
+					// global $library;
+					// $libraryId = $library->libraryId ?? null;
 					APIUsage::incrementStat('UserAPI', $method);
 					$logger->log("About to call method: " . $method, Logger::LOG_ERROR);
 					$output = json_encode(['result' => $this->$method()]);
@@ -7541,8 +7541,8 @@ class UserAPI extends AbstractAPI {
 	}
 
 	function trackAppLaunches(){
-		global $logger;
-		$logger->log("Called trackAppLaunches In PHP", Logger::LOG_ERROR);
+		// global $logger;
+		// $logger->log("Called trackAppLaunches In PHP", Logger::LOG_ERROR);
 		global $library;
 		return [
 			'success' => true,
@@ -7550,10 +7550,10 @@ class UserAPI extends AbstractAPI {
 	}
 
 	function trackLibrarySession() {
-		global $library;
+		// global $library;
 		return [
 			'success' => true,
-			'libraryId' => $library->libraryId ?? null,
+			// 'libraryId' => $library->libraryId ?? null,
 		];
 	}
  }
