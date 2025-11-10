@@ -323,7 +323,7 @@
 									</td>
 									{if !$campaign.isEnrolled}
 										<td>
-											<button class="btn btn-danger btn-sm" aria-label="{transalte text="Remove Campaign" isPiblicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign.campaignId}, {$linkedUserId});">{translate text="Remove Campaign" isPublicFacing=true}</button>
+											<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign.campaignId}, {$linkedUser.linkedUserId}); return false;">{translate text="Remove Campaign" isPublicFacing=true}</button>
 										</td>
 									{else}
 										<td></td>
@@ -545,7 +545,7 @@
 							{/if}
 							{if !$campaign->enrolled}
 								<td>
-									<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId});">{translate text="Remove Campaign" isPublicFacing=true}</button>
+									<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId}); return false;">{translate text="Remove Campaign" isPublicFacing=true}</button>
 								</td>
 							{else}
 								<td></td>
@@ -677,7 +677,7 @@
 							{/if}
 							{if !$campaign->enrolled}
 								<td>
-									<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId});">{translate text="Remove Campaign" isPublicFacing=true}</button>
+									<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId}); return false;">{translate text="Remove Campaign" isPublicFacing=true}</button>
 								</td>
 							{else}
 								<td></td>
@@ -777,7 +777,7 @@
 							<button class="btn btn-primary btn-small" aria-label="{$smarty.capture.pastCampaignInfoLabel|strip_tags|escape:'html'}" onclick="togglePastCampaignInfo({$resultIndex});">{translate text="Campaign Information" isPublicFacing=true}</button>
 						</td>
 						<td>
-							<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId});">{translate text="Remove Campaign" isPublicFacing=true}</button>
+							<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId}); return false;">{translate text="Remove Campaign" isPublicFacing=true}</button>
 						</td>
 					</tr>
 					<tr id="pastCampaigns_{$resultIndex}" class="campaign-dropdown" style="display:none;">
@@ -893,7 +893,7 @@
 									<button class="btn btn-primary btn-sm" aria-label="{$smarty.capture.pastCampaignInfoLabel|strip_tags|escape:'html'}" onclick="toggleYourPastCampaignInfo({$resultIndex});">{translate text="Campaign Information" isPublicFacing=true}</button>
 								</td>
 								<td>
-									<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId});">{translate text="Remove Campaign" isPublicFacing=true}</button>
+									<button class="btn btn-danger btn-sm" aria-label="{translate text="Remove Campaign" isPublicFacing=true inAttribute=true}" onclick="AspenDiscovery.Account.removeCampaign({$campaign->id}, {$userId}); return false;">{translate text="Remove Campaign" isPublicFacing=true}</button>
 								</td>
 							</tr>
 							<tr id="yourPastCampaigns_{$resultIndex}" style="display:none;">
