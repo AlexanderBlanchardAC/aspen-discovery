@@ -23,5 +23,13 @@ function getUpdates25_Q4_00(): array {
 				"ALTER TABLE grapes_web_builder MODIFY cssData LONGTEXT",
 			]
 		], //change_data_types_for_grapes_js_columns
+		'add_default_event_calendar_display_dropdown' => [
+			'title' => 'Add Default Event Calendar Display Dropdown',
+			'description' => 'Add the option of selecting the default display for the native events calendar',
+			'continueOnError' => false,
+			'sql' => [
+				"ALTER TABLE library ADD COLUMN eventsDefaultCalendarView TINYINT(1) NOT NULL DEFAULT 0",
+			],
+		], //add_default_event_calendar_display_dropdown
 	];
 }
