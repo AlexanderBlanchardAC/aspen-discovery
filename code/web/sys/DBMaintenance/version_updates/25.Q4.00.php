@@ -23,5 +23,13 @@ function getUpdates25_Q4_00(): array {
 				"ALTER TABLE grapes_web_builder MODIFY cssData LONGTEXT",
 			]
 		], //change_data_types_for_grapes_js_columns
+		'add_event_date_format_to_event_types_and_events' => [
+			'title' => 'Add Event Date Format To Event Types And Events',
+			'description' => 'Add the ability to select a format in which to display othe revents in the series',
+			'sql' =>[
+				"ALTER TABLE event_type ADD COLUMN eventDateFormat TINYINT(1) DEFAULT 0",
+				"ALTER TABLE event ADD COLUMN eventDateFormat TINYINT(1) DEFAULT 0",
+			]
+		], //add_event_date_format_to_event_types_and_events
 	];
 }
