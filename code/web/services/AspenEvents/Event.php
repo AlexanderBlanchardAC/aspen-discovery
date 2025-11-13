@@ -44,11 +44,30 @@ class AspenEvents_Event extends Action {
 				}
 			}
 		}
+		require_once ROOT_DIR . '/sys/Events/Event.php';
+		require_once ROOT_DIR . '/sys/Events/EventType.php';
+
+		$eventDateFormat = null;
+		$eventInstance = $this->recordDriver->getEventObject();
+
+		if ($eventInstance && !empty($eventInstance->eventId)) {
+			$event = new Event();
+			$event->id = $eventInstance->eventId;
+
+			if ($event->find(true)) {
+				if (isset($event->eventDateFormat)) {
+					$eventDateFormat = $event->eventDateFormat;
+				}
+			}
+		}
+
 		$interface->assign('recordDriver', $this->recordDriver);
 		$interface->assign('eventsInLists', true);
 		$interface->assign('isStaff', UserAccount::isStaff());
 		$interface->assign('upcomingInstanceCount', $this->recordDriver->getEventObject()->getUpcomingInstanceCount() ?? 0);
 		$interface->assign('private', $this->recordDriver->isPrivate() ? 'private' : '');
+		$interface->assign('eventDateFormat', $eventDateFormat);
+
 		// Display Page
 		$this->display('event.tpl', $this->recordDriver->getTitle(), null, false);
 	}

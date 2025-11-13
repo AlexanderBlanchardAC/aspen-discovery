@@ -52,9 +52,15 @@
 				</div>
 				<div class="panel-body">
 					{foreach from=$recordDriver->getOtherEventsInSeries() item=event key=key}
-						<div class="col-xs-12">
-							<a href='/AspenEvents/{$key|escape:'url'}/Event'>{$event|date_format:"%x"}</a>
-						</div>
+						{if $eventDateFormat == '0'}
+							<div class="col-xs-12">
+								<a href='/AspenEvents/{$key|escape:'url'}/Event'>{$event|date_format:"%x"}</a>
+							</div>
+						{else}
+							<div class="col-xs-12">
+								<a href='/AspenEvents/{$key|escape:'url'}/Event'>{$event|date_format:"%d/%m/%Y"}</a>
+							</div>
+						{/if}
 					{/foreach}
 				</div>
 			</div>
