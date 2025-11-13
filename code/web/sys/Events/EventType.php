@@ -17,6 +17,7 @@ class EventType extends DataObject {
 	public $lengthCustomizable;
 	public $archived;
 	public $eventFieldSetId;
+	public $eventDateFormat;
 
 	public $_libraries;
 	public $_locations;
@@ -86,6 +87,17 @@ class EventType extends DataObject {
 				'type' => 'duration',
 				'label' => 'Event Length',
 				'description' => 'The default event length for this type of event',
+			],
+			'eventDateFormat' => [
+				'property' => 'eventDateFormat',
+				'type' => 'enum',
+				'label' => 'Event Date Format',
+				'description' => 'The format in which to display the other dates in the series',
+				'values' => [
+					'0' => 'US',
+					'1' => 'UK / EU',
+				],
+				'default' => '0'
 			],
 			'lengthCustomizable' => [
 				'property' => 'lengthCustomizable',

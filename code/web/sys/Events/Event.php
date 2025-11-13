@@ -37,6 +37,8 @@ class Event extends DataObject {
 	public $_dates; // Used to generate instances
 	public $_instanceCount;
 	public $_datesPreview;
+	public $eventDateFormat;
+
 
 	public $dateUpdated;
 	public $deleted;
@@ -402,6 +404,17 @@ class Event extends DataObject {
 				'note' => 'To update, change the scheduling options above',
 				'readOnly' => true,
 				'hiddenByDefault' => true,
+			],
+			'eventDateFormat' => [
+				'property' => 'eventDateFormat',
+				'type' => 'enum',
+				'label' => 'Event Date Format',
+				'description' => 'The format in which to display the other dates in the series',
+				'values' => [
+					'0' => 'US',
+					'1' => 'UK / EU',
+				],
+				'default' => '0'
 			],
 		];
 		if ($context == 'addNew') {
@@ -922,6 +935,9 @@ class Event extends DataObject {
 				if (!$eventType->lengthCustomizable) {
 					$structure['scheduleSection']['properties']['eventLength']['readOnly'] = true;
 					$this->eventLength = $eventType->eventLength;
+				}
+				if (empty($this->eventDateFormat)) {
+					$this->eventDateFormat = $eventType->eventDateFormat;
 				}
 				$structure['infoSection']['properties']['fieldSetFieldSection']['properties'] = $eventType->getFieldSetFields();
 				// Update scheduling sections
