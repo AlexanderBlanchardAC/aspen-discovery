@@ -11643,115 +11643,399 @@ class MyAccount_AJAX extends JSON_Action {
 		return true;
 	}
 
-	public function AspenEventRegistrationNotificationsSSE() {
-		$homeLibrary = Library::getPatronHomeLibrary();
-		if (is_null($homeLibrary)) {
-			global $library;
-			$homeLibrary = $library;
-		}
+	// public function AspenEventRegistrationNotificationsSSE() {
+	// 	global $logger;
+	// 	$logger->log('SSE LOOP TICK FOR USER '  . $patron->id, Logger::LOG_ERROR);
+	// 	set_time_limit(0);
+	// 	ini_set('max_execution_time', 300);
 
-		$debug = false;
-		if (!UserAccount::isLoggedIn()) {
-			return;
-		}
+	// 	$homeLibrary = Library::getPatronHomeLibrary();
+	// 	if (is_null($homeLibrary)) {
+	// 		global $library;
+	// 		$homeLibrary = $library;
+	// 	}
 
-		$patron = UserAccount::getActiveUserObj();
+	// 	$debug = false;
+	// 	if (!UserAccount::isLoggedIn()) {
+	// 		return;
+	// 	}
 
-		require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceWaitingList.php';
-		require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceRegistration.php';
-		require_once ROOT_DIR . '/sys/Events/EventInstance.php';
-		require_once ROOT_DIR . '/sys/Events/Event.php';
+	// 	$patron = UserAccount::getActiveUserObj();
+
+	// 	require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceWaitingList.php';
+	// 	require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceRegistration.php';
+	// 	require_once ROOT_DIR . '/sys/Events/EventInstance.php';
+	// 	require_once ROOT_DIR . '/sys/Events/Event.php';
 
 
-		header("X-Accel-Buffering: no");
-		header("Content-Type: text/event-stream");
-		header("Cache-Control: no-cache");
+	// 	header("X-Accel-Buffering: no");
+	// 	header("Content-Type: text/event-stream");
+	// 	header("Cache-Control: no-cache");
 
-		echo "event: established\n";
-		echo "data: connection established\n\n";
+	// 	echo "event: established\n";
+	// 	echo "data: connection established\n\n";
 
-		ob_end_flush();
+	// 	// ob_end_flush();
+	// 	if (ob_get_level() > 0) {
+	// 		ob_end_flush();
+	// 	}
+	// 	ob_implicit_flush(true);
 
-		$interval = 10;
+	// 	$interval = 10;
+	// 	$maxIterations = 30; // Run for max 5 minutes (30 * 10 seconds)
+	// 	$iterations = 0;
 
-		while (true) {
-			if (connection_status() != CONNECTION_NORMAL || connection_aborted()) {
-				exit();
-			}
+	// 	while (true) {
+	// 		$iterations++;
+	// 		$logger->log('IN WHILE LOOP SSE LOOP TICK FOR USER '  . $patron->id, Logger::LOG_ERROR);
 
-			if ($homeLibrary->allowEventToastNotification != 1 || $patron->eventRegistrationNotificationsByToast != 1){
-				echo "event: heart_beat\n";
-				echo "data: Event toast notifications disabled\n\n";
-				flush();
-				sleep($interval);
-				continue;
-			}
+
+	// 		 if ($iterations > $maxIterations) {
+	// 			echo "event: timeout\n";
+	// 			echo "data: Connection timeout, please reconnect\n\n";
+	// 			flush();
+	// 			exit();
+	// 		}
+
+	// 		if (connection_status() != CONNECTION_NORMAL || connection_aborted()) {
+	// 			exit();
+	// 		}
+
+	// 		if ($homeLibrary->allowEventToastNotification != 1 || (isset($patron->eventRegistrationNotificationsByToast) && $patron->eventRegistrationNotificationsByToast != 1)) {
+	// 				echo "event: heart_beat\n";
+	// 				echo "data: Event toast notifications disabled\n\n";
+	// 				flush();
+	// 				sleep($interval);
+	// 				continue;
+	// 		}
+
+	// 		$logger->log("Reached past settings", Logger::LOG_ERROR);
 			
-			$waitingList = new UserAspenEventInstanceWaitingList();
-			$waitingList->userId = $patron->id;
-			$waitingList->canRegister = 1;
-			$waitingList->toastShown = 0;
-			$waitingList->whereAdd("expiresAt >= NOW()");
-			$waitingList->orderBy('expiresAt ASC');
+	// 		$waitingList = new UserAspenEventInstanceWaitingList();
+	// 		$waitingList->userId = $patron->id;
+	// 		$waitingList->canRegister = 1;
+	// 		$waitingList->toastShown = 0;
+	// 		$waitingList->whereAdd("expiresAt >= NOW()");
+	// 		$waitingList->orderBy('expiresAt ASC');
 
-			if ($waitingList->find()) {
-				while($waitingList->fetch()) {
-					$registration = new UserAspenEventInstanceRegistration();
-					$registration->userId = $patron->id;
-					$registration->eventInstanceId = $waitingList->eventInstanceId;
-					if ($registration->find(true) && !$registration->cancelled) {
-						continue;
-					}
+	// 		if ($waitingList->find()) {
+	// 			$logger->log("Waiting ist found", Logger::LOG_ERROR);
+	// 			while($waitingList->fetch()) {
+	// 				$registration = new UserAspenEventInstanceRegistration();
+	// 				$registration->userId = $patron->id;
+	// 				$registration->eventInstanceId = $waitingList->eventInstanceId;
+	// 				if ($registration->find(true) && !$registration->cancelled) {
+	// 					continue;
+	// 				}
 
-					$eventInstance = new EventInstance();
-					$eventInstance->id = $waitingList->eventInstanceId;
-					if (!$eventInstance->find(true)) {
-						continue;
-					}
+	// 				$eventInstance = new EventInstance();
+	// 				$eventInstance->id = $waitingList->eventInstanceId;
+	// 				if (!$eventInstance->find(true)) {
+	// 					continue;
+	// 				}
 
-					$event = new Event();
-					$event->id = $eventInstance->eventId;
-					if (!$event->find(true)) {
-						continue;
-					}
+	// 				$event = new Event();
+	// 				$event->id = $eventInstance->eventId;
+	// 				if (!$event->find(true)) {
+	// 					continue;
+	// 				}
 
-					//Send toast
-					echo "event: aspen_event_registration_notification\n";
-					echo "data: " . json_encode([
-						'id' => 'event_waiting_list_' . $waitingList->id, 
-						'type' => 'event_waiting_list',
-						'title' => translate([
-							'text' => 'You can now register for an event you were on the waiting list for',
-							'isPublicFacing' => true
-						]),
-						'body' => $event->title,
-						'icon'=> 'fa-calendar-check',
-						'link' => [
-							'href' => '/MyAccount/MyEvents',
-							'text' => translate([
-								'text' => 'Register now',
-								'isPublicFacing' => true,
-							])
-						]
-					]) . "\n\n";
+	// 				//Send toast
+	// 				echo "event: aspen_event_registration_notification\n";
+	// 				echo "data: " . json_encode([
+	// 					'id' => 'event_waiting_list_' . $waitingList->id, 
+	// 					'type' => 'event_waiting_list',
+	// 					'title' => translate([
+	// 						'text' => 'You can now register for an event you were on the waiting list for',
+	// 						'isPublicFacing' => true
+	// 					]),
+	// 					'body' => $event->title,
+	// 					'icon'=> 'fa-calendar-check',
+	// 					'link' => [
+	// 						'href' => '/MyAccount/MyEvents',
+	// 						'text' => translate([
+	// 							'text' => 'Register now',
+	// 							'isPublicFacing' => true,
+	// 						])
+	// 					]
+	// 				]) . "\n\n";
 
-					$waitingList->toastShown = 1;
-					$waitingList->update();
-					flush();
-				}
-			} else {
-				echo "event: heart_beat\n";
-				echo "data: No event notifications\n\n";
-				flush();
-			}
+	// 				$waitingList->toastShown = 1;
+	// 				$waitingList->update();
+	// 				flush();
+	// 			}
+	// 		} else {
+	// 			echo "event: heart_beat\n";
+	// 			echo "data: No event notifications\n\n";
+	// 			flush();
+	// 		}
 
-			if (ob_get_contents()) {
-				ob_end_flush();
-			}
-			flush();
+	// 		// if (ob_get_contents()) {
+	// 		// 	ob_end_flush();
+	// 		// }
+	// 		flush();
 
-			sleep($interval);
-		}
-	}
+	// 		sleep($interval);
+	// 	}
+	// }
+
+	// public function AspenEventRegistrationNotificationsSSE() {
+	// 	global $logger;
+	// 	$logger->log("running funciton", Logger::LOG_ERROR);
+	// 	set_time_limit(0);
+	// 	ini_set('max_execution_time', 0);
+
+	// 	if (!UserAccount::isLoggedIn()) {
+	// 		return;
+	// 	}
+
+	// 	$patron = UserAccount::getActiveUserObj();
+	// 	$homeLibrary = Library::getPatronHomeLibrary();
+	// 	if (is_null($homeLibrary)) {
+	// 		global $library;
+	// 		$homeLibrary = $library;
+	// 	}
+	// 	$logger->log("hom elib: " . print_r($homeLibrary, true), Logger::LOG_ERROR);
+
+	// 	require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceWaitingList.php';
+	// 	require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceRegistration.php';
+	// 	require_once ROOT_DIR . '/sys/Events/EventInstance.php';
+	// 	require_once ROOT_DIR . '/sys/Events/Event.php';
+
+	// 	header("X-Accel-Buffering: no");
+	// 	header("Content-Type: text/event-stream");
+	// 	header("Cache-Control: no-cache");
+
+	// 	// Establish connection
+	// 	echo "event: established\n";
+	// 	echo "data: connection established\n\n";
+	// 	if (ob_get_level() > 0) { ob_flush(); }
+	// 	flush();
+	// 	ob_implicit_flush(true);
+
+	// 	$interval = 10;
+
+	// 	while (true) {
+	// 		if (connection_status() != CONNECTION_NORMAL || connection_aborted()) {
+	// 			exit();
+	// 		}
+
+	// 		// Only run if toasts are allowed
+	// 		if ($homeLibrary->allowEventToastNotification != 1 || 
+	// 			(isset($patron->eventRegistrationNotificationsByToast) && $patron->eventRegistrationNotificationsByToast != 1)) {
+				
+	// 			echo "event: heart_beat\n";
+	// 			echo "data: Event toast notifications disabled\n\n";
+	// 			if (ob_get_level() > 0) { ob_flush(); }
+	// 			flush();
+	// 			sleep($interval);
+	// 			continue;
+	// 		}
+	// 		$logger->log("code should be running", Logger::LOG_ERROR);
+
+	// 		// Get waiting list entries
+	// 		$waitingList = new UserAspenEventInstanceWaitingList();
+	// 		$waitingList->userId = $patron->id;
+	// 		$logger->log("patronid: " . $patron->id, Logger::LOG_ERROR);
+	// 		$waitingList->canRegister = 1;
+	// 		// $waitingList->toastShown = 0;
+	// 		$waitingList->whereAdd("expiresAt >= NOW()");
+	// 		$waitingList->orderBy('expiresAt ASC');
+
+	// 		if ($waitingList->find()) {
+	// 			$logger->log("found eating list", Logger::LOG_ERROR);
+	// 			while ($waitingList->fetch()) {
+	// 				$registration = new UserAspenEventInstanceRegistration();
+	// 				$registration->userId = $patron->id;
+	// 				$registration->eventInstanceId = $waitingList->eventInstanceId;
+
+	// 				if ($registration->find(true) && !$registration->cancelled) {
+	// 					continue;
+	// 				}
+
+	// 				$eventInstance = new EventInstance();
+	// 				$eventInstance->id = $waitingList->eventInstanceId;
+	// 				if (!$eventInstance->find(true)) {
+	// 					continue;
+	// 				}
+
+	// 				$event = new Event();
+	// 				$event->id = $eventInstance->eventId;
+	// 				if (!$event->find(true)) {
+	// 					continue;
+	// 				}
+
+	// 				$logger->log("now should SEE TOAST", Logger::LOG_ERROR);
+
+	// 				// Send toast
+	// 				echo "event: aspen_event_registration_notification\n";
+	// 				echo "data: " . json_encode([
+	// 					'id' => 'event_waiting_list_' . $waitingList->id,
+	// 					'type' => 'event_waiting_list',
+	// 					'title' => translate([
+	// 						'text' => 'You can now register for an event you were on the waiting list for',
+	// 						'isPublicFacing' => true
+	// 					]),
+	// 					'body' => $event->title,
+	// 					'icon'=> 'fa-calendar-check',
+	// 					'link' => [
+	// 						'href' => '/MyAccount/MyEvents',
+	// 						'text' => translate([
+	// 							'text' => 'Register now',
+	// 							'isPublicFacing' => true,
+	// 						])
+	// 					]
+	// 				]) . "\n\n";
+
+	// 				flush();
+	// 				usleep(2000000);
+
+	// 				// Mark toast as sent
+	// 				$waitingList->toastShown = 1;
+	// 				$waitingList->update();
+
+	// 				if (ob_get_level() > 0) { ob_flush(); }
+	// 				flush();
+	// 			}
+	// 		} else {
+	// 			echo "event: heart_beat\n";
+	// 			echo "data: No event notifications\n\n";
+	// 			if (ob_get_level() > 0) { ob_flush(); }
+	// 			flush();
+	// 		}
+
+	// 		sleep($interval);
+	// 	}
+	// }
+
+// 	public function AspenEventRegistrationNotificationsSSE() {
+
+//     global $logger;
+// 	$logger->log("recognised new function", Logger::LOG_ERROR);
+//     set_time_limit(0);
+//     ini_set('max_execution_time', 0);
+
+//     if (!UserAccount::isLoggedIn()) {
+//         return;
+//     }
+
+//     $patron = UserAccount::getActiveUserObj();
+//     $homeLibrary = Library::getPatronHomeLibrary();
+//     if (is_null($homeLibrary)) {
+//         global $library;
+//         $homeLibrary = $library;
+//     }
+
+//     require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceWaitingList.php';
+//     require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceRegistration.php';
+//     require_once ROOT_DIR . '/sys/Events/EventInstance.php';
+//     require_once ROOT_DIR . '/sys/Events/Event.php';
+
+//     header("X-Accel-Buffering: no");
+//     header("Content-Type: text/event-stream");
+//     header("Cache-Control: no-cache");
+
+//     echo "event: established\n";
+//     echo "data: connection established\n\n";
+//     if (ob_get_level() > 0) { ob_flush(); }
+//     flush();
+//     ob_implicit_flush(true);
+
+//     $interval = 10;
+
+//     while (true) {
+//         if (connection_status() != CONNECTION_NORMAL || connection_aborted()) {
+//             exit();
+//         }
+
+//         if ($homeLibrary->allowEventToastNotification != 1 || 
+//             (isset($patron->eventRegistrationNotificationsByToast) && $patron->eventRegistrationNotificationsByToast != 1)) {
+            
+//             echo "event: heart_beat\n";
+//             echo "data: Event toast notifications disabled\n\n";
+//             if (ob_get_level() > 0) { ob_flush(); }
+//             flush();
+//             sleep($interval);
+//             continue;
+//         }
+
+//         $waitingList = new UserAspenEventInstanceWaitingList();
+//         $waitingList->userId = $patron->id;
+//         $waitingList->canRegister = 1;
+//         $waitingList->toastShown = 0; // Only get ones NOT shown
+//         $waitingList->whereAdd("expiresAt >= NOW()");
+//         $waitingList->orderBy('expiresAt ASC');
+
+//         if ($waitingList->find()) {
+//             while ($waitingList->fetch()) {
+//                 // Check if already registered
+//                 $registration = new UserAspenEventInstanceRegistration();
+//                 $registration->userId = $patron->id;
+//                 $registration->eventInstanceId = $waitingList->eventInstanceId;
+
+//                 if ($registration->find(true) && !$registration->cancelled) {
+//                     continue;
+//                 }
+
+//                 // Get event details
+//                 $eventInstance = new EventInstance();
+//                 $eventInstance->id = $waitingList->eventInstanceId;
+//                 if (!$eventInstance->find(true)) {
+//                     continue;
+//                 }
+
+//                 $event = new Event();
+//                 $event->id = $eventInstance->eventId;
+//                 if (!$event->find(true)) {
+//                     continue;
+//                 }
+
+//                 // Send toast
+//                 echo "event: aspen_event_registration_notification\n";
+//                 echo "data: " . json_encode([
+//                     'id' => 'event_waiting_list_' . $waitingList->id,
+//                     'waitingListId' => $waitingList->id, // Add this for acknowledgment
+//                     'type' => 'event_waiting_list',
+//                     'title' => translate([
+//                         'text' => 'You can now register for an event you were on the waiting list for',
+//                         'isPublicFacing' => true
+//                     ]),
+//                     'body' => $event->title,
+//                     'icon'=> 'fa-calendar-check',
+//                     'link' => [
+//                         'href' => '/MyAccount/MyEvents',
+//                         'text' => translate([
+//                             'text' => 'Register now',
+//                             'isPublicFacing' => true,
+//                         ])
+//                     ]
+//                 ]) . "\n\n";
+
+//                 if (ob_get_level() > 0) { ob_flush(); }
+//                 flush();
+                
+//                 // Mark as shown ONLY after successful send
+//                 // Give client time to receive before we loop again
+//                 sleep(1);
+                
+//                 // Reload the record to mark it as shown
+//                 $updateWaitingList = new UserAspenEventInstanceWaitingList();
+//                 $updateWaitingList->id = $waitingList->id;
+//                 if ($updateWaitingList->find(true)) {
+//                     $updateWaitingList->toastShown = 1;
+//                     $updateWaitingList->update();
+//                     $logger->log("Marked toast as shown for waiting list ID: " . $waitingList->id, Logger::LOG_ERROR);
+//                 }
+//             }
+//         } else {
+//             echo "event: heart_beat\n";
+//             echo "data: No event notifications\n\n";
+//             if (ob_get_level() > 0) { ob_flush(); }
+//             flush();
+//         }
+
+//         sleep($interval);
+//     }
+// }
 
  }
