@@ -94,6 +94,15 @@
 							{/if}
 						</li>
 					{/if}
+					<li>
+					//add logic for display for button / join waiting list / register to match events search results page
+					{translate text="Waiting List: " isPublicFacing=true}
+					{if $recordDriver->isWaitingListFull()}
+						<span class="label label-danger">{translate text="Full" isPublicFacing=true}</span>
+					{else}
+						{$recordDriver->getAvailableNUmberOfWaitingListSeats()} / {$recordDriver->getWaitingListNumberOfSeats()};
+					{/if}
+					</li>
 					{if $private}
 						<li>
 							<span class="label label-default">{translate text="Private" isPublicFacing=true}</span>
