@@ -146,6 +146,9 @@ class EventInstance extends DataObject {
 			$waitingListEntry->eventInstanceId = $this->id;
 			$waitingListEntry->delete(true);
 
+			$MyAccount_AJAX = new MyAccount_AJAX();
+			$MyAccount_AJAX->sendEventInstanceLevelNotification($this->id, 'deleted');
+
 			$this->deleted = 1;
 			$this->dateUpdated = time();
 			return parent::update();

@@ -4,6 +4,7 @@ require_once ROOT_DIR . '/sys/Events/EventTypeLibrary.php';
 require_once ROOT_DIR . '/sys/Events/EventTypeLocation.php';
 require_once ROOT_DIR . '/sys/Events/EventEventField.php';
 require_once ROOT_DIR . '/sys/Events/EventInstance.php';
+require_once ROOT_DIR . '/services/MyAccount/AJAX.php';
 
 class Event extends DataObject {
 	public $__table = 'event';
@@ -518,6 +519,18 @@ class Event extends DataObject {
 
 	public function delete(bool $useWhere = false, bool $hardDelete = false) : bool|int {
 		if (!$useWhere) {
+
+			$instanceIds = [];
+			$instance = new EventInstance();
+			$instance->eventId = $this->id;
+			$instance->find();
+			while ($instance->fetch()) {
+				$instanceIds[] = $instance->id;
+			}
+
+			$MyAccount_AJAX = new MyAccount_AJAX();
+			$MyAccount_AJAX->sendEventLevelNotification($instanceIds, 'deleted');
+
 			$this->deleted = 1;
 			$this->dateUpdated = time();
 			$ret = parent::update();

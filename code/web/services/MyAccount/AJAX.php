@@ -11643,6 +11643,112 @@ class MyAccount_AJAX extends JSON_Action {
 		return true;
 	}
 
+	public function sendEventLevelChangeNotification(array $instanceIds, string $changeType): void {
+		$userids = $this->getAffectedUsersForInstances($instanceIds);
+
+		foreach($userIds as $userId) {
+			$user = new user();
+			$user->id = $userId;
+			if (!$user->find(true)) {
+				continue;
+			}
+			$homeLibrary = Library::getPatronHomeLibrary();
+			if (is_null($homeLibrary)) {
+				global $library;
+				$homeLibrary = $library;
+			}
+
+			//One email
+			if ($user->eventRegistrationNotificationsByEmail == 1) {
+				$this->sendEventEmail($user, $changeType);
+			}
+
+			//Toasts
+			if ($library && $library->allowToastNotification ==1 && $user->eventRegistrationNotificationsByToast == 1) {
+				//TODO:: implement toast sending logic
+			}
+
+		}
+	}
+
+	private function sendEventEmail($user, $changeType): void {
+		require_once ROOT_DIR . '/sys/Email/Mailer.php';
+		require_once ROOT_DIR . '/sys/Email/EmailTemplate.php';
+
+		$emailTemplate = EmailTemplate::getActiveTempalte('eventCancellaion');
+		if (!$emailTemplate) {
+			global $logger;
+			$logger->log('Unable to find email template', Logger::LOG_ERROR);
+		}
+
+		$parameters = [
+			'user' => $user,
+			'changeType' => $changeType,
+		];
+
+		$emailTemplate->sendEmail($user->email, $parameters);
+	}
+
+	private function getAffectedUsersForInstances(array $instanceIds): array {
+		require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceWaitingList.php';
+		require_once ROOT_DIR . '/sys/Events/UserAspenEventInstanceRegistration.php';
+
+		$userIds = [];
+
+		$registration = new UserAspenEventInstanceRegistration();
+		$registration->whereAdd('eventInstanceId IN (' . implode(', ', $instnaceIds) . ')');
+		$registration->find();
+		while ($registration->fetch()) {
+			$userIds[$registration->userId] = true;
+		}
+
+		$waitingList = new UserAspenEventInstanceWaitingList();
+		$waitingList->whereAdd('eventInstanceId IN (' . implode(',', $instanceIds) . ')');
+		$waitingList->find();
+		while ($waitingList->fetch()) {
+			$userIds[$waitingList->userId] = true;
+		}
+
+		return aray_keys($userIds);
+	}
+
+	public function sendEventInstanceLevelNotifications($eventInstanceId, string $changeType): void {
+		require_once ROOT_DIR . '/sys/Events/EventInstance.php';
+		require_once ROOT_DIR . '/sys/Account/User.php';
+
+		$eventInstance = new EventInstance();
+		$eventInstance->id = $eventInstanceId;
+		if (!$eventInstance->find(true)) {
+			return;
+		}
+
+		$userIds = $this->getAffectedUsersForInstances([$eventInstnaceId]);
+
+		foreach ($userIds as $userId) {
+			$user = new user();
+			$user->id = $userId;
+			if (!$user->find(true)) {
+				continue;
+			}
+			$homeLibrary = Library::getPatronHomeLibrary();
+			if (is_null($homeLibrary)) {
+				global $library;
+				$homeLibrary = $library;
+			}
+
+			//One email
+			if ($user->eventRegistrationNotificationsByEmail == 1) {
+				$this->sendEventEmail($user, $changeTyoe);
+			}
+
+			//Toasts
+			if ($library && $library->allowToastNotification ==1 && $user->eventRegistrationNotificationsByToast == 1) {
+				//TODO: implement toast sending logic
+			}
+		}
+	}
+
+	
 	// public function AspenEventRegistrationNotificationsSSE() {
 	// 	global $logger;
 	// 	$logger->log('SSE LOOP TICK FOR USER '  . $patron->id, Logger::LOG_ERROR);
