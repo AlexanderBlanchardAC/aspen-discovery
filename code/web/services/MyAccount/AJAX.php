@@ -11684,6 +11684,8 @@ class MyAccount_AJAX extends JSON_Action {
 		$parameters = [
 			'user' => $user,
 			'changeType' => $changeType,
+			'event' => $event,
+			'instances' => $formattedInstances,
 		];
 
 		$emailTemplate->sendEmail($user->email, $parameters);
@@ -11745,6 +11747,18 @@ class MyAccount_AJAX extends JSON_Action {
 			if ($library && $library->allowToastNotification ==1 && $user->eventRegistrationNotificationsByToast == 1) {
 				//TODO: implement toast sending logic
 			}
+		}
+	}
+
+	private function formatEventInstances(array $eventInstances): array {
+		$formatted = [];
+
+		foreach ($eventInstance as $instance) {
+			$formatted[] = [
+				'title' => $instance->title,
+				'date' -> date('F j, Y', strtotime($instance->startDate)),
+				// 'startTime' => date('g:i A', strtotime($instance->startDat))
+			];
 		}
 	}
 
